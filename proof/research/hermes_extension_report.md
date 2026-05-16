@@ -37,10 +37,10 @@ fb05f5d4b58d4fb20c3a4a98c2c150de3f729f3c	refs/heads/main
 
 ## Local Implementation
 
-- `integrations/hermes_agent_tool.py` exposes a small `slicer_bridge` helper with an optional plugin `register(ctx)` function.
+- `integrations/hermes_agent_tool.py` exposes a small `hermes_agent_tools` helper with an optional plugin `register(ctx)` function.
 - It calls only the local bridge.
 - It can be smoked directly with `python integrations\hermes_agent_tool.py health` while the bridge is running.
-- It exposes V1-safe bridge actions including `export_preflight`, `chat`, `tts_speak`, `proof_recent`, and blocked-by-default `export_gcode`.
+- It exposes V1-safe Hermes Agent tool actions including `tool_request`, `export_preflight`, `tts_speak`, `proof_recent`, `hermes_proof_mcp`, and blocked-by-default `export_gcode`.
 
 Command run:
 

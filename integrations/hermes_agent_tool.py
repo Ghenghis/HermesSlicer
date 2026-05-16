@@ -22,8 +22,8 @@ except Exception:  # pragma: no cover - used when copied outside the repo withou
         path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
-TOOL_NAME = "slicer_bridge"
-TOOLSET = "hermes_orca"
+TOOL_NAME = "hermes_agent_tools"
+TOOLSET = "hermes_agent"
 ACTIONS = {
     "health": ("GET", "/health"),
     "actions": ("GET", "/api/actions"),
@@ -31,16 +31,17 @@ ACTIONS = {
     "flsun_inventory": ("GET", "/api/orca/flsun"),
     "agents": ("GET", "/api/agents"),
     "proof_recent": ("GET", "/api/proof/recent"),
+    "hermes_proof_mcp": ("GET", "/api/hermes/proof-mcp"),
     "orca_version": ("POST", "/api/orca/version"),
     "dry_run": ("POST", "/api/slice/dry-run"),
     "export_preflight": ("POST", "/api/slice/export-preflight"),
     "export_gcode": ("POST", "/api/slice/export-gcode"),
-    "chat": ("POST", "/api/chat/message"),
+    "tool_request": ("POST", "/api/hermes-agent/tool-request"),
     "tts_speak": ("POST", "/api/tts/speak"),
 }
 TOOL_SCHEMA = {
     "name": TOOL_NAME,
-    "description": "Call the local HermesSlicer bridge for safe Orca/FLSUN checks, chat, TTS validation, proof, and export preflight.",
+    "description": "Route Hermes Agent tool requests to safe local HermesSlicer bridge, Orca/FLSUN, proof, and blocked export actions.",
     "parameters": {
         "type": "object",
         "properties": {
@@ -72,10 +73,10 @@ def bridge_request(path: str, method: str = "GET", payload: dict | None = None) 
         }
 
 
-def slicer_bridge(action: str = "health", payload: dict | None = None) -> dict:
+def hermes_agent_tools(action: str = "health", payload: dict | None = None) -> dict:
     if action not in ACTIONS:
         result = {"status": "failed", "error": "Unsupported action", "allowed": sorted(ACTIONS)}
-        log_event("hermes_tool", f"slicer_bridge.{action}", "failed", outputs=result)
+        log_event("hermes_tool", f"hermes_agent_tools.{action}", "failed", outputs=result)
         return result
     method, path = ACTIONS[action]
     request_payload = None if method == "GET" else payload or {}
@@ -83,18 +84,26 @@ def slicer_bridge(action: str = "health", payload: dict | None = None) -> dict:
     proof_status = "passed" if result.get("status") in {"ok", "passed"} or "error" not in result else "failed"
     if result.get("status") in {"blocked", "warning"}:
         proof_status = str(result["status"])
-    log_event("hermes_tool", f"slicer_bridge.{action}", proof_status, inputs={"action": action}, outputs=result)
+    log_event("hermes_tool", f"hermes_agent_tools.{action}", proof_status, inputs={"action": action}, outputs=result)
     return result
 
 
-def slicer_bridge_handler(args: dict | None = None, **_: object) -> str:
+def default_payload_for(action: str) -> dict:
+    if action == "tool_request":
+        return {"message": "slice.export_preflight", "agent": "orchestrator"}
+    if action == "tts_speak":
+        return {"text": "Hermes Agent tool smoke test.", "agent": "orchestrator"}
+    return {}
+
+
+def hermes_agent_tools_handler(args: dict | None = None, **_: object) -> str:
     args = args or {}
     if not isinstance(args, dict):
         args = {}
     action = str(args.get("action", "health"))
     raw_payload = args.get("payload", {})
     payload = raw_payload if isinstance(raw_payload, dict) else {}
-    return json.dumps(slicer_bridge(action, payload), indent=2)
+    return json.dumps(hermes_agent_tools(action, payload), indent=2)
 
 
 def register(ctx):
@@ -102,14 +111,14 @@ def register(ctx):
         name=TOOL_NAME,
         toolset=TOOLSET,
         schema=TOOL_SCHEMA,
-        handler=slicer_bridge_handler,
+        handler=hermes_agent_tools_handler,
         description=TOOL_SCHEMA["description"],
     )
 
 
 def main() -> int:
     action = sys.argv[1] if len(sys.argv) > 1 else "health"
-    result = slicer_bridge(action)
+    result = hermes_agent_tools(action, default_payload_for(action))
     write_json(ROOT / "proof" / "runtime" / f"hermes-tool-{action}.json", result)
     print(json.dumps(result, indent=2))
     return 0

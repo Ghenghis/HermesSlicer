@@ -28,8 +28,8 @@ class HermesIntegrationTests(unittest.TestCase):
 
         self.assertEqual(len(ctx.registrations), 1)
         registration = ctx.registrations[0]
-        self.assertEqual(registration["name"], "slicer_bridge")
-        self.assertEqual(registration["toolset"], "hermes_orca")
+        self.assertEqual(registration["name"], "hermes_agent_tools")
+        self.assertEqual(registration["toolset"], "hermes_agent")
         self.assertIn("schema", registration)
         self.assertIn("handler", registration)
         schema = registration["schema"]
@@ -37,14 +37,16 @@ class HermesIntegrationTests(unittest.TestCase):
         self.assertEqual(schema["parameters"]["properties"]["action"]["enum"], sorted(hermes_agent_tool.ACTIONS))
         self.assertIn("export_preflight", hermes_agent_tool.ACTIONS)
         self.assertIn("proof_recent", hermes_agent_tool.ACTIONS)
-        self.assertIn("chat", hermes_agent_tool.ACTIONS)
+        self.assertIn("hermes_proof_mcp", hermes_agent_tool.ACTIONS)
+        self.assertIn("tool_request", hermes_agent_tool.ACTIONS)
+        self.assertNotIn("chat", hermes_agent_tool.ACTIONS)
 
     def test_handler_accepts_args_dict_and_returns_json(self) -> None:
         ctx = FakeHermesContext()
         hermes_agent_tool.register(ctx)
         handler = ctx.registrations[0]["handler"]
 
-        with patch.object(hermes_agent_tool, "slicer_bridge", return_value={"status": "ok", "name": "test"}) as bridge:
+        with patch.object(hermes_agent_tool, "hermes_agent_tools", return_value={"status": "ok", "name": "test"}) as bridge:
             result = handler({"action": "health", "payload": {"sample": True}})
 
         self.assertEqual(json.loads(result), {"status": "ok", "name": "test"})
@@ -55,7 +57,7 @@ class HermesIntegrationTests(unittest.TestCase):
             patch.object(hermes_agent_tool, "urlopen", side_effect=OSError("offline")),
             patch.object(hermes_agent_tool, "log_event"),
         ):
-            result = hermes_agent_tool.slicer_bridge("health")
+            result = hermes_agent_tool.hermes_agent_tools("health")
         self.assertEqual(result["status"], "blocked")
         self.assertIn("unavailable", result["reason"])
 
@@ -69,7 +71,7 @@ class HermesIntegrationTests(unittest.TestCase):
             spec.loader.exec_module(module)
             ctx = FakeHermesContext()
             module.register(ctx)
-        self.assertEqual(ctx.registrations[0]["name"], "slicer_bridge")
+        self.assertEqual(ctx.registrations[0]["name"], "hermes_agent_tools")
 
 
 if __name__ == "__main__":

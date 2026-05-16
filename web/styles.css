@@ -31,6 +31,11 @@ body {
   font-family: "Segoe UI", Arial, sans-serif;
 }
 
+body.session-locked .panel,
+body.session-locked .dock-button {
+  display: none !important;
+}
+
 button,
 input,
 select {
@@ -47,6 +52,77 @@ button {
 
 button:hover {
   border-color: var(--accent);
+}
+
+.auth-gate {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #f6f8fb;
+  color: #111827;
+}
+
+.auth-shell {
+  display: grid;
+  justify-items: center;
+  width: min(420px, 100%);
+  gap: 14px;
+  text-align: center;
+}
+
+.auth-mark {
+  display: grid;
+  place-items: center;
+  width: 78px;
+  height: 78px;
+  border: 2px solid #4fb6ff;
+  border-radius: 8px;
+  background: #121820;
+  color: #edf3fa;
+  font-size: 24px;
+  font-weight: 750;
+}
+
+.auth-shell h1 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 34px;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+.auth-tagline,
+.auth-note {
+  margin: 0;
+  color: #4b5563;
+}
+
+.auth-tagline {
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.auth-note {
+  max-width: 310px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.auth-shell button {
+  width: min(340px, 100%);
+  height: 48px;
+  margin-top: 230px;
+  border-color: #2f8fcc;
+  background: #116da8;
+  color: #ffffff;
+  font-weight: 650;
+}
+
+.auth-shell button:hover {
+  border-color: #116da8;
+  background: #0f5f92;
 }
 
 .panel {
@@ -143,7 +219,7 @@ pre:focus-visible {
 
 .quick-actions {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
   padding: 10px;
   border-bottom: 1px solid var(--line);
@@ -188,7 +264,7 @@ pre:focus-visible {
   align-self: flex-start;
 }
 
-.chat-form {
+.tool-form {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto auto;
   gap: 8px;
@@ -197,7 +273,7 @@ pre:focus-visible {
   background: #151b22;
 }
 
-.chat-form input,
+.tool-form input,
 .settings input,
 .settings select {
   width: 100%;
@@ -208,12 +284,12 @@ pre:focus-visible {
   color: var(--text);
 }
 
-.chat-form input {
+.tool-form input {
   height: 38px;
   padding: 0 11px;
 }
 
-.chat-form button[type="submit"] {
+.tool-form button[type="submit"] {
   min-width: 66px;
 }
 
@@ -339,10 +415,10 @@ pre:focus-visible {
   }
 
   .quick-actions {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .chat-form {
+  .tool-form {
     grid-template-columns: auto minmax(0, 1fr) auto auto;
   }
 }

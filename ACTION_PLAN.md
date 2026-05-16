@@ -12,6 +12,8 @@ Finish V1 end to end without scope drift. The target is a proofable local sideca
 - [x] Validate all submodule remotes, commits, dirty states, and Hermes Agent `v2026.5.16` / package `0.14.0`.
 - [x] Add an API contract drift test.
 - [x] Add `ROADMAP.md` as the source of truth for V1 completion.
+- [x] Reframe the panel as a Hermes Agent tool console instead of a JusPrin-style slicer settings chatbot.
+- [x] Replace reference-login branding with a Hermes Slicer local-session gate.
 - [ ] Enable/prove live Hermes Agent provider bridge connectivity.
 - [ ] Enable/prove bounded AS_USER session grants, or document the missing `HERMES_HUMAN_GRANT_SECRET` as a local environment blocker.
 - [ ] Pick and add root `LICENSE` plus any needed `NOTICE`.

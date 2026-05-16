@@ -27,11 +27,13 @@ class ApiContractTests(unittest.TestCase):
             "/api/orca/flsun",
             "/api/agents",
             "/api/proof/recent",
+            "/api/hermes/proof-mcp",
             "/api/action",
             "/api/orca/version",
             "/api/slice/dry-run",
             "/api/slice/export-preflight",
             "/api/slice/export-gcode",
+            "/api/hermes-agent/tool-request",
             "/api/chat/message",
             "/api/tts/speak",
         }

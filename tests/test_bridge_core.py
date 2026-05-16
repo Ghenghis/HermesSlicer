@@ -21,6 +21,9 @@ class BridgeCoreTests(unittest.TestCase):
         self.assertIn("orca.version", ids)
         self.assertIn("orca.profiles", ids)
         self.assertIn("orca.flsun_inventory", ids)
+        self.assertIn("agents.list", ids)
+        self.assertIn("proof.recent", ids)
+        self.assertIn("hermes.proof_mcp", ids)
         self.assertIn("slice.dry_run", ids)
         self.assertIn("slice.export_preflight", ids)
         self.assertIn("tts.speak", ids)
@@ -104,10 +107,29 @@ class BridgeCoreTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(payload["status"], "passed")
 
-    def test_dispatch_chat_message(self) -> None:
-        payload, status = dispatch_action({"action": "chat.message", "payload": {"message": "health"}})
+    def test_dispatch_hermes_agent_tool_request(self) -> None:
+        payload, status = dispatch_action({"action": "hermes_agent.tool_request", "payload": {"message": "health"}})
         self.assertEqual(status, 200)
-        self.assertEqual(payload["action"], "bridge.health")
+        self.assertEqual(payload["resolved_action"], "bridge.health")
+        self.assertEqual(payload["toolset"], "hermes_agent")
+
+    def test_dispatch_chat_rejects_jusprin_style_setting_changes(self) -> None:
+        payload, status = dispatch_action({"action": "hermes_agent.tool_request", "payload": {"message": "I want a fast draft print"}})
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["resolved_action"], None)
+        self.assertEqual(payload["status"], "blocked")
+        self.assertIn("Hermes Agent", payload["reply"])
+        self.assertIn("will not silently apply", payload["reply"])
+
+    def test_dispatch_hermes_proof_mcp_status(self) -> None:
+        payload, status = dispatch_action({"action": "hermes.proof_mcp"})
+        self.assertEqual(status, 200)
+        self.assertIn(payload["status"], {"partial", "passed", "blocked", "failed"})
+
+    def test_explicit_tool_id_request_routes_to_tool(self) -> None:
+        payload, status = dispatch_action({"action": "hermes_agent.tool_request", "payload": {"message": "slice.export_preflight"}})
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["resolved_action"], "slice.export_preflight")
 
     def test_export_stays_disabled_but_reports_preflight(self) -> None:
         with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {"HERMES_ENABLE_EXPORT_GCODE": ""}, clear=False):

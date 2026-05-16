@@ -60,6 +60,12 @@ paths:
       responses:
         "200":
           description: OK
+  /api/hermes/proof-mcp:
+    get:
+      summary: Return the latest local Hermes Proof MCP status artifact
+      responses:
+        "200":
+          description: OK or blocked by missing artifact
   /api/action:
     post:
       summary: Dispatch a whitelisted bridge action by action id
@@ -92,14 +98,21 @@ paths:
           description: OK or blocked by safety default
         "400":
           description: Invalid request
-  /api/chat/message:
+  /api/hermes-agent/tool-request:
     post:
-      summary: Route a local panel chat message to safe bridge actions
+      summary: Route a Hermes Agent tool request to a safe bridge action
       responses:
         "200":
           description: OK
         "400":
           description: Invalid request
+  /api/chat/message:
+    post:
+      summary: Deprecated compatibility alias for /api/hermes-agent/tool-request
+      deprecated: true
+      responses:
+        "200":
+          description: OK
   /api/tts/speak:
     post:
       summary: Validate a local TTS request; V1 blocks playback until Azure credentials and adapter are enabled

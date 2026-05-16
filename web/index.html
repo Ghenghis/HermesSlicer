@@ -6,13 +6,23 @@
     <title>HermesSlicer</title>
     <link rel="stylesheet" href="/styles.css">
   </head>
-  <body>
-    <main id="panel" class="panel" aria-label="Hermes Orca Assistant">
+  <body class="session-locked">
+    <section id="authGate" class="auth-gate" aria-label="Hermes Slicer login">
+      <div class="auth-shell">
+        <div class="auth-mark" aria-hidden="true">HS</div>
+        <h1>Hermes Slicer</h1>
+        <p class="auth-tagline">Local Hermes Agent tools for slicing proof.</p>
+        <button id="authContinue" type="button">Continue to Hermes Tools</button>
+        <p class="auth-note">V1 uses a local session. Cloud sign-in is not enabled.</p>
+      </div>
+    </section>
+
+    <main id="panel" class="panel" aria-label="Hermes Agent tool console">
       <header id="dragHandle" class="panel-header" tabindex="0" aria-label="Panel drag handle. Use arrow keys to move the panel.">
         <div class="brand">
           <span id="statusDot" class="status-dot" aria-hidden="true"></span>
           <div>
-            <h1>Hermes Orca Assistant</h1>
+            <h1>Hermes Agent Tool Console</h1>
             <p id="bridgeStatus">checking bridge</p>
           </div>
         </div>
@@ -23,25 +33,26 @@
       </header>
 
       <section class="quick-actions" aria-label="Quick actions">
-        <button data-action="health" type="button">Health</button>
-        <button data-action="version" type="button">Orca Version</button>
-        <button data-action="profiles" type="button">FLSun</button>
-        <button data-action="drySlice" type="button">Dry Slice</button>
-        <button data-action="export" type="button">Export G-code</button>
+        <button data-action="bridge.actions" type="button">bridge.actions</button>
+        <button data-action="hermes.proof_mcp" type="button">hermes.proof_mcp</button>
+        <button data-action="slice.export_preflight" type="button">slice.export_preflight</button>
+        <button data-action="proof.recent" type="button">proof.recent</button>
+        <button data-action="orca.version" type="button">orca.version</button>
+        <button data-action="slice.dry_run" type="button">slice.dry_run</button>
       </section>
 
       <section id="conversation" class="conversation" aria-live="polite"></section>
 
-      <form id="chatForm" class="chat-form">
+      <form id="toolForm" class="tool-form">
         <button id="micButton" class="icon-button" type="button" title="Push to talk" aria-label="Push to talk" aria-pressed="false">mic</button>
-        <label class="sr-only" for="chatInput">Message</label>
-        <input id="chatInput" name="message" autocomplete="off" placeholder="Ask Hermes about slicing..." />
-        <button type="submit">Send</button>
+        <label class="sr-only" for="toolInput">Tool request</label>
+        <input id="toolInput" name="message" autocomplete="off" placeholder="Tool ID or request" />
+        <button type="submit">Run Tool</button>
         <button id="stopButton" class="icon-button" type="button" title="Stop speaking" aria-label="Stop speaking">stop</button>
       </form>
 
       <details class="settings" open>
-        <summary>Agents and voices</summary>
+        <summary>Hermes Agent routing</summary>
         <div class="settings-grid">
           <label>
             Agent
@@ -64,14 +75,14 @@
 
       <aside class="proof" aria-labelledby="proofTitle">
         <div class="proof-title">
-          <span id="proofTitle">Proof</span>
+          <span id="proofTitle">Tool proof</span>
           <button id="refreshProof" type="button">Refresh</button>
         </div>
         <pre id="proofDrawer" tabindex="0">proof/ledger.jsonl</pre>
       </aside>
     </main>
 
-    <button id="dockButton" class="dock-button" type="button" aria-controls="panel" aria-expanded="false" hidden>Hermes</button>
+    <button id="dockButton" class="dock-button" type="button" aria-controls="panel" aria-expanded="false" hidden>Hermes Tools</button>
     <script src="/app.js" defer></script>
   </body>
 </html>

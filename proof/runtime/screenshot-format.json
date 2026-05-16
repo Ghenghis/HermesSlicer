@@ -3,17 +3,27 @@
     {
       "exists": true,
       "file": "proof/screenshots/panel-open.png",
-      "png_signature": true
+      "image_signature": true
     },
     {
       "exists": true,
       "file": "proof/screenshots/panel-flsun.png",
-      "png_signature": true
+      "image_signature": true
     },
     {
       "exists": true,
       "file": "proof/screenshots/panel-hidden.png",
-      "png_signature": true
+      "image_signature": true
+    },
+    {
+      "exists": true,
+      "file": "proof/screenshots/login-hermes-slicer.jpg",
+      "image_signature": true
+    },
+    {
+      "exists": true,
+      "file": "proof/screenshots/hermes-agent-tools.jpg",
+      "image_signature": true
     }
   ],
   "status": "passed"

@@ -1,6 +1,6 @@
 name: hermes-slicer
 version: 0.1.0
-description: Local HermesSlicer bridge tool for Orca/FLSUN profile checks.
+description: Local Hermes Agent tool router for HermesSlicer, Orca/FLSUN checks, and proof.
 kind: standalone
 provides_tools:
-  - slicer_bridge
+  - hermes_agent_tools

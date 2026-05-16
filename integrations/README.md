@@ -1,14 +1,14 @@
 # Hermes Integration
 
-`hermes_agent_tool.py` exposes a small `slicer_bridge` tool for Hermes Agent and also works as a direct smoke script:
+`hermes_agent_tool.py` exposes a small `hermes_agent_tools` tool for Hermes Agent and also works as a direct smoke script:
 
 ```powershell
 python integrations\hermes_agent_tool.py health
 python integrations\hermes_agent_tool.py orca_version
-python integrations\hermes_agent_tool.py flsun_inventory
+python integrations\hermes_agent_tool.py export_preflight
 ```
 
-The tool calls only the local bridge at `http://127.0.0.1:8765` and supports `health`, `actions`, `profiles`, `flsun_inventory`, `orca_version`, and `dry_run`.
+The tool calls only the local bridge at `http://127.0.0.1:8765` and supports safe Hermes Agent tool requests such as `actions`, `flsun_inventory`, `orca_version`, `dry_run`, `export_preflight`, `proof_recent`, `hermes_proof_mcp`, `tool_request`, and blocked-by-default `export_gcode`.
 
 ## Hermes Agent Plugin Shape
 
@@ -36,7 +36,7 @@ Then run Hermes with project plugins enabled and the repo root explicit:
 $env:HERMES_ENABLE_PROJECT_PLUGINS = "1"
 $env:HERMES_SLICER_ROOT = "G:\Github\HermesSlicer"
 hermes plugins enable hermes-slicer
-hermes -z "Check HermesSlicer bridge health" -t hermes_orca
+hermes -z "Check HermesSlicer bridge health" -t hermes_agent
 ```
 
 Hermes does not start the bridge; start `scripts\start_bridge.ps1` first.

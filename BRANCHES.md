@@ -13,7 +13,7 @@ This branch merges the working V1 sidecar, upstream research maps, Hermes Agent 
 These branches were created from `feature/hermes-orca-floating-panel-v1` and then merged into `codex/v1-acceptance-consolidation`:
 
 - `research/jusprin-pattern-mining`: JusPrin assistant/settings pattern map without copying AGPL code into product code.
-- `integration/hermes-agent-tooling`: Hermes Agent `slicer_bridge` plugin wrapper aligned to upstream `plugin.yaml` plus `register(ctx)` behavior.
+- `integration/hermes-agent-tooling`: Hermes Agent `hermes_agent_tools` plugin wrapper aligned to upstream `plugin.yaml` plus `register(ctx)` behavior.
 - `feature/flsun-profile-resolver`: T1/V400/S1 profile resolver and export preflight gate.
 
 ## Bootstrap Branch

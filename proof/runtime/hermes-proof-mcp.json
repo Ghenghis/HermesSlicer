@@ -4,8 +4,8 @@
   "proof_mcp": {
     "available": true,
     "evidence_ledger_ok": true,
-    "total_entries": 698,
-    "chained_entries": 675,
+    "total_entries": 704,
+    "chained_entries": 681,
     "unchained_entries": 23,
     "first_break": null
   },
@@ -18,5 +18,5 @@
     "granted": false,
     "reason": "HERMES_HUMAN_GRANT_SECRET is required for human grants"
   },
-  "evidence_id": "ev_f1b66a9e74490031"
+  "evidence_id": "ev_3e29601d066b72b2"
 }

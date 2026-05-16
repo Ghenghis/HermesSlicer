@@ -81,9 +81,9 @@ The installable Hermes Agent plugin wrapper lives at:
 integrations/hermes-slicer
 ```
 
-See `integrations/README.md` for project-local plugin setup. Hermes does not start the bridge; start the bridge first, then use the `hermes_orca` toolset.
+See `integrations/README.md` for project-local plugin setup. Hermes does not start the bridge; start the bridge first, then use the `hermes_agent` toolset.
 
-`hermes-agent-tooling` is the local integration branch/slice, not a separate upstream submodule. The source lives under `integrations/` and is tested against the pinned `upstream/hermes-agent` submodule.
+`hermes-agent-tooling` is the local integration branch/slice, not a separate upstream submodule. The source lives under `integrations/` and is tested against the pinned `upstream/hermes-agent` submodule. The visible panel starts with a Hermes Slicer local-session gate and then opens a Hermes Agent tool console, not a JusPrin-style slicer settings chatbot.
 
 ## Proof Bundle
 

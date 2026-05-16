@@ -85,7 +85,7 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
    $env:HERMES_ENABLE_PROJECT_PLUGINS = "1"
    $env:HERMES_SLICER_ROOT = "<repo-root>"
    hermes plugins enable hermes-slicer
-   hermes -z "Check HermesSlicer bridge health" -t hermes_orca
+   hermes -z "Check HermesSlicer bridge health" -t hermes_agent
    ```
 
    If the active Hermes install path differs, document the actual path and evidence.

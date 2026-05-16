@@ -66,6 +66,27 @@ ALLOWED_ACTIONS = [
         "destructive": False,
     },
     {
+        "id": "agents.list",
+        "method": "GET",
+        "path": "/api/agents",
+        "description": "List local Hermes Agent roles and voice assignments.",
+        "destructive": False,
+    },
+    {
+        "id": "proof.recent",
+        "method": "GET",
+        "path": "/api/proof/recent",
+        "description": "Return recent sanitized proof ledger events.",
+        "destructive": False,
+    },
+    {
+        "id": "hermes.proof_mcp",
+        "method": "GET",
+        "path": "/api/hermes/proof-mcp",
+        "description": "Return the latest local Hermes Proof MCP status artifact.",
+        "destructive": False,
+    },
+    {
         "id": "slice.dry_run",
         "method": "POST",
         "path": "/api/slice/dry-run",
@@ -88,10 +109,10 @@ ALLOWED_ACTIONS = [
         "enabled_by_default": False,
     },
     {
-        "id": "chat.message",
+        "id": "hermes_agent.tool_request",
         "method": "POST",
-        "path": "/api/chat/message",
-        "description": "Send a local Hermes panel message to the bridge orchestrator stub.",
+        "path": "/api/hermes-agent/tool-request",
+        "description": "Route a Hermes Agent tool request to a safe local bridge action.",
         "destructive": False,
     },
     {

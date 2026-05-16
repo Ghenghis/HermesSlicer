@@ -17,7 +17,7 @@ Date: 2026-05-16
 
 ## Implemented Binding
 
-This repo includes `integrations/hermes_agent_tool.py` and `integrations/hermes_plugin.yaml`. The tool exposes `slicer_bridge` actions:
+This repo includes `integrations/hermes_agent_tool.py` and `integrations/hermes_plugin.yaml`. The tool exposes `hermes_agent_tools` actions:
 
 - `health`
 - `actions`
@@ -26,9 +26,10 @@ This repo includes `integrations/hermes_agent_tool.py` and `integrations/hermes_
 - `dry_run`
 - `export_preflight`
 - `export_gcode`
-- `chat`
+- `tool_request`
 - `tts_speak`
 - `proof_recent`
+- `hermes_proof_mcp`
 - `agents`
 
 ## Current Codex MCP Check
@@ -46,7 +47,7 @@ Observed on 2026-05-16 through the Hermes Proof MCP tools available in this sess
 
 ## Decision
 
-Use the plugin-style tool shim first because it is small, auditable, and calls only `http://127.0.0.1:8765`. Do not invent a user's private Hermes MCP endpoint. If a live Hermes MCP server is later identified, bind this bridge through that config with proof.
+Use the plugin-style Hermes Agent tool router first because it is small, auditable, and calls only `http://127.0.0.1:8765`. Do not invent a user's private Hermes MCP endpoint. If a live Hermes MCP server is later identified, bind this bridge through that config with proof.
 
 ## Risks
 

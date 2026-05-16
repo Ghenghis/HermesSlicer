@@ -15,6 +15,25 @@ const agentSelect = document.getElementById("agentSelect");
 const agentName = document.getElementById("agentName");
 const voiceSelect = document.getElementById("voiceSelect");
 const providerBadge = document.getElementById("providerBadge");
+const authGate = document.getElementById("authGate");
+const authContinue = document.getElementById("authContinue");
+
+function unlockSession() {
+  sessionStorage.setItem("hermesLocalSession", "connected");
+  document.body.classList.remove("session-locked");
+  authGate.hidden = true;
+  document.getElementById("toolInput").focus();
+}
+
+function setupAuthGate() {
+  if (sessionStorage.getItem("hermesLocalSession") === "connected") {
+    document.body.classList.remove("session-locked");
+    authGate.hidden = true;
+    return;
+  }
+  authGate.hidden = false;
+  authContinue.addEventListener("click", unlockSession);
+}
 
 function rememberPanel() {
   const rect = panel.getBoundingClientRect();
@@ -152,20 +171,21 @@ async function saveActiveAgent() {
   agent.voice = voiceSelect.value;
   await api("/api/agents", {method: "POST", body: JSON.stringify({agents: state.agents})});
   await loadAgents();
-  addMessage(`${agent.display_name} voice saved as ${agent.voice}.`);
+  addMessage(`${agent.display_name} voice assignment saved as ${agent.voice}.`);
 }
 
 async function runQuickAction(action) {
   const map = {
-    health: () => api("/health"),
-    version: () => api("/api/orca/version", {method: "POST", body: "{}"}),
-    profiles: () => api("/api/orca/flsun"),
-    drySlice: () => api("/api/slice/dry-run", {method: "POST", body: "{}"}),
-    export: () => api("/api/slice/export-gcode", {method: "POST", body: "{}"}),
+    "bridge.actions": () => api("/api/actions"),
+    "hermes.proof_mcp": () => api("/api/hermes/proof-mcp"),
+    "slice.export_preflight": () => api("/api/slice/export-preflight", {method: "POST", body: "{}"}),
+    "proof.recent": () => api("/api/proof/recent"),
+    "orca.version": () => api("/api/orca/version", {method: "POST", body: "{}"}),
+    "slice.dry_run": () => api("/api/slice/dry-run", {method: "POST", body: "{}"}),
   };
   const payload = await map[action]();
   showProof(payload);
-  addMessage(`${action}: ${payload.status || "ok"}`);
+  addMessage(`Tool ${action} -> ${payload.status || "ok"}`);
 }
 
 function setupDragging() {
@@ -204,7 +224,7 @@ dockButton.addEventListener("click", () => {
   dockButton.hidden = true;
   document.getElementById("collapseButton").setAttribute("aria-expanded", "true");
   dockButton.setAttribute("aria-expanded", "true");
-  document.getElementById("chatInput").focus();
+  document.getElementById("toolInput").focus();
 });
 
 document.getElementById("micButton").addEventListener("click", (event) => {
@@ -236,15 +256,15 @@ document.querySelectorAll(".quick-actions button").forEach((button) => {
   });
 });
 
-document.getElementById("chatForm").addEventListener("submit", async (event) => {
+document.getElementById("toolForm").addEventListener("submit", async (event) => {
   event.preventDefault();
-  const input = document.getElementById("chatInput");
+  const input = document.getElementById("toolInput");
   const message = input.value.trim();
   if (!message) return;
   input.value = "";
   addMessage(message, "user");
   try {
-    const payload = await api("/api/chat/message", {method: "POST", body: JSON.stringify({message, agent: state.activeAgent})});
+    const payload = await api("/api/hermes-agent/tool-request", {method: "POST", body: JSON.stringify({message, agent: state.activeAgent})});
     addMessage(payload.reply);
     showProof(payload);
   } catch (error) {
@@ -252,6 +272,7 @@ document.getElementById("chatForm").addEventListener("submit", async (event) => 
   }
 });
 
+setupAuthGate();
 restorePanel();
 setupDragging();
 window.addEventListener("resize", clampPanel);
@@ -268,5 +289,5 @@ document.getElementById("dragHandle").addEventListener("keydown", (event) => {
   rememberPanel();
 });
 Promise.all([loadVoices(), loadAgents(), checkHealth()]).then(() => {
-  addMessage("Hermes local bridge is ready.");
+  addMessage("Hermes Agent tool bridge is ready. Run a tool ID like bridge.actions, hermes.proof_mcp, or slice.export_preflight.");
 });

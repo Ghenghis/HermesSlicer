@@ -21,10 +21,13 @@ ACTION_ROUTES = {
     "orca.version": ("POST", "/api/orca/version"),
     "orca.profiles": ("GET", "/api/orca/profiles"),
     "orca.flsun_inventory": ("GET", "/api/orca/flsun"),
+    "agents.list": ("GET", "/api/agents"),
+    "proof.recent": ("GET", "/api/proof/recent"),
+    "hermes.proof_mcp": ("GET", "/api/hermes/proof-mcp"),
     "slice.dry_run": ("POST", "/api/slice/dry-run"),
     "slice.export_preflight": ("POST", "/api/slice/export-preflight"),
     "slice.export_gcode": ("POST", "/api/slice/export-gcode"),
-    "chat.message": ("POST", "/api/chat/message"),
+    "hermes_agent.tool_request": ("POST", "/api/hermes-agent/tool-request"),
     "tts.speak": ("POST", "/api/tts/speak"),
 }
 
@@ -86,6 +89,11 @@ class BridgeHandler(BaseHTTPRequestHandler):
         if route == "/api/proof/recent":
             self.respond_json({"events": recent_events(25)})
             return
+        if route == "/api/hermes/proof-mcp":
+            payload = hermes_proof_mcp_status()
+            log_event("bridge", "hermes.proof_mcp", _normalized_event_status(payload.get("status")), outputs=payload)
+            self.respond_json(payload)
+            return
         self.serve_static(route)
 
     def do_POST(self) -> None:
@@ -121,9 +129,10 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 log_event("bridge", "slice.export_gcode", payload["status"], inputs=body, outputs=payload)
                 self.respond_json(payload, status=code)
                 return
-            if route == "/api/chat/message":
-                payload = chat_message(body)
-                log_event("panel", "chat.message", "passed", inputs=body, outputs=payload)
+            if route in {"/api/hermes-agent/tool-request", "/api/chat/message"}:
+                payload = hermes_agent_tool_request(body)
+                action_name = "hermes_agent.tool_request" if route != "/api/chat/message" else "hermes_agent.tool_request.compat"
+                log_event("panel", action_name, payload["status"], inputs=body, outputs=payload)
                 self.respond_json(payload)
                 return
             if route == "/api/tts/speak":
@@ -147,7 +156,7 @@ class BridgeHandler(BaseHTTPRequestHandler):
             self.respond_json({"error": "Invalid JSON body"}, status=400)
 
     def handle_chat(self, body: dict[str, object]) -> dict[str, object]:
-        return chat_message(body)
+        return hermes_agent_tool_request(body)
 
     def read_json_body(self) -> dict[str, object]:
         length = int(self.headers.get("Content-Length", "0") or 0)
@@ -210,6 +219,12 @@ def dispatch_action(body: dict[str, object]) -> tuple[dict[str, object], int]:
         return list_orca_profiles(), 200
     if action == "orca.flsun_inventory":
         return flsun_profile_inventory(), 200
+    if action == "agents.list":
+        return {"agents": load_agents()}, 200
+    if action == "proof.recent":
+        return {"events": recent_events(25)}, 200
+    if action == "hermes.proof_mcp":
+        return hermes_proof_mcp_status(), 200
     if action == "slice.dry_run":
         request_payload = payload if isinstance(payload, dict) else {}
         return dry_run_slice(request_payload), 200
@@ -220,9 +235,9 @@ def dispatch_action(body: dict[str, object]) -> tuple[dict[str, object], int]:
         request_payload = payload if isinstance(payload, dict) else {}
         result = export_gcode(request_payload)
         return result, 200 if result["status"] in {"passed", "blocked"} else 500
-    if action == "chat.message":
+    if action == "hermes_agent.tool_request":
         request_payload = payload if isinstance(payload, dict) else {}
-        return chat_message(request_payload), 200
+        return hermes_agent_tool_request(request_payload), 200
     if action == "tts.speak":
         request_payload = payload if isinstance(payload, dict) else {}
         result = tts_speak(request_payload)
@@ -230,25 +245,171 @@ def dispatch_action(body: dict[str, object]) -> tuple[dict[str, object], int]:
     return {"status": "failed", "error": "unhandled action"}, 500
 
 
-def chat_message(body: dict[str, object]) -> dict[str, object]:
+def hermes_agent_tool_request(body: dict[str, object]) -> dict[str, object]:
     message = str(body.get("message", "")).strip()
+    agent = str(body.get("agent", "")).strip() or "orchestrator"
+    requested_action = str(body.get("action", "")).strip()
     lower = message.lower()
+    explicit_action = requested_action or _extract_explicit_action(message)
+    if explicit_action:
+        result, status = dispatch_action({"action": explicit_action, "payload": body.get("payload", {})})
+        return {
+            "status": _normalized_tool_status(result, status),
+            "reply": f"Hermes Agent routed tool `{explicit_action}`.",
+            "agent": agent,
+            "toolset": "hermes_agent",
+            "requested_action": requested_action or message,
+            "resolved_action": explicit_action,
+            "result": result,
+        }
+    if "tool" in lower or "action" in lower or "what can" in lower:
+        return {
+            "status": "passed",
+            "reply": "Hermes Agent tool registry is loaded. I can run safe local bridge, Orca, FLSUN, proof, and blocked export tools.",
+            "agent": agent,
+            "toolset": "hermes_agent",
+            "requested_action": requested_action or message,
+            "resolved_action": "bridge.actions",
+            "result": {"actions": ALLOWED_ACTIONS},
+        }
+    if "mcp" in lower or "proof mcp" in lower or "hermes proof" in lower:
+        result = hermes_proof_mcp_status()
+        return {
+            "status": _normalized_tool_status(result, 200),
+            "reply": "I checked the local Hermes Proof MCP status artifact.",
+            "agent": agent,
+            "toolset": "hermes_agent",
+            "requested_action": requested_action or message,
+            "resolved_action": "hermes.proof_mcp",
+            "result": result,
+        }
+    if "ledger" in lower or "evidence" in lower or "proof" in lower:
+        return {
+            "status": "passed",
+            "reply": "I pulled the recent sanitized proof ledger events.",
+            "agent": agent,
+            "toolset": "hermes_agent",
+            "requested_action": requested_action or message,
+            "resolved_action": "proof.recent",
+            "result": {"events": recent_events(25)},
+        }
+    if "agent" in lower or "voice" in lower:
+        return {
+            "status": "passed",
+            "reply": "I listed the local Hermes Agent roles and voice assignments.",
+            "agent": agent,
+            "toolset": "hermes_agent",
+            "requested_action": requested_action or message,
+            "resolved_action": "agents.list",
+            "result": {"agents": load_agents()},
+        }
     if "health" in lower:
-        return {"reply": "Bridge health is ok.", "action": "bridge.health", "result": health_payload()}
+        return _tool_request_result(agent, requested_action or message, "bridge.health", "I ran the HermesSlicer bridge health tool.", health_payload())
     if "version" in lower or "orca" in lower:
-        return {"reply": "I ran the safe Orca executable check.", "action": "orca.version", "result": orca_version_check()}
+        return _tool_request_result(agent, requested_action or message, "orca.version", "I ran the safe Orca executable probe tool.", orca_version_check())
     if "preflight" in lower:
-        return {"reply": "I resolved the default FLSUN export tuple without writing G-code.", "action": "slice.export_preflight", "result": flsun_export_preflight({})}
+        return _tool_request_result(agent, requested_action or message, "slice.export_preflight", "I ran FLSUN export preflight without writing G-code.", flsun_export_preflight({}))
     if "flsun" in lower or "t1" in lower or "v400" in lower or "s1" in lower:
-        return {"reply": "I checked local Orca FLSun profile resources.", "action": "orca.flsun_inventory", "result": flsun_profile_inventory()}
+        return _tool_request_result(agent, requested_action or message, "orca.flsun_inventory", "I checked local Orca FLSUN profile resources.", flsun_profile_inventory())
     if "profile" in lower:
-        return {"reply": "I checked installed Orca profile folders.", "action": "orca.profiles", "result": list_orca_profiles()}
+        return _tool_request_result(agent, requested_action or message, "orca.profiles", "I checked installed Orca profile folders.", list_orca_profiles())
     if "dry" in lower or "slice" in lower:
-        return {"reply": "The default sample slice request validates without writing G-code.", "action": "slice.dry_run", "result": dry_run_slice({})}
+        return _tool_request_result(agent, requested_action or message, "slice.dry_run", "I ran a dry slice validation tool without writing G-code.", dry_run_slice({}))
+    if "export" in lower or "g-code" in lower or "gcode" in lower:
+        return _tool_request_result(agent, requested_action or message, "slice.export_gcode", "I ran the export tool. V1 should block G-code export unless local export is explicitly enabled.", export_gcode({}))
+    if any(marker in lower for marker in ("draft", "fast print", "strong part", "support", "stick", "adhesion", "setting", "preset")):
+        return {
+            "status": "blocked",
+            "reply": "I am Hermes Agent's local tool router, not a settings auto-apply chatbot. I can run preflight, inventory, proof, and blocked export tools; V1 will not silently apply slicer setting changes.",
+            "agent": agent,
+            "toolset": "hermes_agent",
+            "requested_action": requested_action or message,
+            "resolved_action": None,
+            "result": {"received": bool(message), "recommended_tool": "slice.export_preflight"},
+        }
     return {
-        "reply": "Hermes local bridge is online. Try Health, Orca Version, or Dry Slice.",
-        "action": "chat.message",
+        "status": "blocked",
+        "reply": "Hermes Agent tool bridge is online. Ask for tools, proof MCP, FLSUN preflight, Orca probe, proof ledger, agents, or blocked export.",
+        "agent": agent,
+        "toolset": "hermes_agent",
+        "requested_action": requested_action or message,
+        "resolved_action": None,
         "result": {"received": bool(message)},
+    }
+
+
+def _tool_request_result(agent: str, requested_action: str, resolved_action: str, reply: str, result: dict[str, object]) -> dict[str, object]:
+    return {
+        "status": _normalized_tool_status(result, 200),
+        "reply": reply,
+        "agent": agent,
+        "toolset": "hermes_agent",
+        "requested_action": requested_action,
+        "resolved_action": resolved_action,
+        "result": result,
+    }
+
+
+def _normalized_tool_status(result: dict[str, object], http_status: int) -> str:
+    if http_status >= 400:
+        return "failed"
+    status = str(result.get("status", "passed"))
+    if status == "ok":
+        return "passed"
+    if status == "partial":
+        return "warning"
+    if status in {"passed", "failed", "blocked", "warning"}:
+        return status
+    return "passed"
+
+
+def _normalized_event_status(value: object) -> str:
+    status = str(value)
+    if status == "ok":
+        return "passed"
+    if status == "partial":
+        return "warning"
+    if status in {"started", "passed", "failed", "blocked", "warning"}:
+        return status
+    return "passed"
+
+
+def _extract_explicit_action(message: str) -> str | None:
+    normalized = message.strip().strip("`'\".,:; ")
+    allowed = set(ACTION_ROUTES)
+    if normalized in allowed:
+        return normalized
+    parts = [part.strip("`'\".,:; ") for part in message.split()]
+    for part in parts:
+        if part in allowed:
+            return part
+    return None
+
+
+def hermes_proof_mcp_status() -> dict[str, object]:
+    proof_path = ROOT / "proof" / "runtime" / "hermes-proof-mcp.json"
+    if not proof_path.exists():
+        return {
+            "status": "blocked",
+            "reason": "Hermes Proof MCP status artifact has not been generated.",
+            "proof_file": "proof/runtime/hermes-proof-mcp.json",
+        }
+    try:
+        payload = json.loads(proof_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {
+            "status": "failed",
+            "reason": "Hermes Proof MCP status artifact is not valid JSON.",
+            "proof_file": "proof/runtime/hermes-proof-mcp.json",
+        }
+    status = str(payload.get("status", "unknown"))
+    return {
+        "status": status,
+        "proof_file": "proof/runtime/hermes-proof-mcp.json",
+        "proof_mcp": payload.get("proof_mcp", {}),
+        "hermes_agent_bridge": payload.get("hermes_agent_bridge", {}),
+        "as_user_session": payload.get("as_user_session", {}),
+        "evidence_id": payload.get("evidence_id"),
     }
 
 

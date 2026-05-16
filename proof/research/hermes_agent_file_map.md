@@ -65,7 +65,7 @@ Project plugins are scanned only when HERMES_ENABLE_PROJECT_PLUGINS is set.
 
 ## Implementation Decisions
 
-- `integrations/hermes_agent_tool.py` now registers `slicer_bridge` with `toolset="hermes_orca"`, a schema object, and a `handler(args, **kwargs)` compatible function.
+- `integrations/hermes_agent_tool.py` now registers `hermes_agent_tools` with `toolset="hermes_agent"`, a schema object, and a `handler(args, **kwargs)` compatible function.
 - `integrations/hermes-slicer/` is the installable directory plugin shape with `plugin.yaml` and `__init__.py`.
 - `integrations/hermes_plugin.yaml` is kept as a manifest reference without unsupported `entry` or `toolsets` keys.
 - The bridge is not started by Hermes. The tool returns a blocked JSON result if `http://127.0.0.1:8765` is unavailable.

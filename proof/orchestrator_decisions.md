@@ -17,6 +17,6 @@ Use a local sidecar architecture for V1:
 
 ## Scope
 
-V1 ships health, action listing, profile folder listing, Orca executable check, FLSUN T1/V400/S1 inventory, FLSUN export preflight, dry-run request validation, generated Azure English voice catalog, local chat stub, agent voice persistence, Hermes Agent tool shim, API contract drift tests, upstream submodule validation, and proof ledger.
+V1 ships health, action listing, profile folder listing, Orca executable check, FLSUN T1/V400/S1 inventory, FLSUN export preflight, dry-run request validation, generated Azure English voice catalog, Hermes Agent tool request routing, agent voice persistence, Hermes Agent tool shim, API contract drift tests, upstream submodule validation, and proof ledger.
 
 Printer upload/start remains disabled.
