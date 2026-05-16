@@ -14,8 +14,14 @@ if ($LASTEXITCODE -ne 0) { throw "write_flsun_profile_proof.py failed with exit 
 python scripts\validate_submodules.py
 if ($LASTEXITCODE -ne 0) { throw "validate_submodules.py failed with exit code $LASTEXITCODE" }
 
+python tests\test_api_contract.py
+if ($LASTEXITCODE -ne 0) { throw "test_api_contract failed with exit code $LASTEXITCODE" }
+
 python integrations\hermes_agent_tool.py health
 if ($LASTEXITCODE -ne 0) { throw "hermes_agent_tool.py failed with exit code $LASTEXITCODE" }
+
+python integrations\hermes_agent_tool.py export_preflight
+if ($LASTEXITCODE -ne 0) { throw "hermes_agent_tool.py export_preflight failed with exit code $LASTEXITCODE" }
 
 python scripts\validate_proof.py
 if ($LASTEXITCODE -ne 0) { throw "validate_proof.py failed with exit code $LASTEXITCODE" }

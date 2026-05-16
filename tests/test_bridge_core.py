@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from hermes_slicer.bridge import dispatch_action, run, tts_speak
+from hermes_slicer.bridge import ACTION_ROUTES, dispatch_action, run, tts_speak
 from hermes_slicer.config import ALLOWED_ACTIONS, default_slice_request
 from hermes_slicer.proof import validate_event
 from hermes_slicer.security import sanitize_text
@@ -24,6 +24,10 @@ class BridgeCoreTests(unittest.TestCase):
         self.assertIn("slice.dry_run", ids)
         self.assertIn("slice.export_preflight", ids)
         self.assertIn("tts.speak", ids)
+
+    def test_every_whitelisted_action_is_dispatchable(self) -> None:
+        ids = {action["id"] for action in ALLOWED_ACTIONS}
+        self.assertEqual(ids, set(ACTION_ROUTES))
 
     def test_dry_run_default_sample(self) -> None:
         payload = dry_run_slice({})
@@ -99,6 +103,11 @@ class BridgeCoreTests(unittest.TestCase):
             payload, status = dispatch_action({"action": "slice.export_preflight", "payload": {}})
         self.assertEqual(status, 200)
         self.assertEqual(payload["status"], "passed")
+
+    def test_dispatch_chat_message(self) -> None:
+        payload, status = dispatch_action({"action": "chat.message", "payload": {"message": "health"}})
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["action"], "bridge.health")
 
     def test_export_stays_disabled_but_reports_preflight(self) -> None:
         with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {"HERMES_ENABLE_EXPORT_GCODE": ""}, clear=False):

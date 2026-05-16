@@ -12,6 +12,8 @@
 - [x] Add OrcaSlicer and FlsunSlicer upstream base submodules.
 - [x] Add PrusaSlicer, MCP Python SDK, Moonraker, OctoPrint, and Klipper upstream base submodules.
 - [x] Add submodule stack proof validator.
+- [x] Add V1 roadmap and action plan.
+- [x] Add API contract drift test.
 - [x] Document branch strategy for product, research, and integration work.
 - [x] Map JusPrin assistant, preset, plate, notification, and CLI integration files.
 - [x] Align Hermes Agent plugin registration with upstream `plugin.yaml` plus `register(ctx)` loader behavior.
@@ -20,4 +22,10 @@
 - [x] Add `/api/slice/export-preflight` and block export unless profile compatibility is proven.
 - [x] Merge research, Hermes tooling, and FLSUN resolver slices into `codex/v1-acceptance-consolidation`.
 - [x] Decide GitHub default branch should be `main`, mirrored from the V1 acceptance branch.
+- [ ] Enable/prove live Hermes Agent provider bridge connectivity.
+- [ ] Enable/prove bounded AS_USER session grant for agent-driven V1 actions.
 - [ ] Pick a root project license before tagging a final release.
+- [ ] Run clean-clone V1 rehearsal with submodules.
+- [ ] Refresh final browser/panel screenshots.
+- [ ] Smoke installable Hermes plugin against active Hermes install.
+- [ ] Tag V1 release after P0 gates pass.

@@ -1,0 +1,22 @@
+{
+  "status": "partial",
+  "date": "2026-05-16",
+  "proof_mcp": {
+    "available": true,
+    "evidence_ledger_ok": true,
+    "total_entries": 698,
+    "chained_entries": 675,
+    "unchained_entries": 23,
+    "first_break": null
+  },
+  "hermes_agent_bridge": {
+    "available": false,
+    "reason": "bridge disabled",
+    "required_before_claiming_live_agent_connectivity": true
+  },
+  "as_user_session": {
+    "granted": false,
+    "reason": "HERMES_HUMAN_GRANT_SECRET is required for human grants"
+  },
+  "evidence_id": "ev_f1b66a9e74490031"
+}

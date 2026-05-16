@@ -13,7 +13,7 @@ Date: 2026-05-16
 
 - OrcaSlicer latest release resolved to `v2.3.2`, released 2026-03-23.
 - Release tag SHA observed with `git ls-remote`: `c724a3f5f51c52336624b689e846c8fbc943a912`.
-- Default branch HEAD observed with `git ls-remote`: `82cedc03166504fb67cd69d2b4e570b527ebe95a`.
+- Default branch HEAD observed with `git ls-remote`: `b3fe733bf2c8fa7d3c5bf78e93608ca1cd295a7b`.
 - License note: AGPL-3.0. Orca code reuse/forking must preserve license obligations.
 
 ## Local Commands

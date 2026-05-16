@@ -48,6 +48,10 @@ The upstream base repos are included as submodules:
 
 See `BASES.md` and `BRANCHES.md`.
 
+## V1 Completion Track
+
+Use `ROADMAP.md` and `ACTION_PLAN.md` as the source of truth for finishing V1. The current stack is proofable locally, but V1 should not be tagged until the P0 gates in `ROADMAP.md` pass or are explicitly accepted as release blockers.
+
 ## V1 Safety Defaults
 
 - Binds to `127.0.0.1` only.
@@ -88,6 +92,7 @@ See `integrations/README.md` for project-local plugin setup. Hermes does not sta
 - `proof/research/submodule_stack_review.md`
 - `proof/runtime/flsun-export-preflight.json`
 - `proof/runtime/flsun-profile-inventory.json`
+- `proof/runtime/hermes-tool-export_preflight.json`
 - `proof/runtime/proof-validation.json`
 - `proof/runtime/submodule-stack.json`
 

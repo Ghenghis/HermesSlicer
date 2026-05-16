@@ -27,5 +27,6 @@ Observed:
 - `scripts/write_flsun_profile_proof.py`: wrote profile inventory, matrix, and export preflight proof
 - `scripts/validate_submodules.py`: verified nine pinned upstream submodules and wrote `proof/runtime/submodule-stack.json`
 - `integrations/hermes_agent_tool.py health`: HTTP 200 through the local tool shim and wrote `proof/runtime/hermes-tool-health.json`
+- `integrations/hermes_agent_tool.py export_preflight`: HTTP 200 through the local tool shim and wrote `proof/runtime/hermes-tool-export_preflight.json`
 
 Decision: bridge smoke passed.

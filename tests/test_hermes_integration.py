@@ -35,6 +35,9 @@ class HermesIntegrationTests(unittest.TestCase):
         schema = registration["schema"]
         self.assertIsInstance(schema, dict)
         self.assertEqual(schema["parameters"]["properties"]["action"]["enum"], sorted(hermes_agent_tool.ACTIONS))
+        self.assertIn("export_preflight", hermes_agent_tool.ACTIONS)
+        self.assertIn("proof_recent", hermes_agent_tool.ACTIONS)
+        self.assertIn("chat", hermes_agent_tool.ACTIONS)
 
     def test_handler_accepts_args_dict_and_returns_json(self) -> None:
         ctx = FakeHermesContext()

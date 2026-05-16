@@ -37,6 +37,6 @@ Update GitHub Actions workflow to reflect JusPrin branding in Flatpak build
 
 JusPrin is now present as an upstream base under `upstream/JusPrin`, but V1 does not copy its code. Mine patterns and document exact source files first.
 
-## Next Proof
+## Proof Completed
 
-Create `proof/research/jusprin_file_map.md` after inspecting assistant/settings files in the submodule.
+`proof/research/jusprin_file_map.md` now records the inspected assistant/settings files in the submodule. Further JusPrin work stays research-only unless a license decision permits copying implementation.

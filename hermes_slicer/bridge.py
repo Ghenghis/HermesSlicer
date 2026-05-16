@@ -24,6 +24,7 @@ ACTION_ROUTES = {
     "slice.dry_run": ("POST", "/api/slice/dry-run"),
     "slice.export_preflight": ("POST", "/api/slice/export-preflight"),
     "slice.export_gcode": ("POST", "/api/slice/export-gcode"),
+    "chat.message": ("POST", "/api/chat/message"),
     "tts.speak": ("POST", "/api/tts/speak"),
 }
 
@@ -121,7 +122,7 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 self.respond_json(payload, status=code)
                 return
             if route == "/api/chat/message":
-                payload = self.handle_chat(body)
+                payload = chat_message(body)
                 log_event("panel", "chat.message", "passed", inputs=body, outputs=payload)
                 self.respond_json(payload)
                 return
@@ -146,25 +147,7 @@ class BridgeHandler(BaseHTTPRequestHandler):
             self.respond_json({"error": "Invalid JSON body"}, status=400)
 
     def handle_chat(self, body: dict[str, object]) -> dict[str, object]:
-        message = str(body.get("message", "")).strip()
-        lower = message.lower()
-        if "health" in lower:
-            return {"reply": "Bridge health is ok.", "action": "bridge.health", "result": health_payload()}
-        if "version" in lower or "orca" in lower:
-            return {"reply": "I ran the safe Orca executable check.", "action": "orca.version", "result": orca_version_check()}
-        if "preflight" in lower:
-            return {"reply": "I resolved the default FLSUN export tuple without writing G-code.", "action": "slice.export_preflight", "result": flsun_export_preflight({})}
-        if "flsun" in lower or "t1" in lower or "v400" in lower or "s1" in lower:
-            return {"reply": "I checked local Orca FLSun profile resources.", "action": "orca.flsun_inventory", "result": flsun_profile_inventory()}
-        if "profile" in lower:
-            return {"reply": "I checked installed Orca profile folders.", "action": "orca.profiles", "result": list_orca_profiles()}
-        if "dry" in lower or "slice" in lower:
-            return {"reply": "The default sample slice request validates without writing G-code.", "action": "slice.dry_run", "result": dry_run_slice({})}
-        return {
-            "reply": "Hermes local bridge is online. Try Health, Orca Version, or Dry Slice.",
-            "action": "chat.message",
-            "result": {"received": bool(message)},
-        }
+        return chat_message(body)
 
     def read_json_body(self) -> dict[str, object]:
         length = int(self.headers.get("Content-Length", "0") or 0)
@@ -237,11 +220,36 @@ def dispatch_action(body: dict[str, object]) -> tuple[dict[str, object], int]:
         request_payload = payload if isinstance(payload, dict) else {}
         result = export_gcode(request_payload)
         return result, 200 if result["status"] in {"passed", "blocked"} else 500
+    if action == "chat.message":
+        request_payload = payload if isinstance(payload, dict) else {}
+        return chat_message(request_payload), 200
     if action == "tts.speak":
         request_payload = payload if isinstance(payload, dict) else {}
         result = tts_speak(request_payload)
         return result, 200 if result["status"] in {"passed", "blocked"} else 400
     return {"status": "failed", "error": "unhandled action"}, 500
+
+
+def chat_message(body: dict[str, object]) -> dict[str, object]:
+    message = str(body.get("message", "")).strip()
+    lower = message.lower()
+    if "health" in lower:
+        return {"reply": "Bridge health is ok.", "action": "bridge.health", "result": health_payload()}
+    if "version" in lower or "orca" in lower:
+        return {"reply": "I ran the safe Orca executable check.", "action": "orca.version", "result": orca_version_check()}
+    if "preflight" in lower:
+        return {"reply": "I resolved the default FLSUN export tuple without writing G-code.", "action": "slice.export_preflight", "result": flsun_export_preflight({})}
+    if "flsun" in lower or "t1" in lower or "v400" in lower or "s1" in lower:
+        return {"reply": "I checked local Orca FLSun profile resources.", "action": "orca.flsun_inventory", "result": flsun_profile_inventory()}
+    if "profile" in lower:
+        return {"reply": "I checked installed Orca profile folders.", "action": "orca.profiles", "result": list_orca_profiles()}
+    if "dry" in lower or "slice" in lower:
+        return {"reply": "The default sample slice request validates without writing G-code.", "action": "slice.dry_run", "result": dry_run_slice({})}
+    return {
+        "reply": "Hermes local bridge is online. Try Health, Orca Version, or Dry Slice.",
+        "action": "chat.message",
+        "result": {"received": bool(message)},
+    }
 
 
 def tts_speak(body: dict[str, object]) -> dict[str, object]:

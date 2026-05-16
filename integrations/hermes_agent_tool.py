@@ -29,12 +29,18 @@ ACTIONS = {
     "actions": ("GET", "/api/actions"),
     "profiles": ("GET", "/api/orca/profiles"),
     "flsun_inventory": ("GET", "/api/orca/flsun"),
+    "agents": ("GET", "/api/agents"),
+    "proof_recent": ("GET", "/api/proof/recent"),
     "orca_version": ("POST", "/api/orca/version"),
     "dry_run": ("POST", "/api/slice/dry-run"),
+    "export_preflight": ("POST", "/api/slice/export-preflight"),
+    "export_gcode": ("POST", "/api/slice/export-gcode"),
+    "chat": ("POST", "/api/chat/message"),
+    "tts_speak": ("POST", "/api/tts/speak"),
 }
 TOOL_SCHEMA = {
     "name": TOOL_NAME,
-    "description": "Call the local HermesSlicer bridge for health, Orca profile discovery, FLSUN inventory, or dry-run validation.",
+    "description": "Call the local HermesSlicer bridge for safe Orca/FLSUN checks, chat, TTS validation, proof, and export preflight.",
     "parameters": {
         "type": "object",
         "properties": {
@@ -72,7 +78,8 @@ def slicer_bridge(action: str = "health", payload: dict | None = None) -> dict:
         log_event("hermes_tool", f"slicer_bridge.{action}", "failed", outputs=result)
         return result
     method, path = ACTIONS[action]
-    result = bridge_request(path, method, payload or {})
+    request_payload = None if method == "GET" else payload or {}
+    result = bridge_request(path, method, request_payload)
     proof_status = "passed" if result.get("status") in {"ok", "passed"} or "error" not in result else "failed"
     if result.get("status") in {"blocked", "warning"}:
         proof_status = str(result["status"])

@@ -6,7 +6,7 @@ Date: 2026-05-16
 
 Use a local sidecar architecture for V1:
 
-`OrcaSlicer GUI -> browser floating panel -> localhost bridge -> Orca executable/profile resources`
+`OrcaSlicer GUI -> browser floating panel -> localhost bridge -> Orca executable/profile resources -> FLSUN export preflight -> Hermes Agent tool shim -> proof evidence`
 
 ## Why
 
@@ -17,6 +17,6 @@ Use a local sidecar architecture for V1:
 
 ## Scope
 
-V1 ships health, action listing, profile folder listing, Orca executable check, dry-run request validation, generated Azure English voice catalog, local chat stub, agent voice persistence, and proof ledger.
+V1 ships health, action listing, profile folder listing, Orca executable check, FLSUN T1/V400/S1 inventory, FLSUN export preflight, dry-run request validation, generated Azure English voice catalog, local chat stub, agent voice persistence, Hermes Agent tool shim, API contract drift tests, upstream submodule validation, and proof ledger.
 
 Printer upload/start remains disabled.

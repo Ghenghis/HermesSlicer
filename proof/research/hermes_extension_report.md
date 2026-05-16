@@ -21,11 +21,13 @@ git ls-remote https://github.com/NousResearch/hermes-agent.git HEAD refs/tags/v2
 Observed output:
 
 ```text
-a91a57fa5a13d516c38b07a141a9ce8a3daabeb0	HEAD
+fb05f5d4b58d4fb20c3a4a98c2c150de3f729f3c	HEAD
+fb05f5d4b58d4fb20c3a4a98c2c150de3f729f3c	refs/heads/main
 8487dfb57d2f2f7b310a2b3eb692b32674af22cd	refs/tags/v2026.5.16
 ```
 
 - License note from public repo page: MIT.
+- `v2026.5.16` is an annotated tag object; the local submodule is checked out at the peeled release commit `a91a57fa5a13d516c38b07a141a9ce8a3daabeb0`.
 
 ## Observed
 
@@ -38,6 +40,7 @@ a91a57fa5a13d516c38b07a141a9ce8a3daabeb0	HEAD
 - `integrations/hermes_agent_tool.py` exposes a small `slicer_bridge` helper with an optional plugin `register(ctx)` function.
 - It calls only the local bridge.
 - It can be smoked directly with `python integrations\hermes_agent_tool.py health` while the bridge is running.
+- It exposes V1-safe bridge actions including `export_preflight`, `chat`, `tts_speak`, `proof_recent`, and blocked-by-default `export_gcode`.
 
 Command run:
 

@@ -46,6 +46,7 @@ git submodule update --init --recursive
 - Commit: `fb02854cb01411a5ed6bd7353ef744854e6d4ead`
 - Branch at clone time: `main`
 - Describe: `1.1.3`
+- Tag note: multiple historical release tags point at this commit through `2.0.6`; `describe` returns the nearest tag, not a release choice for HermesSlicer.
 - Role: FLSUN slicer/profile/vendor behavior reference.
 - License caution: AGPLv3. Treat as reference/pattern unless there is an explicit license decision.
 

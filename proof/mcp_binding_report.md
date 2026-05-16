@@ -24,6 +24,25 @@ This repo includes `integrations/hermes_agent_tool.py` and `integrations/hermes_
 - `profiles`
 - `orca_version`
 - `dry_run`
+- `export_preflight`
+- `export_gcode`
+- `chat`
+- `tts_speak`
+- `proof_recent`
+- `agents`
+
+## Current Codex MCP Check
+
+Observed on 2026-05-16 through the Hermes Proof MCP tools available in this session:
+
+- `hermes_verify_evidence`: passed with no hash-chain break.
+- `hermes_agent_health`: blocked because the agent bridge reports `bridge disabled`.
+- `hermes_user_grant_session`: blocked because `HERMES_HUMAN_GRANT_SECRET` is not present.
+- Evidence entry: `ev_cc7203be094d96f4`.
+
+## Hermes Release Pin Note
+
+`v2026.5.16` is an annotated tag. `git ls-remote` reports tag object `8487dfb57d2f2f7b310a2b3eb692b32674af22cd`; the checked-out submodule peels to commit `a91a57fa5a13d516c38b07a141a9ce8a3daabeb0`, where package metadata reports `0.14.0`.
 
 ## Decision
 

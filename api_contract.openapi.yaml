@@ -35,6 +35,31 @@ paths:
       responses:
         "200":
           description: OK
+  /api/voices/azure/en:
+    get:
+      summary: Return the generated safe Azure English voice catalog
+      responses:
+        "200":
+          description: OK
+  /api/agents:
+    get:
+      summary: Return local panel agent assignments
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: Save local panel agent assignments
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Invalid request
+  /api/proof/recent:
+    get:
+      summary: Return recent sanitized proof ledger events
+      responses:
+        "200":
+          description: OK
   /api/action:
     post:
       summary: Dispatch a whitelisted bridge action by action id
@@ -65,6 +90,14 @@ paths:
       responses:
         "200":
           description: OK or blocked by safety default
+        "400":
+          description: Invalid request
+  /api/chat/message:
+    post:
+      summary: Route a local panel chat message to safe bridge actions
+      responses:
+        "200":
+          description: OK
         "400":
           description: Invalid request
   /api/tts/speak:
