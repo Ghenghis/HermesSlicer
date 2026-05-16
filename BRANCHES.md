@@ -3,26 +3,22 @@
 Active branch:
 
 ```text
-feature/hermes-orca-floating-panel-v1
+codex/v1-acceptance-consolidation
 ```
 
-This branch contains the working V1 sidecar: localhost bridge, floating panel, proof bundle, Hermes tool shim, and pinned upstream base submodules.
+This branch merges the working V1 sidecar, upstream research maps, Hermes Agent plugin tooling, FLSUN profile preflight, and refreshed proof bundle.
 
-## Next Branches
+## Source Branches
 
-Create these from `feature/hermes-orca-floating-panel-v1` after the bootstrap commit lands:
+These branches were created from `feature/hermes-orca-floating-panel-v1` and then merged into `codex/v1-acceptance-consolidation`:
 
-```powershell
-git switch -c research/jusprin-pattern-mining
-git switch -c integration/hermes-agent-tooling
-git switch -c feature/flsun-profile-resolver
-```
+- `research/jusprin-pattern-mining`: JusPrin assistant/settings pattern map without copying AGPL code into product code.
+- `integration/hermes-agent-tooling`: Hermes Agent `slicer_bridge` plugin wrapper aligned to upstream `plugin.yaml` plus `register(ctx)` behavior.
+- `feature/flsun-profile-resolver`: T1/V400/S1 profile resolver and export preflight gate.
 
-Use them for:
+## Bootstrap Branch
 
-- `research/jusprin-pattern-mining`: inspect JusPrin assistant/settings patterns without copying AGPL code into product code.
-- `integration/hermes-agent-tooling`: adapt the `slicer_bridge` shim to the actual Hermes plugin/MCP install path.
-- `feature/flsun-profile-resolver`: resolve T1/V400/S1 machine, process, and filament profiles before enabling G-code export.
+`feature/hermes-orca-floating-panel-v1` remains the clean bootstrap/proof branch at the first working sidecar commit.
 
 ## Remote
 
@@ -35,5 +31,13 @@ origin https://github.com/Ghenghis/HermesSlicer.git
 Push the active branch with:
 
 ```powershell
-git push -u origin feature/hermes-orca-floating-panel-v1
+git push -u origin codex/v1-acceptance-consolidation
 ```
+
+Public landing branch:
+
+```text
+main
+```
+
+`main` is the GitHub landing branch for the integrated V1 acceptance state. It is mirrored from `codex/v1-acceptance-consolidation` after proof regeneration and redaction scan pass. Keep the root license as a release-blocking decision before tagging a final release.

@@ -72,9 +72,12 @@ Observed:
 v2026.5.16
 ```
 
+- The pinned source reports Hermes Agent package version `0.14.0` in `pyproject.toml` and `hermes_cli/__init__.py`.
+- GitHub exposes the pinned release as tag `v2026.5.16`; no separate `v0.14` tag was found during local tag checks.
+
 ## Decision
 
-Ship the local bridge plus plugin-style shim today. Defer full MCP stdio server until the user's active Hermes install and config path are identified with proof.
+Ship the local bridge plus an upstream-compatible Hermes Agent directory plugin wrapper today. Defer full MCP stdio server until the user's active Hermes install and config path are identified with proof.
 
 ## Risks
 

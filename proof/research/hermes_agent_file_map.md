@@ -8,6 +8,7 @@ Date: 2026-05-16
 - Local submodule: `upstream/hermes-agent`
 - Pinned tag: `v2026.5.16`
 - Pinned commit: `a91a57fa5a13d516c38b07a141a9ce8a3daabeb0`
+- Package version: `0.14.0`
 - License posture: MIT, but copied code still needs notice discipline. This branch keeps HermesSlicer-authored glue.
 
 ## Commands Run
@@ -19,11 +20,13 @@ Get-Content upstream\hermes-agent\tools\registry.py | Select-Object -Skip 220 -F
 Get-Content upstream\hermes-agent\hermes_cli\plugins.py | Select-Object -Skip 800 -First 110
 Get-Content upstream\hermes-agent\plugins\spotify\plugin.yaml
 Get-Content upstream\hermes-agent\plugins\google_meet\plugin.yaml
+rg -n "version\s*=|__version__|0\.14" upstream\hermes-agent\pyproject.toml upstream\hermes-agent\hermes_cli\__init__.py
 ```
 
 Observed:
 
 ```text
+pyproject.toml and hermes_cli/__init__.py both report Hermes Agent 0.14.0.
 Directory plugins require plugin.yaml plus __init__.py with register(ctx).
 PluginContext.register_tool requires name, toolset, schema, and handler.
 Tool handlers are dispatched as handler(args, **kwargs).

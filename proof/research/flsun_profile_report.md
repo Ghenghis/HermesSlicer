@@ -20,14 +20,15 @@ Date: 2026-05-16
 ## Implementation
 
 - `/api/orca/flsun` returns a sanitized inventory for `FLSun T1`, `FLSun V400`, and `FLSun S1`.
+- `/api/slice/export-preflight` resolves a canonical FLSUN machine, process, and filament tuple before any G-code export is allowed.
 - The endpoint reports profile names and relative sub-paths only; it does not copy profile files or expose private data.
-- `scripts/write_flsun_profile_proof.py` writes `proof/runtime/flsun-profile-inventory.json` and `proof/runtime/flsun-profile-matrix.json`.
+- `scripts/write_flsun_profile_proof.py` writes `proof/runtime/flsun-profile-inventory.json`, `proof/runtime/flsun-profile-matrix.json`, and `proof/runtime/flsun-export-preflight.json`.
 
 ## Decision
 
-Use local Orca FLSun profile inventory as the next truth source before attempting actual G-code export. V1 validates requests and proves Orca executable/profile discovery without copying or converting profile data.
+Use local Orca FLSun profile inventory as the truth source for export preflight. V1 validates requests, proves Orca executable/profile discovery, resolves inherited profile data, and checks process/filament compatibility without copying or converting profile data.
 
 ## Risks
 
-- FLSUN T1, V400, and S1 defaults need explicit profile extraction and comparison before any real G-code export.
-- `export_gcode` remains intentionally blocked by default and still needs a profile resolver before real export is allowed.
+- Real G-code export remains intentionally blocked by default unless `HERMES_ENABLE_EXPORT_GCODE=1`.
+- Even with export enabled, `export_gcode` refuses to run unless preflight proves a compatible machine/process/filament tuple.

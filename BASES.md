@@ -37,6 +37,7 @@ git submodule update --init --recursive
 - Remote: https://github.com/NousResearch/hermes-agent
 - Commit: `a91a57fa5a13d516c38b07a141a9ce8a3daabeb0`
 - Tag: `v2026.5.16`
+- Package version: `0.14.0` from `upstream/hermes-agent/pyproject.toml` and `upstream/hermes-agent/hermes_cli/__init__.py`
 - Role: Hermes tool/MCP/plugin base and orchestration reference.
 
 ## V1 Rule
