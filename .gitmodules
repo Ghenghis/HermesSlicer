@@ -4,3 +4,9 @@
 [submodule "upstream/hermes-agent"]
 	path = upstream/hermes-agent
 	url = https://github.com/NousResearch/hermes-agent.git
+[submodule "upstream/OrcaSlicer"]
+	path = upstream/OrcaSlicer
+	url = https://github.com/OrcaSlicer/OrcaSlicer.git
+[submodule "upstream/FlsunSlicer"]
+	path = upstream/FlsunSlicer
+	url = https://github.com/Flsun3d/FlsunSlicer.git

@@ -36,6 +36,8 @@ python scripts\redaction_scan.py .
 
 The upstream base repos are included as submodules:
 
+- `upstream/OrcaSlicer` from [OrcaSlicer/OrcaSlicer](https://github.com/OrcaSlicer/OrcaSlicer)
+- `upstream/FlsunSlicer` from [Flsun3d/FlsunSlicer](https://github.com/Flsun3d/FlsunSlicer)
 - `upstream/JusPrin` from [TheSpaghettiDetective/JusPrin](https://github.com/TheSpaghettiDetective/JusPrin)
 - `upstream/hermes-agent` from [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent), pinned to `v2026.5.16`
 
@@ -71,6 +73,8 @@ integrations/hermes-slicer
 ```
 
 See `integrations/README.md` for project-local plugin setup. Hermes does not start the bridge; start the bridge first, then use the `hermes_orca` toolset.
+
+`hermes-agent-tooling` is the local integration branch/slice, not a separate upstream submodule. The source lives under `integrations/` and is tested against the pinned `upstream/hermes-agent` submodule.
 
 ## Proof Bundle
 
