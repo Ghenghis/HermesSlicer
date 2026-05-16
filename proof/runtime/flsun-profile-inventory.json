@@ -1,0 +1,202 @@
+{
+  "source": "C:\\Program Files\\OrcaSlicer\\resources\\profiles\\FLSun.json",
+  "status": "passed",
+  "targets": [
+    {
+      "default_materials": [
+        "FLSun T1 PLA High Speed",
+        "FLSun T1 PLA Silk",
+        "FLSun T1 PLA Generic",
+        "FLSun T1 PETG",
+        "FLSun T1 ASA",
+        "FLSun T1 TPU",
+        "FLSun T1 ABS"
+      ],
+      "filament_presets": [
+        {
+          "name": "FLSun T1 ABS",
+          "sub_path": "filament/FLSun T1 ABS.json"
+        },
+        {
+          "name": "FLSun T1 ASA",
+          "sub_path": "filament/FLSun T1 ASA.json"
+        },
+        {
+          "name": "FLSun T1 PETG",
+          "sub_path": "filament/FLSun T1 PETG.json"
+        },
+        {
+          "name": "FLSun T1 PLA Generic",
+          "sub_path": "filament/FLSun T1 PLA Generic.json"
+        },
+        {
+          "name": "FLSun T1 PLA High Speed",
+          "sub_path": "filament/FLSun T1 PLA High Speed.json"
+        },
+        {
+          "name": "FLSun T1 PLA Silk",
+          "sub_path": "filament/FLSun T1 PLA Silk.json"
+        },
+        {
+          "name": "FLSun T1 TPU",
+          "sub_path": "filament/FLSun T1 TPU.json"
+        }
+      ],
+      "machine_presets": [
+        {
+          "name": "FLSun T1 0.4 nozzle",
+          "sub_path": "machine/FLSun T1 0.4 nozzle.json"
+        }
+      ],
+      "model": "FLSun T1",
+      "model_file": "machine/FLSun T1.json",
+      "model_id": "FLSun_T1",
+      "model_present": true,
+      "nozzle_defaults": [
+        {
+          "default_print_profile": "0.20mm Standard @FLSun T1",
+          "machine": "FLSun T1 0.4 nozzle"
+        }
+      ],
+      "process_presets": [
+        {
+          "name": "0.12mm Fine @FLSun T1",
+          "sub_path": "process/0.12mm Fine @FLSun T1.json"
+        },
+        {
+          "name": "0.16mm Optimal @FLSun T1",
+          "sub_path": "process/0.16mm Optimal @FLSun T1.json"
+        },
+        {
+          "name": "0.20mm Standard @FLSun T1",
+          "sub_path": "process/0.20mm Standard @FLSun T1.json"
+        },
+        {
+          "name": "0.24mm Draft @FLSun T1",
+          "sub_path": "process/0.24mm Draft @FLSun T1.json"
+        },
+        {
+          "name": "0.30mm Extra Draft @FLSun T1",
+          "sub_path": "process/0.30mm Extra Draft @FLSun T1.json"
+        }
+      ]
+    },
+    {
+      "default_materials": [
+        "FLSun Generic ABS",
+        "FLSun Generic PLA",
+        "FLSun Generic PLA-CF",
+        "FLSun Generic PETG",
+        "FLSun Generic TPU",
+        "FLSun Generic ASA",
+        "FLSun Generic PC",
+        "FLSun Generic PVA",
+        "FLSun Generic PA",
+        "FLSun Generic PA-CF"
+      ],
+      "filament_presets": [],
+      "machine_presets": [
+        {
+          "name": "FLSun V400 0.4 nozzle",
+          "sub_path": "machine/FLSun V400 0.4 nozzle.json"
+        }
+      ],
+      "model": "FLSun V400",
+      "model_file": "machine/FLSun V400.json",
+      "model_id": "FLSun_V400",
+      "model_present": true,
+      "nozzle_defaults": [
+        {
+          "default_print_profile": "0.20mm Standard @FLSun V400",
+          "machine": "FLSun V400 0.4 nozzle"
+        }
+      ],
+      "process_presets": [
+        {
+          "name": "0.20mm Standard @FLSun V400",
+          "sub_path": "process/0.20mm Standard @FLSun V400.json"
+        }
+      ]
+    },
+    {
+      "default_materials": [
+        "FLSun S1 PLA High Speed",
+        "FLSun S1 PLA Silk",
+        "FLSun S1 PLA Generic",
+        "FLSun S1 PETG",
+        "FLSun S1 ASA",
+        "FLSun S1 TPU",
+        "FLSun S1 ABS"
+      ],
+      "filament_presets": [
+        {
+          "name": "FLSun S1 ABS",
+          "sub_path": "filament/FLSun S1 ABS.json"
+        },
+        {
+          "name": "FLSun S1 ASA",
+          "sub_path": "filament/FLSun S1 ASA.json"
+        },
+        {
+          "name": "FLSun S1 PETG",
+          "sub_path": "filament/FLSun S1 PETG.json"
+        },
+        {
+          "name": "FLSun S1 PLA Generic",
+          "sub_path": "filament/FLSun S1 PLA Generic.json"
+        },
+        {
+          "name": "FLSun S1 PLA High Speed",
+          "sub_path": "filament/FLSun S1 PLA High Speed.json"
+        },
+        {
+          "name": "FLSun S1 PLA Silk",
+          "sub_path": "filament/FLSun S1 PLA Silk.json"
+        },
+        {
+          "name": "FLSun S1 TPU",
+          "sub_path": "filament/FLSun S1 TPU.json"
+        }
+      ],
+      "machine_presets": [
+        {
+          "name": "FLSun S1 0.4 nozzle",
+          "sub_path": "machine/FLSun S1 0.4 nozzle.json"
+        }
+      ],
+      "model": "FLSun S1",
+      "model_file": "machine/FLSun S1.json",
+      "model_id": "FLSun_S1",
+      "model_present": true,
+      "nozzle_defaults": [
+        {
+          "default_print_profile": "0.20mm Standard @FLSun S1",
+          "machine": "FLSun S1 0.4 nozzle"
+        }
+      ],
+      "process_presets": [
+        {
+          "name": "0.12mm Fine @FLSun S1",
+          "sub_path": "process/0.12mm Fine @FLSun S1.json"
+        },
+        {
+          "name": "0.16mm Optimal @FLSun S1",
+          "sub_path": "process/0.16mm Optimal @FLSun S1.json"
+        },
+        {
+          "name": "0.20mm Standard @FLSun S1",
+          "sub_path": "process/0.20mm Standard @FLSun S1.json"
+        },
+        {
+          "name": "0.24mm Draft @FLSun S1",
+          "sub_path": "process/0.24mm Draft @FLSun S1.json"
+        },
+        {
+          "name": "0.30mm Extra Draft @FLSun S1",
+          "sub_path": "process/0.30mm Extra Draft @FLSun S1.json"
+        }
+      ]
+    }
+  ],
+  "version": "02.03.02.60"
+}

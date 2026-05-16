@@ -1,0 +1,18 @@
+{
+  "source": "generated_safe_catalog",
+  "generated_on": "2026-05-16",
+  "voices": [
+    {"short_name": "en-US-JennyNeural", "display_name": "Jenny", "locale": "en-US", "gender": "Female"},
+    {"short_name": "en-US-GuyNeural", "display_name": "Guy", "locale": "en-US", "gender": "Male"},
+    {"short_name": "en-US-AriaNeural", "display_name": "Aria", "locale": "en-US", "gender": "Female"},
+    {"short_name": "en-US-DavisNeural", "display_name": "Davis", "locale": "en-US", "gender": "Male"},
+    {"short_name": "en-GB-MaisieNeural", "display_name": "Maisie", "locale": "en-GB", "gender": "Female"},
+    {"short_name": "en-GB-RyanNeural", "display_name": "Ryan", "locale": "en-GB", "gender": "Male"},
+    {"short_name": "en-AU-CarlyNeural", "display_name": "Carly", "locale": "en-AU", "gender": "Female"},
+    {"short_name": "en-AU-WilliamNeural", "display_name": "William", "locale": "en-AU", "gender": "Male"},
+    {"short_name": "en-CA-ClaraNeural", "display_name": "Clara", "locale": "en-CA", "gender": "Female"},
+    {"short_name": "en-CA-LiamNeural", "display_name": "Liam", "locale": "en-CA", "gender": "Male"},
+    {"short_name": "en-IN-NeerjaNeural", "display_name": "Neerja", "locale": "en-IN", "gender": "Female"},
+    {"short_name": "en-NZ-MollyNeural", "display_name": "Molly", "locale": "en-NZ", "gender": "Female"}
+  ]
+}

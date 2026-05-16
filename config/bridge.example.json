@@ -1,0 +1,9 @@
+{
+  "bind": "127.0.0.1",
+  "port": 8765,
+  "allowed_model_roots": ["samples"],
+  "allowed_output_roots": ["proof/output"],
+  "enable_export_gcode": false,
+  "enable_printer_upload": false,
+  "enable_print_start": false
+}

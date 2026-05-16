@@ -1,0 +1,8 @@
+{
+  "agents": [
+    {"id": "orchestrator", "display_name": "Hermes", "provider": "minimax", "voice": "en-GB-MaisieNeural"},
+    {"id": "slicer", "display_name": "Slicer Agent", "provider": "minimax", "voice": "en-AU-CarlyNeural"},
+    {"id": "proof", "display_name": "Proof Agent", "provider": "deepseek", "voice": "en-US-GuyNeural"},
+    {"id": "security", "display_name": "Security Agent", "provider": "deepseek", "voice": "en-US-JennyNeural"}
+  ]
+}

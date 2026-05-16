@@ -1,0 +1,35 @@
+# Hermes MCP / Tool Binding Report
+
+Date: 2026-05-16
+
+## Sources Checked
+
+- https://hermes-agent.nousresearch.com/docs/user-guide/skills/bundled/mcp/mcp-native-mcp
+- https://hermes-agent.nousresearch.com/docs/developer-guide/tools-runtime
+- https://github.com/NousResearch/hermes-agent/releases/tag/v2026.5.16
+- `G:\Github\Hermes_OrcaSlicer_Codex_Contract_Kit\research\SOURCES_STARTING_POINTS.md`
+
+## Observed
+
+- Hermes Agent has a built-in MCP client that reads `mcp_servers` from its config and exposes discovered tools with an `mcp_<server>_<tool>` naming pattern.
+- Hermes tools can also be registered through plugin/tool registration paths.
+- Release tag `v2026.5.16` exists at commit `8487dfb57d2f2f7b310a2b3eb692b32674af22cd`.
+
+## Implemented Binding
+
+This repo includes `integrations/hermes_agent_tool.py` and `integrations/hermes_plugin.yaml`. The tool exposes `slicer_bridge` actions:
+
+- `health`
+- `actions`
+- `profiles`
+- `orca_version`
+- `dry_run`
+
+## Decision
+
+Use the plugin-style tool shim first because it is small, auditable, and calls only `http://127.0.0.1:8765`. Do not invent a user's private Hermes MCP endpoint. If a live Hermes MCP server is later identified, bind this bridge through that config with proof.
+
+## Risks
+
+- The exact installed Hermes variant on this machine has not been mutated.
+- Plugin install location may differ between Hermes Agent builds; keep the shim import-light and directly executable for smoke testing.

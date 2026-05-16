@@ -1,0 +1,6 @@
+name: hermes-slicer
+version: 0.1.0
+description: Local HermesSlicer bridge tool.
+entry: hermes_agent_tool:register
+toolsets:
+  - hermes_orca

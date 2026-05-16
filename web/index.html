@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HermesSlicer</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main id="panel" class="panel" aria-label="Hermes Orca Assistant">
+      <header id="dragHandle" class="panel-header" tabindex="0" aria-label="Panel drag handle. Use arrow keys to move the panel.">
+        <div class="brand">
+          <span id="statusDot" class="status-dot" aria-hidden="true"></span>
+          <div>
+            <h1>Hermes Orca Assistant</h1>
+            <p id="bridgeStatus">checking bridge</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="resetPosition" class="icon-button" type="button" title="Reset position" aria-label="Reset panel position">reset</button>
+          <button id="collapseButton" class="icon-button" type="button" title="Hide panel" aria-label="Hide panel" aria-controls="panel" aria-expanded="true">-</button>
+        </div>
+      </header>
+
+      <section class="quick-actions" aria-label="Quick actions">
+        <button data-action="health" type="button">Health</button>
+        <button data-action="version" type="button">Orca Version</button>
+        <button data-action="profiles" type="button">FLSun</button>
+        <button data-action="drySlice" type="button">Dry Slice</button>
+        <button data-action="export" type="button">Export G-code</button>
+      </section>
+
+      <section id="conversation" class="conversation" aria-live="polite"></section>
+
+      <form id="chatForm" class="chat-form">
+        <button id="micButton" class="icon-button" type="button" title="Push to talk" aria-label="Push to talk" aria-pressed="false">mic</button>
+        <label class="sr-only" for="chatInput">Message</label>
+        <input id="chatInput" name="message" autocomplete="off" placeholder="Ask Hermes about slicing..." />
+        <button type="submit">Send</button>
+        <button id="stopButton" class="icon-button" type="button" title="Stop speaking" aria-label="Stop speaking">stop</button>
+      </form>
+
+      <details class="settings" open>
+        <summary>Agents and voices</summary>
+        <div class="settings-grid">
+          <label>
+            Agent
+            <select id="agentSelect"></select>
+          </label>
+          <label>
+            Name
+            <input id="agentName" />
+          </label>
+          <label class="wide">
+            Azure English voice
+            <select id="voiceSelect"></select>
+          </label>
+          <div class="provider-row">
+            <span id="providerBadge" class="provider-badge">MiniMax</span>
+            <button id="saveAgent" type="button">Save Voice</button>
+          </div>
+        </div>
+      </details>
+
+      <aside class="proof" aria-labelledby="proofTitle">
+        <div class="proof-title">
+          <span id="proofTitle">Proof</span>
+          <button id="refreshProof" type="button">Refresh</button>
+        </div>
+        <pre id="proofDrawer" tabindex="0">proof/ledger.jsonl</pre>
+      </aside>
+    </main>
+
+    <button id="dockButton" class="dock-button" type="button" aria-controls="panel" aria-expanded="false" hidden>Hermes</button>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

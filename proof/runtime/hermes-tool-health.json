@@ -1,0 +1,37 @@
+{
+  "actions": [
+    "bridge.health",
+    "bridge.actions",
+    "orca.version",
+    "orca.profiles",
+    "orca.flsun_inventory",
+    "slice.dry_run",
+    "slice.export_gcode",
+    "chat.message",
+    "tts.speak"
+  ],
+  "bind": "127.0.0.1",
+  "executables": {
+    "orca": true,
+    "prusa": true
+  },
+  "name": "HermesSlicer Local Bridge",
+  "port": 8765,
+  "proof_ledger": "proof/ledger.jsonl",
+  "secrets": {
+    "env_present": {
+      "AZURE_SPEECH_KEY": false,
+      "AZURE_SPEECH_REGION": false,
+      "DEEPSEEK_API_KEY": false,
+      "HERMES_MCP_ENDPOINT": false,
+      "HERMES_MCP_TOKEN": false,
+      "MINIMAX_API_KEY": false,
+      "SILICONFLOW_API_KEY": false
+    },
+    "private_root_present": true,
+    "project_secret_file_present": false,
+    "values_returned": false
+  },
+  "status": "ok",
+  "version": "0.1.0"
+}

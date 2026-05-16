@@ -1,0 +1,69 @@
+openapi: 3.0.3
+info:
+  title: HermesSlicer Local Bridge
+  version: 0.1.0
+servers:
+  - url: http://127.0.0.1:8765
+paths:
+  /health:
+    get:
+      summary: Safe local health check
+      responses:
+        "200":
+          description: OK
+  /api/actions:
+    get:
+      summary: List whitelisted actions
+      responses:
+        "200":
+          description: OK
+  /api/orca/version:
+    post:
+      summary: Run non-destructive Orca executable probes
+      responses:
+        "200":
+          description: OK
+  /api/orca/profiles:
+    get:
+      summary: List installed Orca profile vendor folders
+      responses:
+        "200":
+          description: OK
+  /api/orca/flsun:
+    get:
+      summary: Summarize local Orca FLSun T1, V400, and S1 profile resources
+      responses:
+        "200":
+          description: OK
+  /api/action:
+    post:
+      summary: Dispatch a whitelisted bridge action by action id
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Invalid action
+  /api/slice/dry-run:
+    post:
+      summary: Validate a slice request without writing G-code
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Invalid request
+  /api/slice/export-gcode:
+    post:
+      summary: Export G-code when enabled by local operator
+      responses:
+        "200":
+          description: OK or blocked by safety default
+        "400":
+          description: Invalid request
+  /api/tts/speak:
+    post:
+      summary: Validate a local TTS request; V1 blocks playback until Azure credentials and adapter are enabled
+      responses:
+        "200":
+          description: Valid request, playback passed or blocked safely
+        "400":
+          description: Invalid request

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hermes Orca Proof Ledger Event",
+  "type": "object",
+  "required": ["ts", "event_id", "actor", "action", "status", "redacted"],
+  "properties": {
+    "ts": {"type": "string"},
+    "event_id": {"type": "string"},
+    "actor": {"type": "string"},
+    "action": {"type": "string"},
+    "status": {"enum": ["started", "passed", "failed", "blocked", "warning"]},
+    "redacted": {"type": "boolean"},
+    "inputs": {"type": "object"},
+    "outputs": {"type": "object"},
+    "proof_files": {"type": "array", "items": {"type": "string"}},
+    "notes": {"type": "string"}
+  }
+}

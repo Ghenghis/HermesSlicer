@@ -1,0 +1,6 @@
+[submodule "upstream/JusPrin"]
+	path = upstream/JusPrin
+	url = https://github.com/TheSpaghettiDetective/JusPrin.git
+[submodule "upstream/hermes-agent"]
+	path = upstream/hermes-agent
+	url = https://github.com/NousResearch/hermes-agent.git
