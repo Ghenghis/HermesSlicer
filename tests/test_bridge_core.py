@@ -1,13 +1,17 @@
 from __future__ import annotations
 
+import json
+import os
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from hermes_slicer.bridge import dispatch_action, run, tts_speak
 from hermes_slicer.config import ALLOWED_ACTIONS, default_slice_request
 from hermes_slicer.proof import validate_event
 from hermes_slicer.security import sanitize_text
-from hermes_slicer.slicer import ValidationError, dry_run_slice, flsun_profile_inventory, validate_slice_request
+from hermes_slicer.slicer import ValidationError, dry_run_slice, export_gcode, flsun_export_preflight, flsun_profile_inventory, validate_slice_request
 
 
 class BridgeCoreTests(unittest.TestCase):
@@ -18,6 +22,7 @@ class BridgeCoreTests(unittest.TestCase):
         self.assertIn("orca.profiles", ids)
         self.assertIn("orca.flsun_inventory", ids)
         self.assertIn("slice.dry_run", ids)
+        self.assertIn("slice.export_preflight", ids)
         self.assertIn("tts.speak", ids)
 
     def test_dry_run_default_sample(self) -> None:
@@ -56,6 +61,62 @@ class BridgeCoreTests(unittest.TestCase):
             models = {entry["model"] for entry in payload["targets"]}
             self.assertTrue({"FLSun T1", "FLSun V400", "FLSun S1"}.issubset(models))
 
+    def test_flsun_preflight_resolves_default_t1_fixture(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = build_flsun_fixture(Path(tmp))
+            payload = flsun_export_preflight({}, profile_roots=[root])
+        self.assertEqual(payload["status"], "passed")
+        self.assertEqual(payload["resolved"]["model"], "FLSun T1")
+        self.assertEqual(payload["resolved"]["machine"]["name"], "FLSun T1 0.4 nozzle")
+        self.assertEqual(payload["resolved"]["process"]["name"], "0.20mm Standard @FLSun T1")
+        self.assertEqual(payload["resolved"]["filament"]["name"], "FLSun T1 PLA Generic")
+        self.assertTrue(payload["compatibility"]["process"])
+        self.assertTrue(payload["compatibility"]["filament"])
+
+    def test_flsun_preflight_resolves_v400_generic_default_fixture(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = build_flsun_fixture(Path(tmp))
+            payload = flsun_export_preflight(
+                {"printer_profile": "FLSun V400", "material_profile": "PLA_safe_default"},
+                profile_roots=[root],
+            )
+        self.assertEqual(payload["status"], "passed")
+        self.assertEqual(payload["resolved"]["model"], "FLSun V400")
+        self.assertEqual(payload["resolved"]["filament"]["name"], "FLSun Generic PLA")
+
+    def test_flsun_preflight_blocks_incompatible_filament_fixture(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = build_flsun_fixture(Path(tmp))
+            payload = flsun_export_preflight(
+                {"printer_profile": "FLSun S1", "material_profile": "FLSun Generic PLA"},
+                profile_roots=[root],
+            )
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["compatibility"]["filament"])
+
+    def test_dispatch_export_preflight(self) -> None:
+        with patch("hermes_slicer.bridge.flsun_export_preflight", return_value={"status": "passed"}):
+            payload, status = dispatch_action({"action": "slice.export_preflight", "payload": {}})
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["status"], "passed")
+
+    def test_export_stays_disabled_but_reports_preflight(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {"HERMES_ENABLE_EXPORT_GCODE": ""}, clear=False):
+            root = build_flsun_fixture(Path(tmp))
+            payload = export_gcode({}, profile_roots=[root])
+        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(payload["profile_preflight"]["status"], "passed")
+
+    def test_export_blocks_with_env_when_preflight_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(os.environ, {"HERMES_ENABLE_EXPORT_GCODE": "1"}, clear=False):
+            root = build_flsun_fixture(Path(tmp))
+            payload = export_gcode(
+                {"printer_profile": "FLSun S1", "material_profile": "FLSun Generic PLA"},
+                profile_roots=[root],
+            )
+        self.assertEqual(payload["status"], "blocked")
+        self.assertEqual(payload["profile_preflight"]["status"], "blocked")
+
     def test_tts_blocks_without_or_before_live_adapter(self) -> None:
         payload = tts_speak({"voice": "en-US-JennyNeural", "text": "Hermes voice smoke test."})
         self.assertIn(payload["status"], {"blocked", "passed"})
@@ -72,6 +133,107 @@ class BridgeCoreTests(unittest.TestCase):
 
 def jsonish(value: object) -> str:
     return str(value)
+
+
+def build_flsun_fixture(base: Path) -> Path:
+    root = base / "profiles"
+    vendor = root / "FLSun"
+    for folder in ("machine", "process", "filament"):
+        (vendor / folder).mkdir(parents=True, exist_ok=True)
+    manifest = {
+        "version": "test",
+        "machine_model_list": [
+            {"name": "FLSun T1", "sub_path": "machine/FLSun T1.json"},
+            {"name": "FLSun V400", "sub_path": "machine/FLSun V400.json"},
+            {"name": "FLSun S1", "sub_path": "machine/FLSun S1.json"},
+        ],
+        "machine_list": [
+            {"name": "fdm_machine_common", "sub_path": "machine/fdm_machine_common.json"},
+            {"name": "FLSun T1 0.4 nozzle", "sub_path": "machine/FLSun T1 0.4 nozzle.json"},
+            {"name": "FLSun V400 0.4 nozzle", "sub_path": "machine/FLSun V400 0.4 nozzle.json"},
+            {"name": "FLSun S1 0.4 nozzle", "sub_path": "machine/FLSun S1 0.4 nozzle.json"},
+        ],
+        "process_list": [
+            {"name": "fdm_process_common", "sub_path": "process/fdm_process_common.json"},
+            {"name": "0.20mm Standard @FLSun T1", "sub_path": "process/0.20mm Standard @FLSun T1.json"},
+            {"name": "0.20mm Standard @FLSun V400", "sub_path": "process/0.20mm Standard @FLSun V400.json"},
+            {"name": "0.20mm Standard @FLSun S1", "sub_path": "process/0.20mm Standard @FLSun S1.json"},
+        ],
+        "filament_list": [
+            {"name": "fdm_filament_pla", "sub_path": "filament/fdm_filament_pla.json"},
+            {"name": "FLSun Generic PLA", "sub_path": "filament/FLSun Generic PLA.json"},
+            {"name": "FLSun T1 PLA Generic", "sub_path": "filament/FLSun T1 PLA Generic.json"},
+            {"name": "FLSun S1 PLA Generic", "sub_path": "filament/FLSun S1 PLA Generic.json"},
+        ],
+    }
+    write_json(root / "FLSun.json", manifest)
+    write_json(vendor / "machine" / "fdm_machine_common.json", {"type": "machine", "name": "fdm_machine_common"})
+    write_json(vendor / "process" / "fdm_process_common.json", {"type": "process", "name": "fdm_process_common"})
+    write_json(vendor / "filament" / "fdm_filament_pla.json", {"type": "filament", "name": "fdm_filament_pla"})
+    write_json(
+        vendor / "machine" / "FLSun T1.json",
+        {"type": "machine_model", "name": "FLSun T1", "model_id": "FLSun_T1", "default_materials": "FLSun T1 PLA Generic"},
+    )
+    write_json(
+        vendor / "machine" / "FLSun V400.json",
+        {"type": "machine_model", "name": "FLSun V400", "model_id": "FLSun_V400", "default_materials": "FLSun Generic PLA"},
+    )
+    write_json(
+        vendor / "machine" / "FLSun S1.json",
+        {"type": "machine_model", "name": "FLSun S1", "model_id": "FLSun_S1", "default_materials": "FLSun S1 PLA Generic"},
+    )
+    for model in ("FLSun T1", "FLSun V400", "FLSun S1"):
+        write_json(
+            vendor / "machine" / f"{model} 0.4 nozzle.json",
+            {
+                "type": "machine",
+                "name": f"{model} 0.4 nozzle",
+                "inherits": "fdm_machine_common",
+                "printer_model": model,
+                "default_print_profile": f"0.20mm Standard @{model}",
+            },
+        )
+        write_json(
+            vendor / "process" / f"0.20mm Standard @{model}.json",
+            {
+                "type": "process",
+                "name": f"0.20mm Standard @{model}",
+                "inherits": "fdm_process_common",
+                "compatible_printers": [f"{model} 0.4 nozzle"],
+            },
+        )
+    write_json(
+        vendor / "filament" / "FLSun Generic PLA.json",
+        {
+            "type": "filament",
+            "name": "FLSun Generic PLA",
+            "inherits": "fdm_filament_pla",
+            "compatible_printers": ["FLSun V400 0.4 nozzle"],
+        },
+    )
+    write_json(
+        vendor / "filament" / "FLSun T1 PLA Generic.json",
+        {
+            "type": "filament",
+            "name": "FLSun T1 PLA Generic",
+            "inherits": "FLSun Generic PLA",
+            "compatible_printers": ["FLSun T1 0.4 nozzle"],
+        },
+    )
+    write_json(
+        vendor / "filament" / "FLSun S1 PLA Generic.json",
+        {
+            "type": "filament",
+            "name": "FLSun S1 PLA Generic",
+            "inherits": "FLSun Generic PLA",
+            "compatible_printers": ["FLSun S1 0.4 nozzle"],
+        },
+    )
+    return root
+
+
+def write_json(path: Path, payload: dict[str, object]) -> None:
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

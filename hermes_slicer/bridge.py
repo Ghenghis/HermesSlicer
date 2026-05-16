@@ -11,7 +11,7 @@ from . import __version__
 from .config import ALLOWED_ACTIONS, DEFAULT_BIND, DEFAULT_PORT, ROOT, WEB_DIR, health_payload, load_agents, save_agents
 from .proof import log_event, recent_events, write_json
 from .security import sanitize_obj, secret_presence
-from .slicer import ValidationError, dry_run_slice, export_gcode, flsun_profile_inventory, list_orca_profiles, orca_version_check
+from .slicer import ValidationError, dry_run_slice, export_gcode, flsun_export_preflight, flsun_profile_inventory, list_orca_profiles, orca_version_check
 from .voices import load_voice_catalog
 
 
@@ -22,6 +22,7 @@ ACTION_ROUTES = {
     "orca.profiles": ("GET", "/api/orca/profiles"),
     "orca.flsun_inventory": ("GET", "/api/orca/flsun"),
     "slice.dry_run": ("POST", "/api/slice/dry-run"),
+    "slice.export_preflight": ("POST", "/api/slice/export-preflight"),
     "slice.export_gcode": ("POST", "/api/slice/export-gcode"),
     "tts.speak": ("POST", "/api/tts/speak"),
 }
@@ -108,6 +109,11 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 log_event("bridge", "slice.dry_run", "passed", inputs=body, outputs=payload)
                 self.respond_json(payload)
                 return
+            if route == "/api/slice/export-preflight":
+                payload = flsun_export_preflight(body)
+                log_event("bridge", "slice.export_preflight", payload["status"], inputs=body, outputs=payload)
+                self.respond_json(payload)
+                return
             if route == "/api/slice/export-gcode":
                 payload = export_gcode(body)
                 code = 200 if payload["status"] in {"passed", "blocked"} else 500
@@ -146,6 +152,8 @@ class BridgeHandler(BaseHTTPRequestHandler):
             return {"reply": "Bridge health is ok.", "action": "bridge.health", "result": health_payload()}
         if "version" in lower or "orca" in lower:
             return {"reply": "I ran the safe Orca executable check.", "action": "orca.version", "result": orca_version_check()}
+        if "preflight" in lower:
+            return {"reply": "I resolved the default FLSUN export tuple without writing G-code.", "action": "slice.export_preflight", "result": flsun_export_preflight({})}
         if "flsun" in lower or "t1" in lower or "v400" in lower or "s1" in lower:
             return {"reply": "I checked local Orca FLSun profile resources.", "action": "orca.flsun_inventory", "result": flsun_profile_inventory()}
         if "profile" in lower:
@@ -222,6 +230,9 @@ def dispatch_action(body: dict[str, object]) -> tuple[dict[str, object], int]:
     if action == "slice.dry_run":
         request_payload = payload if isinstance(payload, dict) else {}
         return dry_run_slice(request_payload), 200
+    if action == "slice.export_preflight":
+        request_payload = payload if isinstance(payload, dict) else {}
+        return flsun_export_preflight(request_payload), 200
     if action == "slice.export_gcode":
         request_payload = payload if isinstance(payload, dict) else {}
         result = export_gcode(request_payload)

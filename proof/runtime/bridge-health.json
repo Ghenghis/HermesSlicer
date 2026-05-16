@@ -6,6 +6,7 @@
     "orca.profiles",
     "orca.flsun_inventory",
     "slice.dry_run",
+    "slice.export_preflight",
     "slice.export_gcode",
     "chat.message",
     "tts.speak"
