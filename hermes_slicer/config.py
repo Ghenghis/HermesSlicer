@@ -73,6 +73,13 @@ ALLOWED_ACTIONS = [
         "destructive": False,
     },
     {
+        "id": "slice.export_preflight",
+        "method": "POST",
+        "path": "/api/slice/export-preflight",
+        "description": "Resolve and prove a compatible FLSUN machine/process/filament export tuple.",
+        "destructive": False,
+    },
+    {
         "id": "slice.export_gcode",
         "method": "POST",
         "path": "/api/slice/export-gcode",

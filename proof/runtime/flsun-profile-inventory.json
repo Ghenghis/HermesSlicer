@@ -3,6 +3,36 @@
   "status": "passed",
   "targets": [
     {
+      "default_filament_presets": [
+        {
+          "name": "FLSun T1 PLA High Speed",
+          "sub_path": "filament/FLSun T1 PLA High Speed.json"
+        },
+        {
+          "name": "FLSun T1 PLA Silk",
+          "sub_path": "filament/FLSun T1 PLA Silk.json"
+        },
+        {
+          "name": "FLSun T1 PLA Generic",
+          "sub_path": "filament/FLSun T1 PLA Generic.json"
+        },
+        {
+          "name": "FLSun T1 PETG",
+          "sub_path": "filament/FLSun T1 PETG.json"
+        },
+        {
+          "name": "FLSun T1 ASA",
+          "sub_path": "filament/FLSun T1 ASA.json"
+        },
+        {
+          "name": "FLSun T1 TPU",
+          "sub_path": "filament/FLSun T1 TPU.json"
+        },
+        {
+          "name": "FLSun T1 ABS",
+          "sub_path": "filament/FLSun T1 ABS.json"
+        }
+      ],
       "default_materials": [
         "FLSun T1 PLA High Speed",
         "FLSun T1 PLA Silk",
@@ -12,6 +42,91 @@
         "FLSun T1 TPU",
         "FLSun T1 ABS"
       ],
+      "default_preflight": {
+        "cli": {
+          "args_preview": [
+            "<SLICER>",
+            "--load_settings",
+            "<MACHINE_PROFILE>;<PROCESS_PROFILE>",
+            "--load_filaments",
+            "<FILAMENT_PROFILE>",
+            "--slice",
+            "0",
+            "--outputdir",
+            "<OUTPUT_DIR>",
+            "<MODEL>"
+          ],
+          "profile_args": {
+            "load_filaments": [
+              "filament/FLSun T1 PLA Generic.json"
+            ],
+            "load_settings": [
+              "machine/FLSun T1 0.4 nozzle.json",
+              "process/0.20mm Standard @FLSun T1.json"
+            ]
+          }
+        },
+        "compatibility": {
+          "errors": [],
+          "filament": true,
+          "machine": "FLSun T1 0.4 nozzle",
+          "process": true
+        },
+        "reason": "FLSUN machine/process/filament tuple is compatible.",
+        "request": {
+          "confirm_print": false,
+          "material_profile": "PLA_safe_default",
+          "model_path": "G:\\Github\\HermesSlicer\\samples\\test_cube.stl",
+          "output_dir": "G:\\Github\\HermesSlicer\\proof\\output",
+          "printer_profile": "FLSun T1",
+          "quality_profile": "0.20mm_standard"
+        },
+        "resolved": {
+          "default_materials": [
+            "FLSun T1 PLA High Speed",
+            "FLSun T1 PLA Silk",
+            "FLSun T1 PLA Generic",
+            "FLSun T1 PETG",
+            "FLSun T1 ASA",
+            "FLSun T1 TPU",
+            "FLSun T1 ABS"
+          ],
+          "filament": {
+            "inherits": [
+              "fdm_filament_common",
+              "fdm_filament_pla",
+              "FLSun Generic PLA"
+            ],
+            "kind": "filament",
+            "name": "FLSun T1 PLA Generic",
+            "resolved_key_count": 59,
+            "sub_path": "filament/FLSun T1 PLA Generic.json"
+          },
+          "machine": {
+            "inherits": [
+              "fdm_machine_common"
+            ],
+            "kind": "machine",
+            "name": "FLSun T1 0.4 nozzle",
+            "resolved_key_count": 69,
+            "sub_path": "machine/FLSun T1 0.4 nozzle.json"
+          },
+          "model": "FLSun T1",
+          "model_id": "FLSun_T1",
+          "process": {
+            "inherits": [
+              "fdm_process_common"
+            ],
+            "kind": "process",
+            "name": "0.20mm Standard @FLSun T1",
+            "resolved_key_count": 121,
+            "sub_path": "process/0.20mm Standard @FLSun T1.json"
+          }
+        },
+        "source": "C:\\Program Files\\OrcaSlicer\\resources\\profiles\\FLSun.json",
+        "status": "passed",
+        "version": "02.03.02.60"
+      },
       "filament_presets": [
         {
           "name": "FLSun T1 ABS",
@@ -82,6 +197,48 @@
       ]
     },
     {
+      "default_filament_presets": [
+        {
+          "name": "FLSun Generic ABS",
+          "sub_path": "filament/FLSun Generic ABS.json"
+        },
+        {
+          "name": "FLSun Generic PLA",
+          "sub_path": "filament/FLSun Generic PLA.json"
+        },
+        {
+          "name": "FLSun Generic PLA-CF",
+          "sub_path": "filament/FLSun Generic PLA-CF.json"
+        },
+        {
+          "name": "FLSun Generic PETG",
+          "sub_path": "filament/FLSun Generic PETG.json"
+        },
+        {
+          "name": "FLSun Generic TPU",
+          "sub_path": "filament/FLSun Generic TPU.json"
+        },
+        {
+          "name": "FLSun Generic ASA",
+          "sub_path": "filament/FLSun Generic ASA.json"
+        },
+        {
+          "name": "FLSun Generic PC",
+          "sub_path": "filament/FLSun Generic PC.json"
+        },
+        {
+          "name": "FLSun Generic PVA",
+          "sub_path": "filament/FLSun Generic PVA.json"
+        },
+        {
+          "name": "FLSun Generic PA",
+          "sub_path": "filament/FLSun Generic PA.json"
+        },
+        {
+          "name": "FLSun Generic PA-CF",
+          "sub_path": "filament/FLSun Generic PA-CF.json"
+        }
+      ],
       "default_materials": [
         "FLSun Generic ABS",
         "FLSun Generic PLA",
@@ -94,6 +251,93 @@
         "FLSun Generic PA",
         "FLSun Generic PA-CF"
       ],
+      "default_preflight": {
+        "cli": {
+          "args_preview": [
+            "<SLICER>",
+            "--load_settings",
+            "<MACHINE_PROFILE>;<PROCESS_PROFILE>",
+            "--load_filaments",
+            "<FILAMENT_PROFILE>",
+            "--slice",
+            "0",
+            "--outputdir",
+            "<OUTPUT_DIR>",
+            "<MODEL>"
+          ],
+          "profile_args": {
+            "load_filaments": [
+              "filament/FLSun Generic PLA.json"
+            ],
+            "load_settings": [
+              "machine/FLSun V400 0.4 nozzle.json",
+              "process/0.20mm Standard @FLSun V400.json"
+            ]
+          }
+        },
+        "compatibility": {
+          "errors": [],
+          "filament": true,
+          "machine": "FLSun V400 0.4 nozzle",
+          "process": true
+        },
+        "reason": "FLSUN machine/process/filament tuple is compatible.",
+        "request": {
+          "confirm_print": false,
+          "material_profile": "PLA_safe_default",
+          "model_path": "G:\\Github\\HermesSlicer\\samples\\test_cube.stl",
+          "output_dir": "G:\\Github\\HermesSlicer\\proof\\output",
+          "printer_profile": "FLSun V400",
+          "quality_profile": "0.20mm_standard"
+        },
+        "resolved": {
+          "default_materials": [
+            "FLSun Generic ABS",
+            "FLSun Generic PLA",
+            "FLSun Generic PLA-CF",
+            "FLSun Generic PETG",
+            "FLSun Generic TPU",
+            "FLSun Generic ASA",
+            "FLSun Generic PC",
+            "FLSun Generic PVA",
+            "FLSun Generic PA",
+            "FLSun Generic PA-CF"
+          ],
+          "filament": {
+            "inherits": [
+              "fdm_filament_common",
+              "fdm_filament_pla"
+            ],
+            "kind": "filament",
+            "name": "FLSun Generic PLA",
+            "resolved_key_count": 55,
+            "sub_path": "filament/FLSun Generic PLA.json"
+          },
+          "machine": {
+            "inherits": [
+              "fdm_machine_common"
+            ],
+            "kind": "machine",
+            "name": "FLSun V400 0.4 nozzle",
+            "resolved_key_count": 63,
+            "sub_path": "machine/FLSun V400 0.4 nozzle.json"
+          },
+          "model": "FLSun V400",
+          "model_id": "FLSun_V400",
+          "process": {
+            "inherits": [
+              "fdm_process_common"
+            ],
+            "kind": "process",
+            "name": "0.20mm Standard @FLSun V400",
+            "resolved_key_count": 107,
+            "sub_path": "process/0.20mm Standard @FLSun V400.json"
+          }
+        },
+        "source": "C:\\Program Files\\OrcaSlicer\\resources\\profiles\\FLSun.json",
+        "status": "passed",
+        "version": "02.03.02.60"
+      },
       "filament_presets": [],
       "machine_presets": [
         {
@@ -119,6 +363,36 @@
       ]
     },
     {
+      "default_filament_presets": [
+        {
+          "name": "FLSun S1 PLA High Speed",
+          "sub_path": "filament/FLSun S1 PLA High Speed.json"
+        },
+        {
+          "name": "FLSun S1 PLA Silk",
+          "sub_path": "filament/FLSun S1 PLA Silk.json"
+        },
+        {
+          "name": "FLSun S1 PLA Generic",
+          "sub_path": "filament/FLSun S1 PLA Generic.json"
+        },
+        {
+          "name": "FLSun S1 PETG",
+          "sub_path": "filament/FLSun S1 PETG.json"
+        },
+        {
+          "name": "FLSun S1 ASA",
+          "sub_path": "filament/FLSun S1 ASA.json"
+        },
+        {
+          "name": "FLSun S1 TPU",
+          "sub_path": "filament/FLSun S1 TPU.json"
+        },
+        {
+          "name": "FLSun S1 ABS",
+          "sub_path": "filament/FLSun S1 ABS.json"
+        }
+      ],
       "default_materials": [
         "FLSun S1 PLA High Speed",
         "FLSun S1 PLA Silk",
@@ -128,6 +402,91 @@
         "FLSun S1 TPU",
         "FLSun S1 ABS"
       ],
+      "default_preflight": {
+        "cli": {
+          "args_preview": [
+            "<SLICER>",
+            "--load_settings",
+            "<MACHINE_PROFILE>;<PROCESS_PROFILE>",
+            "--load_filaments",
+            "<FILAMENT_PROFILE>",
+            "--slice",
+            "0",
+            "--outputdir",
+            "<OUTPUT_DIR>",
+            "<MODEL>"
+          ],
+          "profile_args": {
+            "load_filaments": [
+              "filament/FLSun S1 PLA Generic.json"
+            ],
+            "load_settings": [
+              "machine/FLSun S1 0.4 nozzle.json",
+              "process/0.20mm Standard @FLSun S1.json"
+            ]
+          }
+        },
+        "compatibility": {
+          "errors": [],
+          "filament": true,
+          "machine": "FLSun S1 0.4 nozzle",
+          "process": true
+        },
+        "reason": "FLSUN machine/process/filament tuple is compatible.",
+        "request": {
+          "confirm_print": false,
+          "material_profile": "PLA_safe_default",
+          "model_path": "G:\\Github\\HermesSlicer\\samples\\test_cube.stl",
+          "output_dir": "G:\\Github\\HermesSlicer\\proof\\output",
+          "printer_profile": "FLSun S1",
+          "quality_profile": "0.20mm_standard"
+        },
+        "resolved": {
+          "default_materials": [
+            "FLSun S1 PLA High Speed",
+            "FLSun S1 PLA Silk",
+            "FLSun S1 PLA Generic",
+            "FLSun S1 PETG",
+            "FLSun S1 ASA",
+            "FLSun S1 TPU",
+            "FLSun S1 ABS"
+          ],
+          "filament": {
+            "inherits": [
+              "fdm_filament_common",
+              "fdm_filament_pla",
+              "FLSun Generic PLA"
+            ],
+            "kind": "filament",
+            "name": "FLSun S1 PLA Generic",
+            "resolved_key_count": 59,
+            "sub_path": "filament/FLSun S1 PLA Generic.json"
+          },
+          "machine": {
+            "inherits": [
+              "fdm_machine_common"
+            ],
+            "kind": "machine",
+            "name": "FLSun S1 0.4 nozzle",
+            "resolved_key_count": 69,
+            "sub_path": "machine/FLSun S1 0.4 nozzle.json"
+          },
+          "model": "FLSun S1",
+          "model_id": "FLSun_S1",
+          "process": {
+            "inherits": [
+              "fdm_process_common"
+            ],
+            "kind": "process",
+            "name": "0.20mm Standard @FLSun S1",
+            "resolved_key_count": 121,
+            "sub_path": "process/0.20mm Standard @FLSun S1.json"
+          }
+        },
+        "source": "C:\\Program Files\\OrcaSlicer\\resources\\profiles\\FLSun.json",
+        "status": "passed",
+        "version": "02.03.02.60"
+      },
       "filament_presets": [
         {
           "name": "FLSun S1 ABS",

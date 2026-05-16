@@ -51,9 +51,17 @@ paths:
           description: OK
         "400":
           description: Invalid request
+  /api/slice/export-preflight:
+    post:
+      summary: Resolve and prove the FLSUN machine/process/filament export tuple without writing G-code
+      responses:
+        "200":
+          description: OK or blocked by profile compatibility
+        "400":
+          description: Invalid request
   /api/slice/export-gcode:
     post:
-      summary: Export G-code when enabled by local operator
+      summary: Export G-code only after local operator enablement and compatible FLSUN profile preflight
       responses:
         "200":
           description: OK or blocked by safety default

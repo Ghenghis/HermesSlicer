@@ -28,9 +28,11 @@ def main() -> int:
         ("voices", request("/api/voices/azure/en")),
         ("orca", request("/api/orca/version", "POST", {})),
         ("dry_run", request("/api/slice/dry-run", "POST", {})),
+        ("export_preflight", request("/api/slice/export-preflight", "POST", {})),
         ("tts_blocked", request("/api/tts/speak", "POST", {"agent": "orchestrator", "voice": "en-US-JennyNeural", "text": "Hermes voice smoke test."})),
         ("dispatch_health", request("/api/action", "POST", {"action": "bridge.health"})),
         ("dispatch_flsun", request("/api/action", "POST", {"action": "orca.flsun_inventory"})),
+        ("dispatch_preflight", request("/api/action", "POST", {"action": "slice.export_preflight"})),
         ("dispatch_tts", request("/api/action", "POST", {"action": "tts.speak", "payload": {"voice": "en-US-JennyNeural", "text": "Hermes voice smoke test."}})),
         ("invalid", request("/api/action", "POST", {"action": "not.allowed"})),
     ]
