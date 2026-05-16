@@ -26,6 +26,9 @@ function unlockSession() {
 }
 
 function setupAuthGate() {
+  if (new URLSearchParams(window.location.search).get("session") === "login") {
+    sessionStorage.removeItem("hermesLocalSession");
+  }
   if (sessionStorage.getItem("hermesLocalSession") === "connected") {
     document.body.classList.remove("session-locked");
     authGate.hidden = true;

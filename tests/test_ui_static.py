@@ -11,7 +11,9 @@ class UiStaticTests(unittest.TestCase):
     def test_login_gate_uses_hermes_slicer_branding(self) -> None:
         html = (WEB / "index.html").read_text(encoding="utf-8")
         self.assertIn('aria-label="Hermes Slicer login"', html)
-        self.assertIn("<h1>Hermes Slicer</h1>", html)
+        self.assertIn('<h1 class="sr-only">Hermes Slicer</h1>', html)
+        self.assertIn("/assets/hermes-slicer-login.png", html)
+        self.assertTrue((WEB / "assets" / "hermes-slicer-login.png").exists())
         self.assertIn("Continue to Hermes Tools", html)
         self.assertIn("Tool ID or request", html)
 

@@ -59,53 +59,33 @@ button:hover {
   inset: 0;
   display: grid;
   place-items: center;
-  padding: 24px;
-  background: #f6f8fb;
-  color: #111827;
+  padding: 20px;
+  background:
+    radial-gradient(circle at 50% 52%, rgba(4, 221, 217, 0.2), transparent 34rem),
+    linear-gradient(135deg, #050a0d 0%, #101820 48%, #070a0f 100%);
+  color: var(--text);
 }
 
 .auth-shell {
   display: grid;
   justify-items: center;
-  width: min(420px, 100%);
-  gap: 14px;
+  width: min(980px, 100%);
+  gap: 18px;
   text-align: center;
 }
 
-.auth-mark {
-  display: grid;
-  place-items: center;
-  width: 78px;
-  height: 78px;
-  border: 2px solid #4fb6ff;
-  border-radius: 8px;
-  background: #121820;
-  color: #edf3fa;
-  font-size: 24px;
-  font-weight: 750;
-}
-
-.auth-shell h1 {
-  margin: 0;
-  color: #1f2937;
-  font-size: 34px;
-  line-height: 1.1;
-  letter-spacing: 0;
-}
-
-.auth-tagline,
-.auth-note {
-  margin: 0;
-  color: #4b5563;
-}
-
-.auth-tagline {
-  font-size: 18px;
-  font-weight: 650;
+.auth-logo {
+  display: block;
+  width: min(880px, 94vw);
+  max-height: min(68vh, 720px);
+  object-fit: contain;
+  filter: drop-shadow(0 24px 70px rgba(0, 0, 0, 0.58));
 }
 
 .auth-note {
-  max-width: 310px;
+  margin: 0;
+  max-width: 340px;
+  color: rgba(237, 243, 250, 0.72);
   font-size: 13px;
   line-height: 1.4;
 }
@@ -113,16 +93,16 @@ button:hover {
 .auth-shell button {
   width: min(340px, 100%);
   height: 48px;
-  margin-top: 230px;
-  border-color: #2f8fcc;
-  background: #116da8;
+  border-color: rgba(242, 184, 75, 0.9);
+  background: linear-gradient(135deg, #09777c 0%, #153c46 50%, #8a6820 100%);
   color: #ffffff;
   font-weight: 650;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.34);
 }
 
 .auth-shell button:hover {
-  border-color: #116da8;
-  background: #0f5f92;
+  border-color: #f2b84b;
+  background: linear-gradient(135deg, #0b8b90 0%, #174a55 50%, #9a7525 100%);
 }
 
 .panel {
