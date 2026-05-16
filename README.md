@@ -39,7 +39,12 @@ The upstream base repos are included as submodules:
 - `upstream/OrcaSlicer` from [OrcaSlicer/OrcaSlicer](https://github.com/OrcaSlicer/OrcaSlicer)
 - `upstream/FlsunSlicer` from [Flsun3d/FlsunSlicer](https://github.com/Flsun3d/FlsunSlicer)
 - `upstream/JusPrin` from [TheSpaghettiDetective/JusPrin](https://github.com/TheSpaghettiDetective/JusPrin)
+- `upstream/PrusaSlicer` from [prusa3d/PrusaSlicer](https://github.com/prusa3d/PrusaSlicer)
 - `upstream/hermes-agent` from [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent), pinned to `v2026.5.16`
+- `upstream/mcp-python-sdk` from [modelcontextprotocol/python-sdk](https://github.com/modelcontextprotocol/python-sdk)
+- `upstream/moonraker` from [Arksine/moonraker](https://github.com/Arksine/moonraker)
+- `upstream/OctoPrint` from [OctoPrint/OctoPrint](https://github.com/OctoPrint/OctoPrint)
+- `upstream/klipper` from [Klipper3d/klipper](https://github.com/Klipper3d/klipper)
 
 See `BASES.md` and `BRANCHES.md`.
 
@@ -80,8 +85,10 @@ See `integrations/README.md` for project-local plugin setup. Hermes does not sta
 
 - `proof/research/jusprin_file_map.md`
 - `proof/research/hermes_agent_file_map.md`
+- `proof/research/submodule_stack_review.md`
 - `proof/runtime/flsun-export-preflight.json`
 - `proof/runtime/flsun-profile-inventory.json`
 - `proof/runtime/proof-validation.json`
+- `proof/runtime/submodule-stack.json`
 
 Root license is still a project-owner decision. Until that is chosen, JusPrin stays as a pinned AGPL upstream reference and HermesSlicer does not copy JusPrin C++ code.

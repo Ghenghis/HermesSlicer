@@ -11,6 +11,9 @@ if ($LASTEXITCODE -ne 0) { throw "smoke_bridge.py failed with exit code $LASTEXI
 python scripts\write_flsun_profile_proof.py
 if ($LASTEXITCODE -ne 0) { throw "write_flsun_profile_proof.py failed with exit code $LASTEXITCODE" }
 
+python scripts\validate_submodules.py
+if ($LASTEXITCODE -ne 0) { throw "validate_submodules.py failed with exit code $LASTEXITCODE" }
+
 python integrations\hermes_agent_tool.py health
 if ($LASTEXITCODE -ne 0) { throw "hermes_agent_tool.py failed with exit code $LASTEXITCODE" }
 

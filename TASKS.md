@@ -10,6 +10,8 @@
 - [x] Run redaction scan.
 - [x] Add JusPrin and hermes-agent upstream base submodules.
 - [x] Add OrcaSlicer and FlsunSlicer upstream base submodules.
+- [x] Add PrusaSlicer, MCP Python SDK, Moonraker, OctoPrint, and Klipper upstream base submodules.
+- [x] Add submodule stack proof validator.
 - [x] Document branch strategy for product, research, and integration work.
 - [x] Map JusPrin assistant, preset, plate, notification, and CLI integration files.
 - [x] Align Hermes Agent plugin registration with upstream `plugin.yaml` plus `register(ctx)` loader behavior.
