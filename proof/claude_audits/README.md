@@ -16,4 +16,3 @@ Optional raw agent reports:
 - `agents/<agent-name>.md`
 
 Do not place source code, JSON proof artifacts, screenshots, logs, or generated binaries in this folder.
-

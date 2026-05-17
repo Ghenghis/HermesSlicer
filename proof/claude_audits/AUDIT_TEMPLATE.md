@@ -34,11 +34,10 @@ Use this template for the required Markdown packet.
 
 ## Codex Fix Queue
 
-1. 
-2. 
-3. 
+1. TBD
+2. TBD
+3. TBD
 
 ## Evidence Index
 
-- 
-
+- TBD
