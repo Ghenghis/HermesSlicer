@@ -10,6 +10,7 @@ from urllib.parse import unquote, urlparse
 from . import __version__
 from .config import ALLOWED_ACTIONS, DEFAULT_BIND, DEFAULT_PORT, ROOT, WEB_DIR, as_user_session_gate, health_payload, hermes_agent_bridge_gate, load_agents, save_agents
 from .proof import log_event, recent_events, write_json
+from .printers import observe_printers, printer_targets
 from .security import sanitize_obj, secret_presence
 from .slicer import ValidationError, dry_run_slice, export_gcode, flsun_export_preflight, flsun_profile_inventory, list_orca_profiles, orca_version_check
 from .voices import load_voice_catalog
@@ -21,6 +22,8 @@ ACTION_ROUTES = {
     "orca.version": ("POST", "/api/orca/version"),
     "orca.profiles": ("GET", "/api/orca/profiles"),
     "orca.flsun_inventory": ("GET", "/api/orca/flsun"),
+    "printer.targets": ("GET", "/api/printers/targets"),
+    "printer.observe": ("POST", "/api/printers/observe"),
     "agents.list": ("GET", "/api/agents"),
     "proof.recent": ("GET", "/api/proof/recent"),
     "hermes.proof_mcp": ("GET", "/api/hermes/proof-mcp"),
@@ -85,6 +88,11 @@ class BridgeHandler(BaseHTTPRequestHandler):
             log_event("bridge", "orca.flsun_inventory", payload["status"], outputs={"targets": [item["model"] for item in payload.get("targets", [])]})
             self.respond_json(payload)
             return
+        if route == "/api/printers/targets":
+            payload = printer_targets()
+            log_event("bridge", "printer.targets", payload["status"], outputs={"count": payload["count"], "safety": payload["safety"]})
+            self.respond_json(payload)
+            return
         if route == "/api/agents":
             self.respond_json({"agents": load_agents()})
             return
@@ -131,6 +139,22 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 code = 200 if payload["status"] in {"passed", "blocked"} else 500
                 log_event("bridge", "slice.export_gcode", payload["status"], inputs=body, outputs=payload)
                 self.respond_json(payload, status=code)
+                return
+            if route == "/api/printers/observe":
+                payload = observe_printers(body)
+                log_event(
+                    "bridge",
+                    "printer.observe",
+                    _normalized_event_status(payload.get("status")),
+                    inputs=body,
+                    outputs={
+                        "status": payload.get("status"),
+                        "targets": [item.get("target", {}).get("id") for item in payload.get("targets", []) if isinstance(item, dict)],
+                    },
+                    proof_files=["proof/runtime/printer-observation.json"] if payload.get("status") in {"passed", "partial", "blocked"} else None,
+                )
+                write_json(ROOT / "proof" / "runtime" / "printer-observation.json", payload)
+                self.respond_json(payload)
                 return
             if route in {"/api/hermes-agent/tool-request", "/api/chat/message"}:
                 bind, port = _server_bind_port(self.server)
@@ -223,6 +247,11 @@ def dispatch_action(body: dict[str, object], bind: str = DEFAULT_BIND, port: int
         return list_orca_profiles(), 200
     if action == "orca.flsun_inventory":
         return flsun_profile_inventory(), 200
+    if action == "printer.targets":
+        return printer_targets(), 200
+    if action == "printer.observe":
+        request_payload = payload if isinstance(payload, dict) else {}
+        return observe_printers(request_payload), 200
     if action == "agents.list":
         return {"agents": load_agents()}, 200
     if action == "proof.recent":
@@ -269,7 +298,7 @@ def hermes_agent_tool_request(body: dict[str, object], bind: str = DEFAULT_BIND,
     if "tool" in lower or "action" in lower or "what can" in lower:
         return {
             "status": "passed",
-            "reply": "Hermes Agent tool registry is loaded. I can run safe local bridge, Orca, FLSUN, proof, and blocked export tools.",
+            "reply": "Hermes Agent tool registry is loaded. I can run safe local bridge, Orca, FLSUN, printer observation, proof, and blocked export tools.",
             "agent": agent,
             "toolset": "hermes_agent",
             "requested_action": requested_action or message,
@@ -311,6 +340,8 @@ def hermes_agent_tool_request(body: dict[str, object], bind: str = DEFAULT_BIND,
         return _tool_request_result(agent, requested_action or message, "bridge.health", "I ran the HermesSlicer bridge health tool.", health_payload(bind=bind, port=port))
     if "version" in lower or "orca" in lower:
         return _tool_request_result(agent, requested_action or message, "orca.version", "I ran the safe Orca executable probe tool.", orca_version_check())
+    if any(marker in lower for marker in ("printer", "camera", "mainsail", "fluidd", "octoprint", "moonraker")):
+        return _tool_request_result(agent, requested_action or message, "printer.observe", "I ran read-only local printer observation probes. Uploads and print starts remain blocked.", observe_printers({}))
     if "preflight" in lower:
         return _tool_request_result(agent, requested_action or message, "slice.export_preflight", "I ran FLSUN export preflight without writing G-code.", flsun_export_preflight({}))
     if "flsun" in lower or "t1" in lower or "v400" in lower or "s1" in lower:

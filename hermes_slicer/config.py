@@ -90,6 +90,20 @@ ALLOWED_ACTIONS = [
         "destructive": False,
     },
     {
+        "id": "printer.targets",
+        "method": "GET",
+        "path": "/api/printers/targets",
+        "description": "List configured read-only local FLSUN printer observation targets.",
+        "destructive": False,
+    },
+    {
+        "id": "printer.observe",
+        "method": "POST",
+        "path": "/api/printers/observe",
+        "description": "Probe local printer web UI, Moonraker, OctoPrint, and camera endpoints without write commands.",
+        "destructive": False,
+    },
+    {
         "id": "agents.list",
         "method": "GET",
         "path": "/api/agents",

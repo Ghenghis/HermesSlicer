@@ -1,6 +1,6 @@
 name: hermes-slicer
 version: 0.1.0
-description: Local Hermes Agent tool router for HermesSlicer, Orca/FLSUN checks, and proof.
+description: Local Hermes Agent tool router for HermesSlicer, Orca/FLSUN checks, read-only printer observation, and proof.
 kind: standalone
 provides_tools:
   - hermes_agent_tools

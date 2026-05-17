@@ -29,13 +29,14 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 | Local bridge and action dispatch | Complete | `/health`, `/api/actions`, `/api/action`, `proof/ledger.jsonl` |
 | Orca executable/profile discovery | Complete | `proof/runtime/bridge-health.json`, `proof/runtime/smoke-report.md` |
 | FLSUN T1/V400/S1 profile preflight | Complete | `proof/runtime/flsun-profile-inventory.json`, `proof/runtime/flsun-export-preflight.json` |
+| FLSUN T1 local printer observation | Complete for read-only V1 | `proof/runtime/printer-observation.json`; both `192.168.0.10` and `192.168.0.11` exposed Mainsail, Moonraker, OctoPrint compatibility, and camera snapshots |
 | G-code export safety | Complete for V1 | Blocked by default unless `HERMES_ENABLE_EXPORT_GCODE=1`; printer start is not implemented |
 | Floating panel | Complete for V1 | `proof/screenshots/*.png`, `proof/runtime/screenshot-format.json` |
 | Login visual/geometry gate | Complete | `scripts/verify_login_geometry.py`, `proof/runtime/login-geometry.json` |
 | Hermes Agent local plugin wrapper | Complete for V1; active install proved on Hermes Agent `v0.14.0` | `integrations/hermes-slicer/`, `.hermes/plugins/hermes-slicer/`, `proof/runtime/hermes-plugin-smoke.json` |
 | Hermes Agent computer-use gate | Blocked for V1 on this host | `proof/runtime/hermes-computer-use.json`; upstream v0.14 computer-use requires macOS `cua-driver` plus bounded AS_USER and visual proof |
 | API contract drift guard | Complete | `api_contract.openapi.yaml`, `tests/test_api_contract.py` |
-| Hermes Proof MCP evidence channel | Blocked until workspace-scoped | `proof/runtime/hermes-proof-mcp.json`; current lead-session transport is closed, and agent-audited locks MCP was scoped to `G:\Github\Hermes3D` |
+| Hermes Proof MCP evidence channel | Complete for workspace transport | `hermes_slicer/mcp_server.py`, `scripts/write_hermes_proof_mcp_live.py`, `proof/runtime/hermes-proof-mcp.json`; active Hermes MCP has `hermes-slicer-proof` enabled with 16 tools |
 | Root project license | Complete | `LICENSE`, `NOTICE` |
 | V1 release checklist | Blocked on external gates | `V1_RELEASE_CHECKLIST.md`, `proof/runtime/v1-release-checklist.json` |
 | Clean-clone release rehearsal | Complete | `proof/runtime/clean-clone-rehearsal.json` |
@@ -54,11 +55,11 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 
    Current observed state:
 
-   - Hermes Proof MCP evidence ledger: local artifact retains the last known verification, but the current lead-session transport is closed. A locks MCP scoped to another workspace must not count.
+   - Hermes Proof MCP evidence ledger: active Hermes v0.14 has `hermes-slicer-proof` registered as a workspace-scoped stdio MCP server with 16 enabled tools, and `hermes.verify_evidence` proves the local ledger/artifact bundle for `G:\Github\HermesSlicer`.
    - Hermes Agent provider bridge: blocked because `/health` reports `live_connectivity_claimed=false`; active provider envs are present, but the external environment must still set `HERMES_AGENT_ENABLED=1` and provide `HERMES_AGENT_HEALTH_URL` live health proof from Hermes Agent `v0.14.0` / `v2026.5.16`.
    - Human AS_USER grant: blocked until external `HERMES_HUMAN_GRANT_SECRET`, `HERMES_AS_USER_GRANT_ID`, `HERMES_AS_USER_SCOPES`, and short `HERMES_AS_USER_EXPIRES_AT` exist.
 
-   V1 may ship with the local Hermes plugin wrapper, but it must not claim live Hermes Agent provider failover until this gate passes.
+   V1 may ship with the local Hermes plugin wrapper and proof MCP transport, but it must not claim live Hermes Agent provider failover until the live Agent health and bounded AS_USER gates pass.
 
 2. **Root license and notices**
 
@@ -86,7 +87,22 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 
    Refresh the floating panel screenshots after the final branch state. Confirm panel-open, FLSUN proof view, and hidden state still render.
 
-5. **Hermes plugin install smoke**
+5. **Read-only local printer observation**
+
+   Current targets:
+
+   - `FLSUN T1 #1`: `192.168.0.10`
+   - `FLSUN T1 #2`: `192.168.0.11`
+
+   Required proof:
+
+   ```powershell
+   python scripts\write_printer_observation_proof.py
+   ```
+
+   This may discover Mainsail, Fluidd, OctoPrint, Moonraker, and camera snapshot endpoints. V1 must keep G-code upload, heater/motion commands, and print start blocked.
+
+6. **Hermes plugin install smoke**
 
    Current committed proof:
 
@@ -107,7 +123,7 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 
    Current observed active CLI passes: `hermes version` reports Hermes Agent `v0.14.0 (2026.5.16)` from `upstream/hermes-agent`, and `hermes plugins list` shows `hermes-slicer` enabled from the user plugin directory.
 
-6. **Final release proof**
+7. **Final release proof**
 
    Required commands:
 
@@ -123,10 +139,10 @@ python scripts\redaction_scan.py .
 
 ## P1 After V1
 
-- Add a true MCP stdio server backed by `upstream/mcp-python-sdk`.
+- Replace the lightweight JSON-RPC MCP foundation with the official `upstream/mcp-python-sdk` server wrapper if Hermes requires SDK-native transport semantics.
 - Add live Azure TTS playback behind explicit credentials and opt-in proof.
 - Add optional G-code export proof with an explicit local operator gate.
-- Add Moonraker/OctoPrint/Klipper upload-only research gates.
+- Add Moonraker/OctoPrint/Klipper upload-only research gates after read-only observation is proved and scoped.
 - Add printer start only after a separate human-confirmed safety design.
 - Promote Hermes Agent computer-use only after V1, starting read-only and gated by explicit AS_USER scope plus a visual proof run against the HermesSlicer UI.
 

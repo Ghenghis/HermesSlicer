@@ -29,6 +29,8 @@ ACTIONS = {
     "actions": ("GET", "/api/actions"),
     "profiles": ("GET", "/api/orca/profiles"),
     "flsun_inventory": ("GET", "/api/orca/flsun"),
+    "printer_targets": ("GET", "/api/printers/targets"),
+    "printer_observe": ("POST", "/api/printers/observe"),
     "agents": ("GET", "/api/agents"),
     "proof_recent": ("GET", "/api/proof/recent"),
     "hermes_proof_mcp": ("GET", "/api/hermes/proof-mcp"),
@@ -41,7 +43,7 @@ ACTIONS = {
 }
 TOOL_SCHEMA = {
     "name": TOOL_NAME,
-    "description": "Route Hermes Agent tool requests to safe local HermesSlicer bridge, Orca/FLSUN, proof, and blocked export actions.",
+    "description": "Route Hermes Agent tool requests to safe local HermesSlicer bridge, Orca/FLSUN, read-only printer observation, proof, and blocked export actions.",
     "parameters": {
         "type": "object",
         "properties": {

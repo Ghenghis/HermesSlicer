@@ -132,6 +132,7 @@ def local_registration_smoke(plugin_dir: Path, *, root_env: bool = True) -> dict
         "toolset": tool.get("toolset") == TOOLSET,
         "handler_callable": callable(tool.get("handler")),
         "has_export_preflight": "export_preflight" in actions,
+        "has_printer_observe": "printer_observe" in actions,
         "has_hermes_proof_mcp": "hermes_proof_mcp" in actions,
     }
     status = "passed" if all(checks.values()) else "failed"

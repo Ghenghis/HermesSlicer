@@ -5,6 +5,8 @@
     "orca.version",
     "orca.profiles",
     "orca.flsun_inventory",
+    "printer.targets",
+    "printer.observe",
     "agents.list",
     "proof.recent",
     "hermes.proof_mcp",

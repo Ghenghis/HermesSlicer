@@ -22,6 +22,8 @@ class BridgeCoreTests(unittest.TestCase):
         self.assertIn("orca.version", ids)
         self.assertIn("orca.profiles", ids)
         self.assertIn("orca.flsun_inventory", ids)
+        self.assertIn("printer.targets", ids)
+        self.assertIn("printer.observe", ids)
         self.assertIn("agents.list", ids)
         self.assertIn("proof.recent", ids)
         self.assertIn("hermes.proof_mcp", ids)

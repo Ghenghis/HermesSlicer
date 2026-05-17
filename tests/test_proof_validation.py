@@ -7,7 +7,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from scripts.validate_proof import validate_as_user_artifact, validate_proof_mcp_artifact, validate_required_artifact
+from scripts.validate_proof import (
+    validate_as_user_artifact,
+    validate_computer_use_artifact,
+    validate_proof_mcp_artifact,
+    validate_required_artifact,
+)
 
 
 class ProofValidationTests(unittest.TestCase):
@@ -44,6 +49,30 @@ class ProofValidationTests(unittest.TestCase):
         errors = validate_as_user_artifact({"status": "blocked", "as_user_session": {"granted": True}})
 
         self.assertTrue(any("blocked but as_user_session.granted is true" in error for error in errors))
+
+    def test_computer_use_artifact_rejects_false_passes(self) -> None:
+        errors = validate_computer_use_artifact(
+            {
+                "status": "passed",
+                "computer_use": {
+                    "available": True,
+                    "supported_platform": False,
+                    "cua_driver_installed": False,
+                    "as_user_session": {"granted": False},
+                    "visual_proof": {"passed": False},
+                },
+            }
+        )
+
+        self.assertTrue(any("without supported_platform=true" in error for error in errors))
+        self.assertTrue(any("without cua_driver_installed=true" in error for error in errors))
+        self.assertTrue(any("without bounded AS_USER grant" in error for error in errors))
+        self.assertTrue(any("without visual proof" in error for error in errors))
+
+    def test_computer_use_artifact_rejects_blocked_available_payload(self) -> None:
+        errors = validate_computer_use_artifact({"status": "blocked", "computer_use": {"available": True}})
+
+        self.assertTrue(any("blocked but computer_use.available is true" in error for error in errors))
 
 
 if __name__ == "__main__":

@@ -1,4 +1,22 @@
 {
+  "as_user_artifact": {
+    "expires_at": "",
+    "grant_id_present": false,
+    "granted": false,
+    "max_ttl_seconds": 900,
+    "reason": "HERMES_HUMAN_GRANT_SECRET is not present. HERMES_AS_USER_SCOPES must include at least one explicit scope. HERMES_AS_USER_GRANT_ID is required. HERMES_AS_USER_EXPIRES_AT must be an ISO-8601 UTC timestamp.",
+    "required": [
+      "HERMES_HUMAN_GRANT_SECRET",
+      "HERMES_AS_USER_GRANT_ID",
+      "HERMES_AS_USER_SCOPES",
+      "HERMES_AS_USER_EXPIRES_AT",
+      "short TTL"
+    ],
+    "scopes": [],
+    "secret_present": false,
+    "status": "blocked",
+    "ttl_seconds": null
+  },
   "as_user_session": {
     "expires_at": "",
     "grant_id_present": false,
@@ -17,9 +35,14 @@
     "status": "blocked",
     "ttl_seconds": null
   },
+  "blockers": [
+    "HERMES_AGENT_ENABLED=1 is required before claiming live Hermes Agent connectivity.",
+    "HERMES_HUMAN_GRANT_SECRET is not present. HERMES_AS_USER_SCOPES must include at least one explicit scope. HERMES_AS_USER_GRANT_ID is required. HERMES_AS_USER_EXPIRES_AT must be an ISO-8601 UTC timestamp.",
+    "proof/runtime/as_user_session.json does not prove a passed bounded AS_USER grant."
+  ],
   "date": "2026-05-17",
-  "evidence_id": "ev_08ec9a5ac6214a1b",
-  "generated_at": "2026-05-17T16:01:58.841775+00:00",
+  "evidence_id": "ev_c093024a8e2b68a7",
+  "generated_at": "2026-05-17T17:21:27.792383+00:00",
   "hermes_agent_bridge": {
     "available": false,
     "backend_present": true,
@@ -59,26 +82,23 @@
     ],
     "status": "blocked"
   },
+  "live_gate_checks": {
+    "as_user_artifact_passed": false,
+    "as_user_gate_passed": false,
+    "hermes_agent_bridge_passed": false,
+    "proof_mcp_transport_passed": true
+  },
   "proof_mcp": {
-    "active_hermes_mcp_configured": false,
-    "active_hermes_mcp_list": {
-      "args": [
-        "C:\\Python314\\Scripts\\hermes.EXE",
-        "mcp",
-        "list"
-      ],
-      "returncode": 0,
-      "status": "passed",
-      "stderr": "",
-      "stdout": "No MCP servers configured.\n\n  Add one with:\n    hermes mcp add <name> --url <endpoint>\n    hermes mcp add <name> --command <cmd> --args <args...>"
-    },
-    "available": false,
-    "codex_mcp_transport_status": "not_available",
-    "evidence_ledger_ok": false,
+    "available": true,
+    "codex_mcp_transport_status": "available",
+    "evidence_ledger_ok": true,
     "expected_workspace_root": "G:\\Github\\HermesSlicer",
-    "reason": "No workspace-scoped Hermes Proof MCP evidence is available. Active Hermes v0.14 CLI also reports no configured MCP servers.",
-    "workspace_root": null,
-    "workspace_scope_ok": false
+    "reason": "Hermes Proof MCP transport and evidence verification passed.",
+    "status": "passed",
+    "verify_status": "passed",
+    "verify_tool": "hermes_verify_evidence",
+    "workspace_root": "G:\\Github\\HermesSlicer",
+    "workspace_scope_ok": true
   },
   "status": "blocked"
 }

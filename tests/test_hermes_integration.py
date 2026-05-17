@@ -38,6 +38,8 @@ class HermesIntegrationTests(unittest.TestCase):
         self.assertIn("export_preflight", hermes_agent_tool.ACTIONS)
         self.assertIn("proof_recent", hermes_agent_tool.ACTIONS)
         self.assertIn("hermes_proof_mcp", hermes_agent_tool.ACTIONS)
+        self.assertIn("printer_targets", hermes_agent_tool.ACTIONS)
+        self.assertIn("printer_observe", hermes_agent_tool.ACTIONS)
         self.assertIn("tool_request", hermes_agent_tool.ACTIONS)
         self.assertNotIn("chat", hermes_agent_tool.ACTIONS)
 

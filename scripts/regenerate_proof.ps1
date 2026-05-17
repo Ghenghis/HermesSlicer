@@ -35,11 +35,19 @@ if ($LASTEXITCODE -ne 0) { throw "write_as_user_session_proof.py failed with exi
 python scripts\write_hermes_proof_mcp_status.py
 if ($LASTEXITCODE -ne 0) { throw "write_hermes_proof_mcp_status.py failed with exit code $LASTEXITCODE" }
 
+python scripts\write_hermes_proof_mcp_live.py --write-blocked
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "write_hermes_proof_mcp_live.py remains blocked by external live gates; blocked artifact was written."
+}
+
 python scripts\smoke_bridge.py
 if ($LASTEXITCODE -ne 0) { throw "smoke_bridge.py failed with exit code $LASTEXITCODE" }
 
 python scripts\write_flsun_profile_proof.py
 if ($LASTEXITCODE -ne 0) { throw "write_flsun_profile_proof.py failed with exit code $LASTEXITCODE" }
+
+python scripts\write_printer_observation_proof.py
+if ($LASTEXITCODE -ne 0) { throw "write_printer_observation_proof.py failed with exit code $LASTEXITCODE" }
 
 python scripts\validate_submodules.py
 if ($LASTEXITCODE -ne 0) { throw "validate_submodules.py failed with exit code $LASTEXITCODE" }

@@ -25,6 +25,7 @@ LOCAL_PROOF_FILES = (
     "proof/runtime/as_user_session.json",
     "proof/runtime/submodule-stack.json",
     "proof/runtime/flsun-export-preflight.json",
+    "proof/runtime/printer-observation.json",
     "proof/runtime/hermes-tool-health.json",
     "proof/runtime/hermes-tool-export_preflight.json",
     "proof/runtime/hermes-tool-tool_request.json",
@@ -165,11 +166,12 @@ def build_report() -> dict[str, Any]:
     local_ready = not missing and not failed
     clean_clone_passed = clean_clone["exists"] and load_status(clean_clone["file"]) == "passed"
     tag_ready = local_ready and clean_clone_passed and not blocked_external
+    blocked_gate_names = ", ".join(item["gate"] for item in blocked_external) or "none"
     readiness_note = (
-        "Do not tag full V1 until external live-agent, AS_USER, MCP, and computer-use gates are proved. "
+        f"Do not tag full V1 until blocked external gates pass: {blocked_gate_names}. "
         "A separate scoped local-sidecar tag would need explicit owner approval documenting excluded/deferred live gates."
         if clean_clone_passed
-        else "Do not tag V1 until clean-clone rehearsal passes and external live-agent, AS_USER, MCP, and computer-use gates are proved."
+        else f"Do not tag V1 until clean-clone rehearsal passes and blocked external gates pass: {blocked_gate_names}."
     )
     return {
         "status": "passed" if tag_ready else "blocked",

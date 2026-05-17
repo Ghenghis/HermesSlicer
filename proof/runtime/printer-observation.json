@@ -1,0 +1,233 @@
+{
+  "generated_at": "2026-05-17T17:16:07.451766+00:00",
+  "safety": {
+    "allowed_probe_methods": [
+      "GET"
+    ],
+    "mode": "read_only_observation",
+    "print_start_enabled": false,
+    "start_print": "blocked_in_v1",
+    "upload_gcode": "blocked_in_v1",
+    "upload_gcode_enabled": false
+  },
+  "source": "G:\\Github\\HermesSlicer\\config\\printers.example.json",
+  "status": "passed",
+  "targets": [
+    {
+      "camera_candidates": [
+        {
+          "auth_required": false,
+          "content_type": "image/jpeg",
+          "detected": true,
+          "http_status": 200,
+          "reachable": true,
+          "reason": "reachable",
+          "url": "http://192.168.0.10/webcam/?action=snapshot"
+        },
+        {
+          "auth_required": false,
+          "content_type": "text/plain",
+          "detected": false,
+          "http_status": 400,
+          "reachable": true,
+          "reason": "HTTP 400",
+          "url": "http://192.168.0.10/webcam/snapshot"
+        },
+        {
+          "auth_required": false,
+          "content_type": "text/html",
+          "detected": false,
+          "http_status": 200,
+          "reachable": true,
+          "reason": "reachable",
+          "url": "http://192.168.0.10/snapshot"
+        },
+        {
+          "auth_required": false,
+          "content_type": "image/jpeg",
+          "detected": true,
+          "http_status": 200,
+          "reachable": true,
+          "reason": "reachable",
+          "url": "http://192.168.0.10:8080/?action=snapshot"
+        }
+      ],
+      "detected_interfaces": [
+        "camera",
+        "mainsail",
+        "moonraker",
+        "octoprint"
+      ],
+      "interfaces": {
+        "moonraker": {
+          "auth_required": false,
+          "body_preview": "{\"result\": {\"klippy_connected\": true, \"klippy_state\": \"ready\", \"components\": [\"klippy_connection\", \"application\", \"websockets\", \"internal_transport\", \"dbus_manager\", \"database\", \"file_manager\", \"klippy_apis\", \"secrets\", \"template\", \"shell_command\", \"machine\", \"data_store\", \"proc_stats\", \"job_state\", \"job_queue\", \"http_client\", \"announcements\", \"webcam\", \"extensions\", \"update_manager\", \"history\", \"authorization\", \"octoprint_compat\"], \"failed_components\": [], \"registered_directories\": [\"config\", \"logs\", \"gcodes\", \"config_examples\", \"docs\"], \"warnings\": [], \"websocket_count\": 1, \"moonraker_version\": \"?\", \"missing_klippy_requirements\": [], \"api_version\": [1, 3, 0], \"api_version_string\": \"1.3.0\"}}",
+          "content_type": "application/json; charset=UTF-8",
+          "detected": true,
+          "http_status": 200,
+          "json_keys": [
+            "result"
+          ],
+          "reachable": true,
+          "reason": "reachable",
+          "url": "http://192.168.0.10:7125/server/info"
+        },
+        "octoprint": {
+          "auth_required": false,
+          "body_preview": "{\"server\": \"1.5.0\", \"api\": \"0.1\", \"text\": \"OctoPrint (Moonraker ?)\"}",
+          "content_type": "application/json; charset=UTF-8",
+          "detected": true,
+          "http_status": 200,
+          "json_keys": [
+            "api",
+            "server",
+            "text"
+          ],
+          "reachable": true,
+          "reason": "reachable",
+          "url": "http://192.168.0.10/api/version"
+        },
+        "web_ui": {
+          "body_preview": "<!doctype html>\r\n<html lang=\"en\">\r\n    <head>\r\n        <meta charset=\"utf-8\" />\r\n        <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\r\n        <meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\" />\r\n        <title>Mainsail</title>\r\n        <meta name=\"description\" content=\"Mainsail is the popular web interface for Klipper.\" />\r\n\r\n        <link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/img/icons/favicon-32x32.png\" />\r\n        <link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/img/icons/favicon-16x16.png\" />\r\n        <meta name=\"theme-color\" content=\"#121212\" />\r\n        <meta name=\"mobile-web-app-capable\" content=\"yes\" />\r\n        <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\r\n        <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black\" />\r\n        <meta name=\"apple-mobile-web-app-title\" content=\"Mainsail\" />\r\n        <link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/img/icons/apple-touch-icon-180x180.png\" />\r\n        <link rel=\"mask-icon\" href=\"img/icons/safari-pinned-tab.svg\" color=\"#d51f26\" />\r\n        <meta name=\"msapplication-TileImage\" content=\"/img/icons/mstile-150x150.png\" />\r\n        <meta name=\"msapplication-TileColor\" content=\"#d51f26\" />\r\n\r\n        \r\n      <script type=\"module\" crossorigin src=\"/assets/index-a5bde2f9.js\"></script>\n      <link rel=\"modulepreload\" crossorigin href=\"/assets/vuetify-10246b33.js\">\n      <link rel=\"modulepreload\" crossorigin href=\"/assets/overlayscrollbars-44d87bcf.js\">\n      <link rel=\"modulepreload\" crossorigin href=\"/assets/echarts-ff51454d.js\">\n      <link rel=\"stylesheet\" href=\"/assets/vuetify-950d1cb0.css\">\n      <link rel=\"stylesheet\" href=\"/assets/overlayscrollbars-a16bc3d3.css\">\n      <link rel=\"stylesheet\" href=\"/assets/index-edbd764c.css\">\n    <link rel=\"manifest\" href=\"/manifest.webmanifest\"></head>\r\n    <body style=\"background-color: #121212\">\r\n        <noscript>\r\n            <strong>\r\n                We're sorry but Mainsail doesn't work properly without JavaScript enabled. Please enable it to continue.\r\n            </strong>\r\n        </noscript>\r\n        <div id=\"app\"></div>\r\n    </body>\r\n</html>\r\n",
+          "content_type": "text/html",
+          "detected": [
+            "mainsail"
+          ],
+          "http_status": 200,
+          "reachable": true,
+          "reason": "reachable",
+          "url": "http://192.168.0.10"
+        }
+      },
+      "local_network_gate": {
+        "host": "192.168.0.10",
+        "passed": true,
+        "reason": "Host is local/private."
+      },
+      "reason": "Read-only printer observation interfaces were discovered.",
+      "safety": {
+        "heater_or_motion_commands": "not_implemented",
+        "start_print": "not_attempted",
+        "upload_gcode": "not_attempted"
+      },
+      "status": "passed",
+      "target": {
+        "base_url": "http://192.168.0.10",
+        "host": "192.168.0.10",
+        "id": "flsun_t1_1",
+        "model": "FLSun T1",
+        "name": "FLSUN T1 #1",
+        "notes": "Read-only local observation target for Mainsail, Fluidd, OctoPrint, Moonraker, and camera discovery.",
+        "role": "primary_observation"
+      }
+    },
+    {
+      "camera_candidates": [
+        {
+          "auth_required": false,
+          "content_type": "image/jpeg",
+          "detected": true,
+          "http_status": 200,
+          "reachable": true,
+          "reason": "reachable",
+          "url": "http://192.168.0.11/webcam/?action=snapshot"
+        },
+        {
+          "auth_required": false,
+          "content_type": "text/plain",
+          "detected": false,
+          "http_status": 400,
+          "reachable": true,
+          "reason": "HTTP 400",
+          "url": "http://192.168.0.11/webcam/snapshot"
+        },
+        {
+          "auth_required": false,
+          "content_type": "text/html",
+          "detected": false,
+          "http_status": 200,
+          "reachable": true,
+          "reason": "reachable",
+          "url": "http://192.168.0.11/snapshot"
+        },
+        {
+          "auth_required": false,
+          "content_type": "image/jpeg",
+          "detected": true,
+          "http_status": 200,
+          "reachable": true,
+          "reason": "reachable",
+          "url": "http://192.168.0.11:8080/?action=snapshot"
+        }
+      ],
+      "detected_interfaces": [
+        "camera",
+        "mainsail",
+        "moonraker",
+        "octoprint"
+      ],
+      "interfaces": {
+        "moonraker": {
+          "auth_required": false,
+          "body_preview": "{\"result\": {\"klippy_connected\": true, \"klippy_state\": \"ready\", \"components\": [\"klippy_connection\", \"application\", \"websockets\", \"internal_transport\", \"dbus_manager\", \"database\", \"file_manager\", \"klippy_apis\", \"secrets\", \"template\", \"shell_command\", \"machine\", \"data_store\", \"proc_stats\", \"job_state\", \"job_queue\", \"http_client\", \"announcements\", \"webcam\", \"extensions\", \"authorization\", \"history\", \"update_manager\", \"octoprint_compat\"], \"failed_components\": [], \"registered_directories\": [\"config\", \"logs\", \"gcodes\", \"config_examples\", \"docs\"], \"warnings\": [], \"websocket_count\": 1, \"moonraker_version\": \"?\", \"missing_klippy_requirements\": [], \"api_version\": [1, 3, 0], \"api_version_string\": \"1.3.0\"}}",
+          "content_type": "application/json; charset=UTF-8",
+          "detected": true,
+          "http_status": 200,
+          "json_keys": [
+            "result"
+          ],
+          "reachable": true,
+          "reason": "reachable",
+          "url": "http://192.168.0.11:7125/server/info"
+        },
+        "octoprint": {
+          "auth_required": false,
+          "body_preview": "{\"server\": \"1.5.0\", \"api\": \"0.1\", \"text\": \"OctoPrint (Moonraker ?)\"}",
+          "content_type": "application/json; charset=UTF-8",
+          "detected": true,
+          "http_status": 200,
+          "json_keys": [
+            "api",
+            "server",
+            "text"
+          ],
+          "reachable": true,
+          "reason": "reachable",
+          "url": "http://192.168.0.11/api/version"
+        },
+        "web_ui": {
+          "body_preview": "<!doctype html>\r\n<html lang=\"en\">\r\n    <head>\r\n        <meta charset=\"utf-8\" />\r\n        <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />\r\n        <meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\" />\r\n        <title>Mainsail</title>\r\n        <meta name=\"description\" content=\"Mainsail is the popular web interface for Klipper.\" />\r\n\r\n        <link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/img/icons/favicon-32x32.png\" />\r\n        <link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/img/icons/favicon-16x16.png\" />\r\n        <meta name=\"theme-color\" content=\"#121212\" />\r\n        <meta name=\"mobile-web-app-capable\" content=\"yes\" />\r\n        <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\r\n        <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black\" />\r\n        <meta name=\"apple-mobile-web-app-title\" content=\"Mainsail\" />\r\n        <link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/img/icons/apple-touch-icon-180x180.png\" />\r\n        <link rel=\"mask-icon\" href=\"img/icons/safari-pinned-tab.svg\" color=\"#d51f26\" />\r\n        <meta name=\"msapplication-TileImage\" content=\"/img/icons/mstile-150x150.png\" />\r\n        <meta name=\"msapplication-TileColor\" content=\"#d51f26\" />\r\n\r\n        \r\n      <script type=\"module\" crossorigin src=\"/assets/index-a5bde2f9.js\"></script>\n      <link rel=\"modulepreload\" crossorigin href=\"/assets/vuetify-10246b33.js\">\n      <link rel=\"modulepreload\" crossorigin href=\"/assets/overlayscrollbars-44d87bcf.js\">\n      <link rel=\"modulepreload\" crossorigin href=\"/assets/echarts-ff51454d.js\">\n      <link rel=\"stylesheet\" href=\"/assets/vuetify-950d1cb0.css\">\n      <link rel=\"stylesheet\" href=\"/assets/overlayscrollbars-a16bc3d3.css\">\n      <link rel=\"stylesheet\" href=\"/assets/index-edbd764c.css\">\n    <link rel=\"manifest\" href=\"/manifest.webmanifest\"></head>\r\n    <body style=\"background-color: #121212\">\r\n        <noscript>\r\n            <strong>\r\n                We're sorry but Mainsail doesn't work properly without JavaScript enabled. Please enable it to continue.\r\n            </strong>\r\n        </noscript>\r\n        <div id=\"app\"></div>\r\n    </body>\r\n</html>\r\n",
+          "content_type": "text/html",
+          "detected": [
+            "mainsail"
+          ],
+          "http_status": 200,
+          "reachable": true,
+          "reason": "reachable",
+          "url": "http://192.168.0.11"
+        }
+      },
+      "local_network_gate": {
+        "host": "192.168.0.11",
+        "passed": true,
+        "reason": "Host is local/private."
+      },
+      "reason": "Read-only printer observation interfaces were discovered.",
+      "safety": {
+        "heater_or_motion_commands": "not_implemented",
+        "start_print": "not_attempted",
+        "upload_gcode": "not_attempted"
+      },
+      "status": "passed",
+      "target": {
+        "base_url": "http://192.168.0.11",
+        "host": "192.168.0.11",
+        "id": "flsun_t1_2",
+        "model": "FLSun T1",
+        "name": "FLSUN T1 #2",
+        "notes": "Read-only local observation target for Mainsail, Fluidd, OctoPrint, Moonraker, and camera discovery.",
+        "role": "secondary_observation"
+      }
+    }
+  ]
+}

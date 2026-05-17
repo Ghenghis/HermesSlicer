@@ -48,12 +48,13 @@
       "handler_callable": true,
       "has_export_preflight": true,
       "has_hermes_proof_mcp": true,
+      "has_printer_observe": true,
       "toolset": true
     },
     "plugin_dir": ".hermes\\plugins\\hermes-slicer",
     "registered_tool": {
-      "action_count": 13,
-      "description": "Route Hermes Agent tool requests to safe local HermesSlicer bridge, Orca/FLSUN, proof, and blocked export actions.",
+      "action_count": 15,
+      "description": "Route Hermes Agent tool requests to safe local HermesSlicer bridge, Orca/FLSUN, read-only printer observation, proof, and blocked export actions.",
       "name": "hermes_agent_tools",
       "toolset": "hermes_agent"
     },
@@ -65,30 +66,32 @@
       "handler_callable": true,
       "has_export_preflight": true,
       "has_hermes_proof_mcp": true,
+      "has_printer_observe": true,
       "toolset": true
     },
     "plugin_dir": ".hermes\\plugins\\hermes-slicer",
     "registered_tool": {
-      "action_count": 13,
-      "description": "Route Hermes Agent tool requests to safe local HermesSlicer bridge, Orca/FLSUN, proof, and blocked export actions.",
+      "action_count": 15,
+      "description": "Route Hermes Agent tool requests to safe local HermesSlicer bridge, Orca/FLSUN, read-only printer observation, proof, and blocked export actions.",
       "name": "hermes_agent_tools",
       "toolset": "hermes_agent"
     },
     "root_resolution": "cwd_fallback",
     "status": "passed"
   },
-  "generated_at": "2026-05-17T16:02:08.098086+00:00",
+  "generated_at": "2026-05-17T17:16:12.312261+00:00",
   "integration_plugin": {
     "checks": {
       "handler_callable": true,
       "has_export_preflight": true,
       "has_hermes_proof_mcp": true,
+      "has_printer_observe": true,
       "toolset": true
     },
     "plugin_dir": "integrations\\hermes-slicer",
     "registered_tool": {
-      "action_count": 13,
-      "description": "Route Hermes Agent tool requests to safe local HermesSlicer bridge, Orca/FLSUN, proof, and blocked export actions.",
+      "action_count": 15,
+      "description": "Route Hermes Agent tool requests to safe local HermesSlicer bridge, Orca/FLSUN, read-only printer observation, proof, and blocked export actions.",
       "name": "hermes_agent_tools",
       "toolset": "hermes_agent"
     },
@@ -101,7 +104,7 @@
       "selected": [
         {
           "commands": 0,
-          "description": "Local Hermes Agent tool router for HermesSlicer, Orca/FLSUN checks, and proof.",
+          "description": "Local Hermes Agent tool router for HermesSlicer, Orca/FLSUN checks, read-only printer observation, and proof.",
           "enabled": true,
           "error": null,
           "hooks": 0,
@@ -118,7 +121,7 @@
     "returncode": 0,
     "status": "passed",
     "stderr": "",
-    "stdout": "{\"plugins_seen\": 23, \"selected\": [{\"commands\": 0, \"description\": \"Local Hermes Agent tool router for HermesSlicer, Orca/FLSUN checks, and proof.\", \"enabled\": true, \"error\": null, \"hooks\": 0, \"key\": \"hermes-slicer\", \"kind\": \"standalone\", \"name\": \"hermes-slicer\", \"source\": \"project\", \"tools\": 1, \"version\": \"0.1.0\"}], \"status\": \"passed\"}"
+    "stdout": "{\"plugins_seen\": 23, \"selected\": [{\"commands\": 0, \"description\": \"Local Hermes Agent tool router for HermesSlicer, Orca/FLSUN checks, read-only printer observation, and proof.\", \"enabled\": true, \"error\": null, \"hooks\": 0, \"key\": \"hermes-slicer\", \"kind\": \"standalone\", \"name\": \"hermes-slicer\", \"source\": \"project\", \"tools\": 1, \"version\": \"0.1.0\"}], \"status\": \"passed\"}"
   },
   "plugin": "hermes-slicer",
   "reason": "Active Hermes CLI, project plugin harness, and committed wrappers passed.",

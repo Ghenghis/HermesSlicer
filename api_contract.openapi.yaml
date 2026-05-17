@@ -35,6 +35,20 @@ paths:
       responses:
         "200":
           description: OK
+  /api/printers/targets:
+    get:
+      summary: List configured read-only local FLSUN printer observation targets
+      responses:
+        "200":
+          description: OK
+  /api/printers/observe:
+    post:
+      summary: Probe local printer web UI, Moonraker, OctoPrint, and camera endpoints without write commands
+      responses:
+        "200":
+          description: OK, partial, or safely blocked by unreachable targets
+        "400":
+          description: Invalid request
   /api/voices/azure/en:
     get:
       summary: Return the generated safe Azure English voice catalog

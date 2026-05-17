@@ -22,9 +22,11 @@ Finish V1 end to end without scope drift. The target is a proofable local sideca
 - [x] Refresh browser/panel screenshots from the final branch state.
 - [x] Add repeatable Hermes plugin smoke proof artifact and committed project plugin wrapper.
 - [x] Pass the active Hermes plugin smoke with Hermes Agent `v2026.5.16` / package `0.14.0` installed and `hermes-slicer` enabled.
+- [x] Add read-only FLSUN T1 local printer observation targets for `192.168.0.10` and `192.168.0.11`.
+- [x] Prove Mainsail/Fluidd/OctoPrint/Moonraker/camera observation for both FLSUN T1 printers while keeping upload, heater, motion, and print-start commands blocked.
 - [x] Add final V1 release checklist output with proof summary, blocked external credentials, and tag-readiness notes.
 - [x] Run final local proof command set.
-- [ ] Append Hermes Proof MCP evidence after the MCP transport is restored.
+- [x] Append Hermes Proof MCP evidence after the MCP transport is restored.
 - [ ] Tag the V1 release only after the above gates pass.
 
 ## Agent Operating Rule
@@ -38,6 +40,7 @@ For every remaining V1 task:
 - Hermes Proof MCP evidence is appended whenever the MCP is available.
 - If Hermes Agent health reports disabled, do not claim live Hermes Agent bridge connectivity.
 - Do not expose Hermes Agent computer-use through the V1 slicer bridge; keep `proof/runtime/hermes-computer-use.json` blocked unless a supported host, AS_USER grant, and visual proof run exist.
+- Printer targets are read-only observation surfaces in V1. Hermes may inspect local web UI/camera status, but G-code upload, heater/motion control, and print start require a future explicit enablement gate and operator confirmation.
 
 ## Stop Conditions
 
@@ -56,6 +59,7 @@ python -m unittest discover -s tests
 python -m compileall hermes_slicer integrations scripts tests
 python scripts\validate_submodules.py
 powershell -ExecutionPolicy Bypass -File scripts\regenerate_proof.ps1
+python scripts\write_printer_observation_proof.py
 python scripts\verify_login_geometry.py
 python scripts\write_v1_release_checklist.py
 python scripts\redaction_scan.py .

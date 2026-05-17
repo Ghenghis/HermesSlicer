@@ -98,6 +98,29 @@ def validate_as_user_artifact(as_user: dict[str, Any]) -> list[str]:
     return errors
 
 
+def validate_computer_use_artifact(computer_use: dict[str, Any]) -> list[str]:
+    errors = status_errors("proof/runtime/hermes-computer-use.json", computer_use, {"passed", "blocked"})
+    computer_payload = computer_use.get("computer_use", {})
+    if not isinstance(computer_payload, dict):
+        return [*errors, "proof/runtime/hermes-computer-use.json computer_use must be an object"]
+    if status_of(computer_use) == "passed":
+        if computer_payload.get("available") is not True:
+            errors.append("Hermes computer-use artifact is passed but computer_use.available is not true")
+        if computer_payload.get("supported_platform") is not True:
+            errors.append("Hermes computer-use artifact is passed without supported_platform=true")
+        if computer_payload.get("cua_driver_installed") is not True:
+            errors.append("Hermes computer-use artifact is passed without cua_driver_installed=true")
+        as_user = computer_payload.get("as_user_session", {})
+        if not isinstance(as_user, dict) or as_user.get("granted") is not True:
+            errors.append("Hermes computer-use artifact is passed without bounded AS_USER grant")
+        visual_proof = computer_payload.get("visual_proof", {})
+        if not isinstance(visual_proof, dict) or visual_proof.get("passed") is not True:
+            errors.append("Hermes computer-use artifact is passed without visual proof")
+    elif computer_payload.get("available") is True:
+        errors.append("Hermes computer-use artifact is blocked but computer_use.available is true")
+    return errors
+
+
 def validate_artifacts() -> dict[str, Any]:
     errors: list[str] = []
     artifacts: dict[str, Any] = {}
@@ -145,25 +168,7 @@ def validate_artifacts() -> dict[str, Any]:
     errors.extend(computer_use_errors)
     if computer_use:
         artifacts["hermes-computer-use.json"] = status_of(computer_use)
-        errors.extend(status_errors("proof/runtime/hermes-computer-use.json", computer_use, {"passed", "blocked"}))
-        computer_payload = computer_use.get("computer_use", {})
-        if not isinstance(computer_payload, dict):
-            errors.append("proof/runtime/hermes-computer-use.json computer_use must be an object")
-        elif status_of(computer_use) == "passed":
-            if computer_payload.get("available") is not True:
-                errors.append("Hermes computer-use artifact is passed but computer_use.available is not true")
-            if computer_payload.get("supported_platform") is not True:
-                errors.append("Hermes computer-use artifact is passed without supported_platform=true")
-            if computer_payload.get("cua_driver_installed") is not True:
-                errors.append("Hermes computer-use artifact is passed without cua_driver_installed=true")
-            as_user = computer_payload.get("as_user_session", {})
-            if not isinstance(as_user, dict) or as_user.get("granted") is not True:
-                errors.append("Hermes computer-use artifact is passed without bounded AS_USER grant")
-            visual_proof = computer_payload.get("visual_proof", {})
-            if not isinstance(visual_proof, dict) or visual_proof.get("passed") is not True:
-                errors.append("Hermes computer-use artifact is passed without visual proof")
-        elif computer_payload.get("available") is True:
-            errors.append("Hermes computer-use artifact is blocked but computer_use.available is true")
+        errors.extend(validate_computer_use_artifact(computer_use))
 
     as_user, as_user_errors = load_json("proof/runtime/as_user_session.json")
     errors.extend(as_user_errors)
@@ -216,6 +221,18 @@ def validate_artifacts() -> dict[str, Any]:
     if flsun_matrix:
         artifacts["flsun-profile-matrix.json"] = status_of(flsun_matrix)
         errors.extend(validate_required_artifact("proof/runtime/flsun-profile-matrix.json", flsun_matrix, ("matrix",)))
+
+    printer_observation, printer_observation_errors = load_json("proof/runtime/printer-observation.json")
+    errors.extend(printer_observation_errors)
+    if printer_observation:
+        artifacts["printer-observation.json"] = status_of(printer_observation)
+        errors.extend(validate_required_artifact("proof/runtime/printer-observation.json", printer_observation, ("targets", "safety"), {"passed", "partial", "blocked"}))
+        safety = printer_observation.get("safety", {})
+        if not isinstance(safety, dict) or safety.get("mode") != "read_only_observation":
+            errors.append("proof/runtime/printer-observation.json must be read_only_observation mode")
+        for target in printer_observation.get("targets", []):
+            if isinstance(target, dict) and target.get("safety", {}).get("start_print") != "not_attempted":
+                errors.append(f"printer observation target {target.get('target', {}).get('id')} attempted a print start")
 
     clean_clone, clean_errors = load_json("proof/runtime/clean-clone-rehearsal.json")
     errors.extend(clean_errors)

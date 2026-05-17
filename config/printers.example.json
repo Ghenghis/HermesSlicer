@@ -1,0 +1,22 @@
+{
+  "enable_printer_upload": false,
+  "enable_print_start": false,
+  "targets": [
+    {
+      "id": "flsun_t1_1",
+      "name": "FLSUN T1 #1",
+      "model": "FLSun T1",
+      "host": "192.168.0.10",
+      "role": "primary_observation",
+      "notes": "Read-only local observation target for Mainsail, Fluidd, OctoPrint, Moonraker, and camera discovery."
+    },
+    {
+      "id": "flsun_t1_2",
+      "name": "FLSUN T1 #2",
+      "model": "FLSun T1",
+      "host": "192.168.0.11",
+      "role": "secondary_observation",
+      "notes": "Read-only local observation target for Mainsail, Fluidd, OctoPrint, Moonraker, and camera discovery."
+    }
+  ]
+}

@@ -5,10 +5,11 @@
 ```powershell
 python integrations\hermes_agent_tool.py health
 python integrations\hermes_agent_tool.py orca_version
+python integrations\hermes_agent_tool.py printer_observe
 python integrations\hermes_agent_tool.py export_preflight
 ```
 
-The tool calls only the local bridge at `http://127.0.0.1:8765` and supports safe Hermes Agent tool requests such as `actions`, `flsun_inventory`, `orca_version`, `dry_run`, `export_preflight`, `proof_recent`, `hermes_proof_mcp`, `tool_request`, and blocked-by-default `export_gcode`.
+The tool calls only the local bridge at `http://127.0.0.1:8765` and supports safe Hermes Agent tool requests such as `actions`, `flsun_inventory`, `printer_targets`, `printer_observe`, `orca_version`, `dry_run`, `export_preflight`, `proof_recent`, `hermes_proof_mcp`, `tool_request`, and blocked-by-default `export_gcode`.
 
 ## Hermes Agent Plugin Shape
 
