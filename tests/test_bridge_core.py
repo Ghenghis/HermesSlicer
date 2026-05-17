@@ -8,7 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from hermes_slicer.bridge import ACTION_ROUTES, dispatch_action, run, tts_speak
-from hermes_slicer.config import ALLOWED_ACTIONS, default_slice_request
+from hermes_slicer.config import ALLOWED_ACTIONS, default_slice_request, hermes_agent_bridge_gate
 from hermes_slicer.proof import validate_event
 from hermes_slicer.security import sanitize_text
 from hermes_slicer.slicer import ValidationError, dry_run_slice, export_gcode, flsun_export_preflight, flsun_profile_inventory, validate_slice_request
@@ -62,9 +62,42 @@ class BridgeCoreTests(unittest.TestCase):
         self.assertEqual(payload["bind"], "127.0.0.1")
 
     def test_dispatch_health_reports_runtime_port(self) -> None:
-        payload, status = dispatch_action({"action": "bridge.health"}, bind="127.0.0.1", port=8766)
+        empty_gate_env = {
+            "HERMES_AGENT_ENABLED": "",
+            "DEEPSEEK_API_KEY": "",
+            "MINIMAX_API_KEY": "",
+            "SILICONFLOW_API_KEY": "",
+            "HERMES_AGENT_BASE_URL": "",
+            "LM_STUDIO_BASE_URL": "",
+            "OPENAI_BASE_URL": "",
+        }
+        with patch.dict(os.environ, empty_gate_env, clear=False):
+            payload, status = dispatch_action({"action": "bridge.health"}, bind="127.0.0.1", port=8766)
         self.assertEqual(status, 200)
         self.assertEqual(payload["port"], 8766)
+        self.assertIn("hermes_agent_bridge", payload)
+        self.assertFalse(payload["hermes_agent_bridge"]["live_connectivity_claimed"])
+
+    def test_hermes_agent_live_gate_requires_enabled_and_backend(self) -> None:
+        empty_gate_env = {
+            "HERMES_AGENT_ENABLED": "",
+            "DEEPSEEK_API_KEY": "",
+            "MINIMAX_API_KEY": "",
+            "SILICONFLOW_API_KEY": "",
+            "HERMES_AGENT_BASE_URL": "",
+            "LM_STUDIO_BASE_URL": "",
+            "OPENAI_BASE_URL": "",
+        }
+        with patch.dict(os.environ, empty_gate_env, clear=False):
+            payload = hermes_agent_bridge_gate()
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["live_connectivity_claimed"])
+
+        live_gate_env = {**empty_gate_env, "HERMES_AGENT_ENABLED": "1", "DEEPSEEK_API_KEY": "present"}
+        with patch.dict(os.environ, live_gate_env, clear=False):
+            payload = hermes_agent_bridge_gate()
+        self.assertEqual(payload["status"], "passed")
+        self.assertTrue(payload["live_connectivity_claimed"])
 
     def test_tool_request_health_reports_runtime_port(self) -> None:
         payload, status = dispatch_action({"action": "hermes_agent.tool_request", "payload": {"message": "health"}}, port=8766)

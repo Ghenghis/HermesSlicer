@@ -29,6 +29,9 @@ DEFAULT_AGENTS = [
     {"id": "security", "display_name": "Security Agent", "provider": "deepseek", "voice": "en-US-JennyNeural"},
 ]
 
+HERMES_AGENT_PROVIDER_ENV_NAMES = ("DEEPSEEK_API_KEY", "MINIMAX_API_KEY", "SILICONFLOW_API_KEY")
+HERMES_AGENT_LOCAL_BACKEND_ENV_NAMES = ("HERMES_AGENT_BASE_URL", "LM_STUDIO_BASE_URL", "OPENAI_BASE_URL")
+
 ALLOWED_ACTIONS = [
     {
         "id": "bridge.health",
@@ -213,6 +216,46 @@ def save_agents(agents: list[dict[str, Any]]) -> None:
     (LOCAL_DIR / "agents.json").write_text(json.dumps({"agents": agents}, indent=2) + "\n", encoding="utf-8")
 
 
+def hermes_agent_bridge_gate() -> dict[str, Any]:
+    providers = {name: bool(os.environ.get(name)) for name in HERMES_AGENT_PROVIDER_ENV_NAMES}
+    local_backends = {name: bool(os.environ.get(name)) for name in HERMES_AGENT_LOCAL_BACKEND_ENV_NAMES}
+    enabled = os.environ.get("HERMES_AGENT_ENABLED") == "1"
+    backend_present = any(providers.values()) or any(local_backends.values())
+    available = enabled and backend_present
+    if available:
+        reason = "HERMES_AGENT_ENABLED=1 and at least one provider or local backend is present."
+    elif not enabled:
+        reason = "HERMES_AGENT_ENABLED=1 is required before claiming live Hermes Agent connectivity."
+    else:
+        reason = "A provider key or local backend endpoint is required before claiming live Hermes Agent connectivity."
+    return {
+        "status": "passed" if available else "blocked",
+        "available": available,
+        "live_connectivity_claimed": available,
+        "enabled": enabled,
+        "providers_present": providers,
+        "local_backends_present": local_backends,
+        "backend_present": backend_present,
+        "reason": reason,
+        "required": [
+            "HERMES_AGENT_ENABLED=1",
+            "one provider key: DEEPSEEK_API_KEY, MINIMAX_API_KEY, or SILICONFLOW_API_KEY",
+            "or one local backend endpoint: HERMES_AGENT_BASE_URL, LM_STUDIO_BASE_URL, or OPENAI_BASE_URL",
+        ],
+    }
+
+
+def as_user_session_gate() -> dict[str, Any]:
+    secret_present = bool(os.environ.get("HERMES_HUMAN_GRANT_SECRET"))
+    return {
+        "status": "blocked",
+        "granted": False,
+        "secret_present": secret_present,
+        "reason": "No active AS_USER session is granted in V1 proof. HERMES_HUMAN_GRANT_SECRET is required before a bounded human grant can be requested.",
+        "required": ["HERMES_HUMAN_GRANT_SECRET", "explicit scopes", "short TTL"],
+    }
+
+
 def health_payload(bind: str = DEFAULT_BIND, port: int = DEFAULT_PORT) -> dict[str, Any]:
     executables = discover_executables()
     return {
@@ -223,5 +266,6 @@ def health_payload(bind: str = DEFAULT_BIND, port: int = DEFAULT_PORT) -> dict[s
         "port": port,
         "executables": {name: bool(path) for name, path in executables.items()},
         "actions": [action["id"] for action in ALLOWED_ACTIONS],
+        "hermes_agent_bridge": hermes_agent_bridge_gate(),
         "proof_ledger": "proof/ledger.jsonl",
     }

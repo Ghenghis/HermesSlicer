@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 
-BASE = "http://127.0.0.1:8765"
+BASE = os.environ.get("HERMES_SLICER_BRIDGE_URL", "http://127.0.0.1:8765").rstrip("/")
 
 
 def request(path: str, method: str = "GET", payload: dict | None = None) -> tuple[int, dict]:

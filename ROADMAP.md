@@ -31,10 +31,12 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 | FLSUN T1/V400/S1 profile preflight | Complete | `proof/runtime/flsun-profile-inventory.json`, `proof/runtime/flsun-export-preflight.json` |
 | G-code export safety | Complete for V1 | Blocked by default unless `HERMES_ENABLE_EXPORT_GCODE=1`; printer start is not implemented |
 | Floating panel | Complete for V1 | `proof/screenshots/*.png`, `proof/runtime/screenshot-format.json` |
+| Login visual/geometry gate | Complete | `scripts/verify_login_geometry.py`, `proof/runtime/login-geometry.json` |
 | Hermes Agent local plugin wrapper | Complete for V1 | `integrations/hermes-slicer/`, `tests/test_hermes_integration.py` |
 | API contract drift guard | Complete | `api_contract.openapi.yaml`, `tests/test_api_contract.py` |
-| Hermes Proof MCP evidence channel | Partially connected | Evidence MCP verifies; Hermes Agent provider bridge is disabled |
+| Hermes Proof MCP evidence channel | Blocked in current session | `proof/runtime/hermes-proof-mcp.json`; current MCP transport is closed |
 | Root project license | Complete | `LICENSE`, `NOTICE` |
+| V1 release checklist | Blocked on external gates | `V1_RELEASE_CHECKLIST.md`, `proof/runtime/v1-release-checklist.json` |
 | Clean-clone release rehearsal | Scripted, not yet run in final pass | `scripts/clean_clone_rehearsal.ps1` |
 
 ## P0 Gates For V1 Complete
@@ -51,7 +53,7 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 
    Current observed state:
 
-   - Hermes Proof MCP evidence ledger: connected and hash chain verifies.
+   - Hermes Proof MCP evidence ledger: local artifact retains the last known verification, but the current MCP transport is closed.
    - Hermes Agent provider bridge: blocked because the bridge reports `bridge disabled`; external environment must enable `HERMES_AGENT_ENABLED=1` and provide a healthy provider backend.
    - Human AS_USER grant: blocked until external `HERMES_HUMAN_GRANT_SECRET` exists.
 
@@ -102,11 +104,13 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 
    ```powershell
    python -m unittest discover -s tests
-   python -m compileall hermes_slicer integrations scripts tests
-   python scripts\validate_submodules.py
-   powershell -ExecutionPolicy Bypass -File scripts\regenerate_proof.ps1
-   python scripts\redaction_scan.py .
-   ```
+python -m compileall hermes_slicer integrations scripts tests
+python scripts\validate_submodules.py
+powershell -ExecutionPolicy Bypass -File scripts\regenerate_proof.ps1
+python scripts\verify_login_geometry.py
+python scripts\write_v1_release_checklist.py
+python scripts\redaction_scan.py .
+```
 
 ## P1 After V1
 

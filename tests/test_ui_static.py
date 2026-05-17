@@ -37,6 +37,13 @@ class UiStaticTests(unittest.TestCase):
         self.assertIn("Email or username and password are required", script)
         self.assertIn("sessionStorage.setItem(\"hermesLocalSession\", \"connected\")", script)
 
+    def test_login_geometry_gate_tracks_reference_viewports(self) -> None:
+        gate = (ROOT / "scripts" / "verify_login_geometry.py").read_text(encoding="utf-8")
+        self.assertIn("desktop_1366x768", gate)
+        self.assertIn("desktop_1920x1080", gate)
+        self.assertIn("mobile_390x844", gate)
+        self.assertIn("89979c452028fbc0780dc0781acb8697764460c8c203ec57bb55968160ab77c8", gate)
+
     def test_brand_assets_are_present(self) -> None:
         for asset in (
             "hermes-slicer-login.png",

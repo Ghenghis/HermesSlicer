@@ -14,12 +14,14 @@ Finish V1 end to end without scope drift. The target is a proofable local sideca
 - [x] Add `ROADMAP.md` as the source of truth for V1 completion.
 - [x] Reframe the panel as a Hermes Agent tool console instead of a JusPrin-style slicer settings chatbot.
 - [x] Replace reference-login branding with a Hermes Slicer local-session gate.
+- [x] Add a login visual/geometry acceptance gate for 1366x768, 1920x1080, and mobile.
 - [ ] Enable/prove live Hermes Agent provider bridge connectivity, requiring external `HERMES_AGENT_ENABLED=1` plus a healthy provider backend.
 - [ ] Enable/prove bounded AS_USER session grants, or document missing external `HERMES_HUMAN_GRANT_SECRET` as a release blocker.
 - [x] Pick and add root `LICENSE` plus any needed `NOTICE`.
 - [ ] Run clean-clone rehearsal with submodules.
 - [ ] Refresh browser/panel screenshots from the final branch state.
 - [ ] Smoke the installable Hermes plugin against the active Hermes install.
+- [x] Add final V1 release checklist output with proof summary, blocked external credentials, and tag-readiness notes.
 - [ ] Run final proof command set and append Hermes Proof MCP evidence.
 - [ ] Tag the V1 release only after the above gates pass.
 
@@ -51,6 +53,8 @@ python -m unittest discover -s tests
 python -m compileall hermes_slicer integrations scripts tests
 python scripts\validate_submodules.py
 powershell -ExecutionPolicy Bypass -File scripts\regenerate_proof.ps1
+python scripts\verify_login_geometry.py
+python scripts\write_v1_release_checklist.py
 python scripts\redaction_scan.py .
 git status --short --branch
 ```

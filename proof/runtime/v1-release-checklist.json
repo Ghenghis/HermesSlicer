@@ -1,0 +1,171 @@
+{
+  "external_gates": {
+    "as_user_session": {
+      "granted": false,
+      "reason": "No active AS_USER session is granted in V1 proof. HERMES_HUMAN_GRANT_SECRET is required before a bounded human grant can be requested.",
+      "required": [
+        "HERMES_HUMAN_GRANT_SECRET",
+        "explicit scopes",
+        "short TTL"
+      ],
+      "secret_present": false,
+      "status": "blocked"
+    },
+    "blocked": [
+      {
+        "gate": "live_hermes_agent_provider_bridge",
+        "reason": "HERMES_AGENT_ENABLED=1 is required before claiming live Hermes Agent connectivity.",
+        "required": [
+          "HERMES_AGENT_ENABLED=1",
+          "one provider key: DEEPSEEK_API_KEY, MINIMAX_API_KEY, or SILICONFLOW_API_KEY",
+          "or one local backend endpoint: HERMES_AGENT_BASE_URL, LM_STUDIO_BASE_URL, or OPENAI_BASE_URL"
+        ]
+      },
+      {
+        "gate": "bounded_as_user_grants",
+        "reason": "No active AS_USER session is granted in V1 proof. HERMES_HUMAN_GRANT_SECRET is required before a bounded human grant can be requested.",
+        "required": [
+          "HERMES_HUMAN_GRANT_SECRET",
+          "explicit scopes",
+          "short TTL"
+        ]
+      },
+      {
+        "gate": "hermes_proof_mcp_transport",
+        "reason": "Hermes Proof MCP transport is closed in the current Codex session; local proof ledger remains available.",
+        "required": [
+          "working Hermes Proof MCP transport",
+          "successful evidence verification"
+        ]
+      },
+      {
+        "gate": "active_hermes_plugin_smoke",
+        "reason": "No proof artifact exists for an active Hermes install loading integrations/hermes-slicer.",
+        "required": [
+          "HERMES_ENABLE_PROJECT_PLUGINS=1",
+          "active hermes CLI/install"
+        ]
+      }
+    ],
+    "hermes_agent_bridge": {
+      "available": false,
+      "backend_present": true,
+      "enabled": false,
+      "live_connectivity_claimed": false,
+      "local_backends_present": {
+        "HERMES_AGENT_BASE_URL": false,
+        "LM_STUDIO_BASE_URL": false,
+        "OPENAI_BASE_URL": true
+      },
+      "providers_present": {
+        "DEEPSEEK_API_KEY": false,
+        "MINIMAX_API_KEY": false,
+        "SILICONFLOW_API_KEY": false
+      },
+      "reason": "HERMES_AGENT_ENABLED=1 is required before claiming live Hermes Agent connectivity.",
+      "required": [
+        "HERMES_AGENT_ENABLED=1",
+        "one provider key: DEEPSEEK_API_KEY, MINIMAX_API_KEY, or SILICONFLOW_API_KEY",
+        "or one local backend endpoint: HERMES_AGENT_BASE_URL, LM_STUDIO_BASE_URL, or OPENAI_BASE_URL"
+      ],
+      "status": "blocked"
+    },
+    "proof_mcp": {
+      "available": false,
+      "evidence_ledger_ok": false,
+      "last_known": {
+        "available": true,
+        "chained_entries": 695,
+        "evidence_ledger_ok": true,
+        "first_break": null,
+        "total_entries": 718,
+        "unchained_entries": 23
+      },
+      "reason": "Hermes Proof MCP transport is closed in the current Codex session; local proof ledger remains available."
+    }
+  },
+  "generated_at": "2026-05-17T05:18:37.193892+00:00",
+  "proof_summary": {
+    "clean_clone_rehearsal": {
+      "bytes": 0,
+      "exists": false,
+      "file": "proof/runtime/clean-clone-rehearsal.json"
+    },
+    "failed": [],
+    "local_proof_files": [
+      {
+        "bytes": 1975,
+        "exists": true,
+        "file": "proof/runtime/bridge-health.json"
+      },
+      {
+        "bytes": 2293,
+        "exists": true,
+        "file": "proof/runtime/smoke-report.md"
+      },
+      {
+        "bytes": 122,
+        "exists": true,
+        "file": "proof/runtime/proof-validation.json"
+      },
+      {
+        "bytes": 673,
+        "exists": true,
+        "file": "proof/runtime/screenshot-format.json"
+      },
+      {
+        "bytes": 2717,
+        "exists": true,
+        "file": "proof/runtime/login-geometry.json"
+      },
+      {
+        "bytes": 762,
+        "exists": true,
+        "file": "proof/runtime/hermes-proof-mcp.json"
+      },
+      {
+        "bytes": 4174,
+        "exists": true,
+        "file": "proof/runtime/submodule-stack.json"
+      },
+      {
+        "bytes": 2275,
+        "exists": true,
+        "file": "proof/runtime/flsun-export-preflight.json"
+      },
+      {
+        "bytes": 1975,
+        "exists": true,
+        "file": "proof/runtime/hermes-tool-health.json"
+      },
+      {
+        "bytes": 2275,
+        "exists": true,
+        "file": "proof/runtime/hermes-tool-export_preflight.json"
+      },
+      {
+        "bytes": 2705,
+        "exists": true,
+        "file": "proof/runtime/hermes-tool-tool_request.json"
+      },
+      {
+        "bytes": 456,
+        "exists": true,
+        "file": "proof/security/redaction-report.md"
+      }
+    ],
+    "missing": [],
+    "plugin_smoke": {
+      "bytes": 0,
+      "exists": false,
+      "file": "proof/runtime/hermes-plugin-smoke.json"
+    }
+  },
+  "status": "blocked",
+  "tag_readiness": {
+    "clean_clone_rehearsal_passed": false,
+    "local_gates_ready": true,
+    "notes": "Do not tag V1 until clean-clone rehearsal passes and external live-agent/plugin gates are proved or explicitly accepted as release-blocking owner decisions.",
+    "ready": false
+  }
+}

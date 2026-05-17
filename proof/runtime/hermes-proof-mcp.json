@@ -1,13 +1,18 @@
 {
-  "status": "partial",
+  "status": "blocked",
   "date": "2026-05-16",
   "proof_mcp": {
-    "available": true,
-    "evidence_ledger_ok": true,
-    "total_entries": 718,
-    "chained_entries": 695,
-    "unchained_entries": 23,
-    "first_break": null
+    "available": false,
+    "evidence_ledger_ok": false,
+    "reason": "Hermes Proof MCP transport is closed in the current Codex session; local proof ledger remains available.",
+    "last_known": {
+      "available": true,
+      "evidence_ledger_ok": true,
+      "total_entries": 718,
+      "chained_entries": 695,
+      "unchained_entries": 23,
+      "first_break": null
+    }
   },
   "hermes_agent_bridge": {
     "available": false,

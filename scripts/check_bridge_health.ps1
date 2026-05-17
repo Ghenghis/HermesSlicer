@@ -1,4 +1,18 @@
+param(
+    [string]$BridgeUrl = ""
+)
+
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-Invoke-RestMethod -Uri "http://127.0.0.1:8765/health" -Method Get
+if ([string]::IsNullOrWhiteSpace($BridgeUrl)) {
+    if ($env:HERMES_SLICER_BRIDGE_URL) {
+        $BridgeUrl = $env:HERMES_SLICER_BRIDGE_URL
+    }
+    else {
+        $BridgeUrl = "http://127.0.0.1:8765"
+    }
+}
+
+$BridgeUrl = $BridgeUrl.TrimEnd("/")
+Invoke-RestMethod -Uri "$BridgeUrl/health" -Method Get

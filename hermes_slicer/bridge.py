@@ -8,7 +8,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 from . import __version__
-from .config import ALLOWED_ACTIONS, DEFAULT_BIND, DEFAULT_PORT, ROOT, WEB_DIR, health_payload, load_agents, save_agents
+from .config import ALLOWED_ACTIONS, DEFAULT_BIND, DEFAULT_PORT, ROOT, WEB_DIR, as_user_session_gate, health_payload, hermes_agent_bridge_gate, load_agents, save_agents
 from .proof import log_event, recent_events, write_json
 from .security import sanitize_obj, secret_presence
 from .slicer import ValidationError, dry_run_slice, export_gcode, flsun_export_preflight, flsun_profile_inventory, list_orca_profiles, orca_version_check
@@ -416,8 +416,8 @@ def hermes_proof_mcp_status() -> dict[str, object]:
         "status": status,
         "proof_file": "proof/runtime/hermes-proof-mcp.json",
         "proof_mcp": payload.get("proof_mcp", {}),
-        "hermes_agent_bridge": payload.get("hermes_agent_bridge", {}),
-        "as_user_session": payload.get("as_user_session", {}),
+        "hermes_agent_bridge": hermes_agent_bridge_gate(),
+        "as_user_session": as_user_session_gate(),
         "evidence_id": payload.get("evidence_id"),
     }
 

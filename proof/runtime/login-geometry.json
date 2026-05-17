@@ -1,0 +1,98 @@
+{
+  "asset": {
+    "expected_sha256": "89979c452028fbc0780dc0781acb8697764460c8c203ec57bb55968160ab77c8",
+    "expected_size": {
+      "height": 718,
+      "width": 1120
+    },
+    "file": "web/assets/hermes-slicer-login.png",
+    "sha256": "89979c452028fbc0780dc0781acb8697764460c8c203ec57bb55968160ab77c8",
+    "size": {
+      "height": 718,
+      "width": 1120
+    }
+  },
+  "errors": [],
+  "screenshot": {
+    "exists": true,
+    "file": "proof/screenshots/login-hermes-slicer.jpg",
+    "image_signature": "jpeg"
+  },
+  "source_checks": {
+    "forbidden_text_absent": true,
+    "required_css_markers": [
+      "width: min(900px, calc((100vh - 16px) * 0.8), 94vw);",
+      ".auth-card",
+      "width: 65.5%;",
+      "@media (max-width: 520px)",
+      "width: min(100%, 430px);",
+      "max-height: 30vh;",
+      "@media (max-height: 820px) and (min-width: 621px)",
+      "padding: 12px 20px;"
+    ],
+    "required_html_markers": [
+      "id=\"authGate\"",
+      "class=\"auth-shell\"",
+      "class=\"auth-logo\"",
+      "src=\"/assets/hermes-slicer-login.png\"",
+      "id=\"authForm\"",
+      "id=\"authEmail\"",
+      "id=\"authPassword\"",
+      "id=\"authPasswordToggle\"",
+      "id=\"authContinue\"",
+      "id=\"authCreate\"",
+      "Hermes Slicer login",
+      "Email or Username",
+      "Sign In",
+      "Sign Up / Create Account"
+    ]
+  },
+  "status": "passed",
+  "viewports": {
+    "desktop_1366x768": {
+      "card_to_shell_ratio": 0.655,
+      "card_width_px": 394.05,
+      "estimated_card_height_px": 361,
+      "estimated_total_height_px": 726.67,
+      "full_card_visible": true,
+      "logo_height_px": 385.67,
+      "logo_width_px": 601.6,
+      "mode": "desktop_compact",
+      "shell_width_px": 601.6,
+      "viewport": {
+        "height": 768,
+        "width": 1366
+      }
+    },
+    "desktop_1920x1080": {
+      "card_to_shell_ratio": 0.655,
+      "card_width_px": 557.54,
+      "estimated_card_height_px": 560,
+      "estimated_total_height_px": 1079.36,
+      "full_card_visible": true,
+      "logo_height_px": 545.68,
+      "logo_width_px": 851.2,
+      "mode": "desktop_full",
+      "shell_width_px": 851.2,
+      "viewport": {
+        "height": 1080,
+        "width": 1920
+      }
+    },
+    "mobile_390x844": {
+      "card_to_shell_ratio": 1.0,
+      "card_width_px": 366,
+      "estimated_card_height_px": 541,
+      "estimated_total_height_px": 806.2,
+      "full_card_visible": true,
+      "logo_height_px": 253.2,
+      "logo_width_px": 397.8,
+      "mode": "mobile",
+      "shell_width_px": 366,
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    }
+  }
+}
