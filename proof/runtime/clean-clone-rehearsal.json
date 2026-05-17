@@ -1,11 +1,11 @@
 {
     "status":  "passed",
-    "started_at":  "2026-05-17T02:58:34.1521764-07:00",
+    "started_at":  "2026-05-17T07:28:16.8109889-07:00",
     "remote_url":  "https://github.com/Ghenghis/HermesSlicer.git",
     "branch":  "main",
-    "clone_path":  "G:\\Github\\HermesSlicer-clean-rehearsals\\HermesSlicer-v1-20260517-025834",
+    "clone_path":  "C:\\Users\\Admin\\AppData\\Local\\Temp\\HermesSlicer-rehearsals\\HermesSlicer-v1-20260517-072816",
     "proof_skipped":  false,
-    "bridge_url":  "http://127.0.0.1:8767",
+    "bridge_url":  "http://127.0.0.1:8766",
     "steps":  [
                   {
                       "name":  "git clone --recurse-submodules",
@@ -32,5 +32,5 @@
                       "status":  "passed"
                   }
               ],
-    "finished_at":  "2026-05-17T03:06:50.0229389-07:00"
+    "finished_at":  "2026-05-17T07:38:02.0786992-07:00"
 }
