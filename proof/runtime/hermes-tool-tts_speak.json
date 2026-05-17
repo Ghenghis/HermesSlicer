@@ -1,0 +1,33 @@
+{
+  "action": "tts.speak",
+  "agent": "orchestrator",
+  "azure_gate": {
+    "azure_key_present": false,
+    "azure_region_present": false,
+    "live_playback_adapter": "not_implemented_in_v1",
+    "tts_opt_in_env": "HERMES_ENABLE_TTS",
+    "tts_opt_in_present": false
+  },
+  "azure_key_present": false,
+  "azure_region_present": false,
+  "catalog_source": "generated_safe_catalog",
+  "catalog_voice_count": 12,
+  "generated_at": "2026-05-17T18:15:09.987026+00:00",
+  "playback": "not_attempted",
+  "reason": "Azure Speech credentials are not present in this shell.",
+  "request": {
+    "agent": "orchestrator",
+    "text": "HermesSlicer TTS probe.",
+    "voice": "en-US-JennyNeural"
+  },
+  "result": {
+    "agent": "orchestrator",
+    "playback": "not_attempted",
+    "reason": "Azure Speech credentials are not present in this shell.",
+    "status": "blocked",
+    "voice": "en-US-JennyNeural"
+  },
+  "status": "blocked",
+  "tts_opt_in_present": false,
+  "voice": "en-US-JennyNeural"
+}

@@ -13,8 +13,10 @@
       "hermes-tool-export_preflight.json": "passed",
       "hermes-tool-health.json": "ok",
       "hermes-tool-tool_request.json": "passed",
+      "hermes-tool-tts_speak.json": "blocked",
       "login-geometry.json": "passed",
       "printer-observation.json": "passed",
+      "printer-safety-gate.json": "passed",
       "screenshot-format.json": "passed",
       "v1-release-checklist.json": "blocked"
     },
@@ -28,7 +30,7 @@
   "errors": [],
   "ledger": {
     "errors": [],
-    "events": 62,
+    "events": 69,
     "path": "G:\\Github\\HermesSlicer\\proof\\ledger.jsonl",
     "status": "passed"
   },

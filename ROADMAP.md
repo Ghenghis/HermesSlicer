@@ -140,11 +140,23 @@ python scripts\redaction_scan.py .
 ## P1 After V1
 
 - Replace the lightweight JSON-RPC MCP foundation with the official `upstream/mcp-python-sdk` server wrapper if Hermes requires SDK-native transport semantics.
-- Add live Azure TTS playback behind explicit credentials and opt-in proof.
+- Add live Azure TTS playback behind Azure Speech credentials, `HERMES_ENABLE_TTS=1`, and a proof artifact that records playback as synthesized or played.
 - Add optional G-code export proof with an explicit local operator gate.
 - Add Moonraker/OctoPrint/Klipper upload-only research gates after read-only observation is proved and scoped.
 - Add printer start only after a separate human-confirmed safety design.
 - Promote Hermes Agent computer-use only after V1, starting read-only and gated by explicit AS_USER scope plus a visual proof run against the HermesSlicer UI.
+
+## V2 Carry-Forward From Hermes3D
+
+The following Hermes3D patterns are intentionally not enabled as V1 printer actuation, but they are included in the V2 work queue so the project does not lose the path:
+
+- Port the Hermes3D safety bundle pattern into a full HermesSlicer safety decision object: camera freshness, plate-clear classification, truth-gate pass, approval state, incident state, and printer policy.
+- Add camera observer evidence capture with operator-approved snapshots, redacted proof artifacts, and a hard failure if a camera endpoint is stale, ambiguous, or unreachable.
+- Add watchdog loop: poll printer state, classify INFO/WARN/HARD STOP, speak or show the alert, append proof, and wait for operator decision.
+- Add Moonraker/OctoPrint write adapters only after read-only proof, AS_USER scope, printer lock, approval, cleared-plate proof, and rollback/stop evidence are all passing.
+- Add real emergency-stop transport only after a mocked HARD STOP budget proof passes and the operator confirms the exact supported printer backend.
+- Add Azure STT and live TTS using the Hermes3D voice route pattern, with credential presence, explicit opt-in, timeout, transcript/audio proof, and text fallback.
+- Add signed proof envelopes or hash-chained bundles if local JSONL proof is no longer strong enough for release evidence.
 
 ## Release Rule
 

@@ -1,10 +1,10 @@
 # HermesSlicer V1 Release Checklist
 
-Generated: 2026-05-17T17:21:50.420925+00:00
+Generated: 2026-05-17T18:15:14.789174+00:00
 
 ## Proof Summary
 
-- Local proof files present: 16/16
+- Local proof files present: 18/18
 - Missing proof files: none
 - Failed/invalid proof files: none
 - Clean-clone rehearsal: passed

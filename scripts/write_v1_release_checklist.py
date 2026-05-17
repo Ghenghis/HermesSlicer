@@ -26,9 +26,11 @@ LOCAL_PROOF_FILES = (
     "proof/runtime/submodule-stack.json",
     "proof/runtime/flsun-export-preflight.json",
     "proof/runtime/printer-observation.json",
+    "proof/runtime/printer-safety-gate.json",
     "proof/runtime/hermes-tool-health.json",
     "proof/runtime/hermes-tool-export_preflight.json",
     "proof/runtime/hermes-tool-tool_request.json",
+    "proof/runtime/hermes-tool-tts_speak.json",
     "proof/security/redaction-report.md",
 )
 

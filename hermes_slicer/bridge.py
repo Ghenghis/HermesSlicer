@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import mimetypes
+import os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlparse
@@ -11,9 +12,12 @@ from . import __version__
 from .config import ALLOWED_ACTIONS, DEFAULT_BIND, DEFAULT_PORT, ROOT, WEB_DIR, as_user_session_gate, health_payload, hermes_agent_bridge_gate, load_agents, save_agents
 from .proof import log_event, recent_events, write_json
 from .printers import observe_printers, printer_targets
+from .safety import hard_stop_proof, record_camera_frame_event, record_plate_classification_event, safety_state
 from .security import sanitize_obj, secret_presence
 from .slicer import ValidationError, dry_run_slice, export_gcode, flsun_export_preflight, flsun_profile_inventory, list_orca_profiles, orca_version_check
 from .voices import load_voice_catalog
+
+TTS_ENABLE_ENV = "HERMES_ENABLE_TTS"
 
 
 ACTION_ROUTES = {
@@ -24,6 +28,10 @@ ACTION_ROUTES = {
     "orca.flsun_inventory": ("GET", "/api/orca/flsun"),
     "printer.targets": ("GET", "/api/printers/targets"),
     "printer.observe": ("POST", "/api/printers/observe"),
+    "printer.safety_state": ("POST", "/api/printers/safety-state"),
+    "printer.safety_event.camera_frame": ("POST", "/api/printers/safety-events/camera-frame"),
+    "printer.safety_event.plate_classification": ("POST", "/api/printers/safety-events/plate-classification"),
+    "printer.hard_stop_proof": ("POST", "/api/printers/hard-stop-proof"),
     "agents.list": ("GET", "/api/agents"),
     "proof.recent": ("GET", "/api/proof/recent"),
     "hermes.proof_mcp": ("GET", "/api/hermes/proof-mcp"),
@@ -156,6 +164,26 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 write_json(ROOT / "proof" / "runtime" / "printer-observation.json", payload)
                 self.respond_json(payload)
                 return
+            if route == "/api/printers/safety-state":
+                payload = safety_state(body)
+                log_event("bridge", "printer.safety_state", payload["status"], inputs=body, outputs=payload)
+                self.respond_json(payload)
+                return
+            if route == "/api/printers/safety-events/camera-frame":
+                payload = record_camera_frame_event(body)
+                log_event("bridge", "printer.safety_event.camera_frame", payload["status"], inputs=body, outputs=payload)
+                self.respond_json(payload)
+                return
+            if route == "/api/printers/safety-events/plate-classification":
+                payload = record_plate_classification_event(body)
+                log_event("bridge", "printer.safety_event.plate_classification", payload["status"], inputs=body, outputs=payload)
+                self.respond_json(payload)
+                return
+            if route == "/api/printers/hard-stop-proof":
+                payload = hard_stop_proof(body)
+                log_event("bridge", "printer.hard_stop_proof", payload["status"], inputs=body, outputs=payload)
+                self.respond_json(payload)
+                return
             if route in {"/api/hermes-agent/tool-request", "/api/chat/message"}:
                 bind, port = _server_bind_port(self.server)
                 payload = hermes_agent_tool_request(body, bind=bind, port=port)
@@ -177,7 +205,7 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 self.respond_json({"status": "passed", "agents": agents})
                 return
             self.respond_json({"error": "Unknown endpoint"}, status=404)
-        except ValidationError as exc:
+        except (ValidationError, ValueError) as exc:
             log_event("bridge", route, "failed", inputs={"path": route}, outputs={"error": str(exc)})
             self.respond_json({"error": str(exc)}, status=400)
         except json.JSONDecodeError:
@@ -252,6 +280,18 @@ def dispatch_action(body: dict[str, object], bind: str = DEFAULT_BIND, port: int
     if action == "printer.observe":
         request_payload = payload if isinstance(payload, dict) else {}
         return observe_printers(request_payload), 200
+    if action == "printer.safety_state":
+        request_payload = payload if isinstance(payload, dict) else {}
+        return safety_state(request_payload), 200
+    if action == "printer.safety_event.camera_frame":
+        request_payload = payload if isinstance(payload, dict) else {}
+        return record_camera_frame_event(request_payload), 200
+    if action == "printer.safety_event.plate_classification":
+        request_payload = payload if isinstance(payload, dict) else {}
+        return record_plate_classification_event(request_payload), 200
+    if action == "printer.hard_stop_proof":
+        request_payload = payload if isinstance(payload, dict) else {}
+        return hard_stop_proof(request_payload), 200
     if action == "agents.list":
         return {"agents": load_agents()}, 200
     if action == "proof.recent":
@@ -475,13 +515,25 @@ def tts_speak(body: dict[str, object]) -> dict[str, object]:
             "playback": "not_attempted",
             "reason": "Azure Speech credentials are not present in this shell.",
         }
+    if not _truthy_env(TTS_ENABLE_ENV):
+        return {
+            "status": "blocked",
+            "agent": agent,
+            "voice": voice,
+            "playback": "not_attempted",
+            "reason": f"{TTS_ENABLE_ENV}=1 is required before live Azure TTS playback can be attempted.",
+        }
     return {
         "status": "blocked",
         "agent": agent,
         "voice": voice,
         "playback": "not_attempted",
-        "reason": "Live Azure playback adapter is not enabled in V1.",
+        "reason": "Live Azure playback adapter is not implemented in V1.",
     }
+
+
+def _truthy_env(name: str) -> bool:
+    return os.environ.get(name, "").strip().lower() in {"1", "true", "yes", "on", "passed", "ok"}
 
 
 def run(host: str = DEFAULT_BIND, port: int = DEFAULT_PORT) -> None:

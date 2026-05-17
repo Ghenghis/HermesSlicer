@@ -104,6 +104,34 @@ ALLOWED_ACTIONS = [
         "destructive": False,
     },
     {
+        "id": "printer.safety_state",
+        "method": "POST",
+        "path": "/api/printers/safety-state",
+        "description": "Return the default-deny camera and plate-clear safety gate state without printer commands.",
+        "destructive": False,
+    },
+    {
+        "id": "printer.safety_event.camera_frame",
+        "method": "POST",
+        "path": "/api/printers/safety-events/camera-frame",
+        "description": "Record proof-only camera frame freshness for the printer safety gate.",
+        "destructive": False,
+    },
+    {
+        "id": "printer.safety_event.plate_classification",
+        "method": "POST",
+        "path": "/api/printers/safety-events/plate-classification",
+        "description": "Record proof-only build-plate classification for the printer safety gate.",
+        "destructive": False,
+    },
+    {
+        "id": "printer.hard_stop_proof",
+        "method": "POST",
+        "path": "/api/printers/hard-stop-proof",
+        "description": "Emit a HARD STOP proof payload. V1 never sends heater, motion, upload, or start commands.",
+        "destructive": False,
+    },
+    {
         "id": "agents.list",
         "method": "GET",
         "path": "/api/agents",
@@ -157,7 +185,7 @@ ALLOWED_ACTIONS = [
         "id": "tts.speak",
         "method": "POST",
         "path": "/api/tts/speak",
-        "description": "Validate a local TTS request and block playback until Azure Speech credentials are present.",
+        "description": "Validate a local TTS request and block playback until Azure Speech credentials and explicit operator opt-in are present.",
         "destructive": False,
     },
 ]

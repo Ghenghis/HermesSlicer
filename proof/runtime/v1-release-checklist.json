@@ -215,7 +215,7 @@
         },
         "plugin_dir": ".hermes\\plugins\\hermes-slicer",
         "registered_tool": {
-          "action_count": 15,
+          "action_count": 19,
           "description": "Route Hermes Agent tool requests to safe local HermesSlicer bridge, Orca/FLSUN, read-only printer observation, proof, and blocked export actions.",
           "name": "hermes_agent_tools",
           "toolset": "hermes_agent"
@@ -233,7 +233,7 @@
         },
         "plugin_dir": ".hermes\\plugins\\hermes-slicer",
         "registered_tool": {
-          "action_count": 15,
+          "action_count": 19,
           "description": "Route Hermes Agent tool requests to safe local HermesSlicer bridge, Orca/FLSUN, read-only printer observation, proof, and blocked export actions.",
           "name": "hermes_agent_tools",
           "toolset": "hermes_agent"
@@ -241,7 +241,7 @@
         "root_resolution": "cwd_fallback",
         "status": "passed"
       },
-      "generated_at": "2026-05-17T17:16:12.312261+00:00",
+      "generated_at": "2026-05-17T18:15:13.062891+00:00",
       "integration_plugin": {
         "checks": {
           "handler_callable": true,
@@ -252,7 +252,7 @@
         },
         "plugin_dir": "integrations\\hermes-slicer",
         "registered_tool": {
-          "action_count": 15,
+          "action_count": 19,
           "description": "Route Hermes Agent tool requests to safe local HermesSlicer bridge, Orca/FLSUN, read-only printer observation, proof, and blocked export actions.",
           "name": "hermes_agent_tools",
           "toolset": "hermes_agent"
@@ -308,17 +308,17 @@
       "workspace_scope_ok": true
     }
   },
-  "generated_at": "2026-05-17T17:21:50.420925+00:00",
+  "generated_at": "2026-05-17T18:15:14.789174+00:00",
   "proof_summary": {
     "clean_clone_rehearsal": {
-      "bytes": 1480,
+      "bytes": 1451,
       "exists": true,
       "file": "proof/runtime/clean-clone-rehearsal.json"
     },
     "failed": [],
     "local_proof_files": [
       {
-        "bytes": 2964,
+        "bytes": 3152,
         "exists": true,
         "file": "proof/runtime/bridge-health.json"
       },
@@ -328,7 +328,7 @@
         "file": "proof/runtime/smoke-report.md"
       },
       {
-        "bytes": 1251,
+        "bytes": 1344,
         "exists": true,
         "file": "proof/runtime/proof-validation.json"
       },
@@ -378,7 +378,12 @@
         "file": "proof/runtime/printer-observation.json"
       },
       {
-        "bytes": 2964,
+        "bytes": 8658,
+        "exists": true,
+        "file": "proof/runtime/printer-safety-gate.json"
+      },
+      {
+        "bytes": 3152,
         "exists": true,
         "file": "proof/runtime/hermes-tool-health.json"
       },
@@ -391,6 +396,11 @@
         "bytes": 2705,
         "exists": true,
         "file": "proof/runtime/hermes-tool-tool_request.json"
+      },
+      {
+        "bytes": 1020,
+        "exists": true,
+        "file": "proof/runtime/hermes-tool-tts_speak.json"
       },
       {
         "bytes": 456,

@@ -121,6 +121,58 @@ def validate_computer_use_artifact(computer_use: dict[str, Any]) -> list[str]:
     return errors
 
 
+def validate_tts_speak_artifact(tts_speak: dict[str, Any]) -> list[str]:
+    path = "proof/runtime/hermes-tool-tts_speak.json"
+    errors = status_errors(path, tts_speak, {"passed", "blocked"})
+    for key in ("action", "agent", "voice", "playback", "request", "result", "azure_gate"):
+        if key not in tts_speak:
+            errors.append(f"{path} is missing required key {key!r}")
+    if tts_speak.get("action") != "tts.speak":
+        errors.append(f"{path} action must be 'tts.speak'")
+    if tts_speak.get("playback") not in {"not_attempted", "synthesized", "played"}:
+        errors.append(f"{path} has unexpected playback {tts_speak.get('playback')!r}")
+    request = tts_speak.get("request", {})
+    if not isinstance(request, dict) or not request.get("text") or not request.get("voice") or not request.get("agent"):
+        errors.append(f"{path} request must include text, voice, and agent")
+    result = tts_speak.get("result", {})
+    if not isinstance(result, dict):
+        errors.append(f"{path} result must be an object")
+    elif result.get("status") not in {"passed", "blocked"}:
+        errors.append(f"{path} result has unexpected status {result.get('status')!r}")
+    gate = tts_speak.get("azure_gate", {})
+    if not isinstance(gate, dict):
+        errors.append(f"{path} azure_gate must be an object")
+    elif "azure_key_present" not in gate or "azure_region_present" not in gate or "tts_opt_in_present" not in gate:
+        errors.append(f"{path} azure_gate is missing credential/opt-in presence flags")
+    if status_of(tts_speak) == "passed" and tts_speak.get("playback") == "not_attempted":
+        errors.append(f"{path} is passed but playback was not attempted")
+    return errors
+
+
+def validate_printer_safety_artifact(printer_safety: dict[str, Any]) -> list[str]:
+    path = "proof/runtime/printer-safety-gate.json"
+    errors = status_errors(path, printer_safety, {"passed"})
+    checks = printer_safety.get("checks", {})
+    if not isinstance(checks, dict):
+        errors.append(f"{path} checks must be an object")
+    else:
+        for key in ("default_blocks", "clear_gate_can_identify_safe_plate", "obstruction_blocks", "hard_stop_blocks_commands"):
+            if checks.get(key) is not True:
+                errors.append(f"{path} check {key!r} must be true")
+    hard_stop = printer_safety.get("hard_stop", {})
+    if not isinstance(hard_stop, dict) or hard_stop.get("status") != "blocked":
+        errors.append(f"{path} hard_stop must be blocked")
+    safety = hard_stop.get("safety", {}) if isinstance(hard_stop, dict) else {}
+    if not isinstance(safety, dict):
+        errors.append(f"{path} hard_stop.safety must be an object")
+    else:
+        if safety.get("start_print") != "blocked_in_v1":
+            errors.append(f"{path} must prove start_print is blocked_in_v1")
+        if safety.get("heater_or_motion_commands") != "not_implemented":
+            errors.append(f"{path} must prove heater_or_motion_commands are not_implemented")
+    return errors
+
+
 def validate_artifacts() -> dict[str, Any]:
     errors: list[str] = []
     artifacts: dict[str, Any] = {}
@@ -201,6 +253,12 @@ def validate_artifacts() -> dict[str, Any]:
         artifacts["hermes-tool-tool_request.json"] = status_of(tool_request)
         errors.extend(validate_required_artifact("proof/runtime/hermes-tool-tool_request.json", tool_request, ("resolved_action", "result")))
 
+    tool_tts, tool_tts_errors = load_json("proof/runtime/hermes-tool-tts_speak.json")
+    errors.extend(tool_tts_errors)
+    if tool_tts:
+        artifacts["hermes-tool-tts_speak.json"] = status_of(tool_tts)
+        errors.extend(validate_tts_speak_artifact(tool_tts))
+
     flsun_inventory, flsun_inventory_errors = load_json("proof/runtime/flsun-profile-inventory.json")
     errors.extend(flsun_inventory_errors)
     if flsun_inventory:
@@ -233,6 +291,12 @@ def validate_artifacts() -> dict[str, Any]:
         for target in printer_observation.get("targets", []):
             if isinstance(target, dict) and target.get("safety", {}).get("start_print") != "not_attempted":
                 errors.append(f"printer observation target {target.get('target', {}).get('id')} attempted a print start")
+
+    printer_safety, printer_safety_errors = load_json("proof/runtime/printer-safety-gate.json")
+    errors.extend(printer_safety_errors)
+    if printer_safety:
+        artifacts["printer-safety-gate.json"] = status_of(printer_safety)
+        errors.extend(validate_printer_safety_artifact(printer_safety))
 
     clean_clone, clean_errors = load_json("proof/runtime/clean-clone-rehearsal.json")
     errors.extend(clean_errors)

@@ -49,6 +49,38 @@ paths:
           description: OK, partial, or safely blocked by unreachable targets
         "400":
           description: Invalid request
+  /api/printers/safety-state:
+    post:
+      summary: Return default-deny camera and plate-clear safety gate state without printer commands
+      responses:
+        "200":
+          description: Safety state returned; V1 stays proof-only
+        "400":
+          description: Invalid request
+  /api/printers/safety-events/camera-frame:
+    post:
+      summary: Record proof-only camera frame freshness for the printer safety gate
+      responses:
+        "200":
+          description: Event recorded into local safety gate state
+        "400":
+          description: Invalid request
+  /api/printers/safety-events/plate-classification:
+    post:
+      summary: Record proof-only build-plate classification for the printer safety gate
+      responses:
+        "200":
+          description: Event recorded into local safety gate state
+        "400":
+          description: Invalid request
+  /api/printers/hard-stop-proof:
+    post:
+      summary: Emit a HARD STOP proof payload without heater, motion, upload, or print-start commands
+      responses:
+        "200":
+          description: HARD STOP proof payload returned
+        "400":
+          description: Invalid request
   /api/voices/azure/en:
     get:
       summary: Return the generated safe Azure English voice catalog

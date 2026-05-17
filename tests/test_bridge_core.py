@@ -24,6 +24,10 @@ class BridgeCoreTests(unittest.TestCase):
         self.assertIn("orca.flsun_inventory", ids)
         self.assertIn("printer.targets", ids)
         self.assertIn("printer.observe", ids)
+        self.assertIn("printer.safety_state", ids)
+        self.assertIn("printer.safety_event.camera_frame", ids)
+        self.assertIn("printer.safety_event.plate_classification", ids)
+        self.assertIn("printer.hard_stop_proof", ids)
         self.assertIn("agents.list", ids)
         self.assertIn("proof.recent", ids)
         self.assertIn("hermes.proof_mcp", ids)
@@ -359,6 +363,33 @@ class BridgeCoreTests(unittest.TestCase):
         payload = tts_speak({"voice": "en-US-JennyNeural", "text": "Hermes voice smoke test."})
         self.assertIn(payload["status"], {"blocked", "passed"})
         self.assertNotIn("key", jsonish(payload).lower())
+
+    def test_tts_requires_explicit_opt_in_after_credentials(self) -> None:
+        with patch.dict(
+            os.environ,
+            {
+                "AZURE_SPEECH_KEY": "present",
+                "AZURE_SPEECH_REGION": "eastus",
+                "HERMES_ENABLE_TTS": "",
+            },
+            clear=False,
+        ):
+            payload = tts_speak({"voice": "en-US-JennyNeural", "text": "Hermes voice smoke test."})
+        self.assertEqual(payload["status"], "blocked")
+        self.assertIn("HERMES_ENABLE_TTS=1", payload["reason"])
+
+        with patch.dict(
+            os.environ,
+            {
+                "AZURE_SPEECH_KEY": "present",
+                "AZURE_SPEECH_REGION": "eastus",
+                "HERMES_ENABLE_TTS": "1",
+            },
+            clear=False,
+        ):
+            payload = tts_speak({"voice": "en-US-JennyNeural", "text": "Hermes voice smoke test."})
+        self.assertEqual(payload["status"], "blocked")
+        self.assertIn("not implemented in V1", payload["reason"])
 
     def test_bridge_rejects_non_loopback_bind_forms(self) -> None:
         for host in ("0.0.0.0", "::", "192.168.1.10", "localhost"):

@@ -1,0 +1,275 @@
+{
+  "camera_event": {
+    "camera_id": "proof-camera",
+    "event": "camera_frame",
+    "safety": {
+      "allowed_probe_methods": [
+        "GET",
+        "proof-only local events"
+      ],
+      "heater_or_motion_commands": "not_implemented",
+      "mode": "default_deny_proof_only",
+      "raw_gcode": "not_implemented",
+      "real_emergency_stop_transport": "blocked_in_v1",
+      "start_print": "blocked_in_v1",
+      "upload_gcode": "blocked_in_v1"
+    },
+    "state": {
+      "blocked_by": [
+        "no plate classification ever"
+      ],
+      "camera_age_sec": 0.0,
+      "camera_fresh": true,
+      "camera_id": "proof-camera",
+      "plate_age_sec": null,
+      "plate_classification": null,
+      "plate_confidence": null,
+      "printer_id": "flsun_t1_1",
+      "safe_to_start": false,
+      "status": "blocked",
+      "thresholds": {
+        "camera_freshness_sec": 5.0,
+        "plate_freshness_sec": 30.0,
+        "plate_min_confidence": 0.85
+      },
+      "v1_enforcement": {
+        "allowed_probe_methods": [
+          "GET",
+          "proof-only local events"
+        ],
+        "heater_or_motion_commands": "not_implemented",
+        "mode": "default_deny_proof_only",
+        "raw_gcode": "not_implemented",
+        "real_emergency_stop_transport": "blocked_in_v1",
+        "start_print": "blocked_in_v1",
+        "upload_gcode": "blocked_in_v1"
+      }
+    },
+    "status": "blocked",
+    "target_id": "flsun_t1_1"
+  },
+  "checks": {
+    "clear_gate_can_identify_safe_plate": true,
+    "default_blocks": true,
+    "hard_stop_blocks_commands": true,
+    "obstruction_blocks": true
+  },
+  "clear_event": {
+    "camera_id": "proof-camera",
+    "classification": "clear",
+    "confidence": 0.99,
+    "event": "plate_classification",
+    "safety": {
+      "allowed_probe_methods": [
+        "GET",
+        "proof-only local events"
+      ],
+      "heater_or_motion_commands": "not_implemented",
+      "mode": "default_deny_proof_only",
+      "raw_gcode": "not_implemented",
+      "real_emergency_stop_transport": "blocked_in_v1",
+      "start_print": "blocked_in_v1",
+      "upload_gcode": "blocked_in_v1"
+    },
+    "state": {
+      "blocked_by": [],
+      "camera_age_sec": 0.0,
+      "camera_fresh": true,
+      "camera_id": "proof-camera",
+      "plate_age_sec": 0.0,
+      "plate_classification": "clear",
+      "plate_confidence": 0.99,
+      "printer_id": "flsun_t1_1",
+      "safe_to_start": true,
+      "status": "passed",
+      "thresholds": {
+        "camera_freshness_sec": 5.0,
+        "plate_freshness_sec": 30.0,
+        "plate_min_confidence": 0.85
+      },
+      "v1_enforcement": {
+        "allowed_probe_methods": [
+          "GET",
+          "proof-only local events"
+        ],
+        "heater_or_motion_commands": "not_implemented",
+        "mode": "default_deny_proof_only",
+        "raw_gcode": "not_implemented",
+        "real_emergency_stop_transport": "blocked_in_v1",
+        "start_print": "blocked_in_v1",
+        "upload_gcode": "blocked_in_v1"
+      }
+    },
+    "status": "passed",
+    "target_id": "flsun_t1_1"
+  },
+  "default_state": {
+    "generated_at": "2026-05-17T18:15:07Z",
+    "safety": {
+      "allowed_probe_methods": [
+        "GET",
+        "proof-only local events"
+      ],
+      "heater_or_motion_commands": "not_implemented",
+      "mode": "default_deny_proof_only",
+      "raw_gcode": "not_implemented",
+      "real_emergency_stop_transport": "blocked_in_v1",
+      "start_print": "blocked_in_v1",
+      "upload_gcode": "blocked_in_v1"
+    },
+    "status": "blocked",
+    "targets": [
+      {
+        "blocked_by": [
+          "no camera bound to printer",
+          "no camera frame ever",
+          "no plate classification ever"
+        ],
+        "camera_age_sec": null,
+        "camera_fresh": false,
+        "camera_id": null,
+        "plate_age_sec": null,
+        "plate_classification": null,
+        "plate_confidence": null,
+        "printer_id": "flsun_t1_1",
+        "safe_to_start": false,
+        "status": "blocked",
+        "thresholds": {
+          "camera_freshness_sec": 5.0,
+          "plate_freshness_sec": 30.0,
+          "plate_min_confidence": 0.85
+        },
+        "v1_enforcement": {
+          "allowed_probe_methods": [
+            "GET",
+            "proof-only local events"
+          ],
+          "heater_or_motion_commands": "not_implemented",
+          "mode": "default_deny_proof_only",
+          "raw_gcode": "not_implemented",
+          "real_emergency_stop_transport": "blocked_in_v1",
+          "start_print": "blocked_in_v1",
+          "upload_gcode": "blocked_in_v1"
+        }
+      }
+    ]
+  },
+  "generated_at": "2026-05-17T18:15:07.309471+00:00",
+  "hard_stop": {
+    "alert_level": "hard_stop",
+    "blocked_by": [
+      "V1 blocks printer upload, start, heaters, motion, and raw G-code commands."
+    ],
+    "message": "STOP - Heaters stay off. Resolve the safety gate before any future print dispatch.",
+    "reason": "V1 proof run: printer commands remain blocked.",
+    "safety": {
+      "allowed_probe_methods": [
+        "GET",
+        "proof-only local events"
+      ],
+      "heater_or_motion_commands": "not_implemented",
+      "mode": "default_deny_proof_only",
+      "raw_gcode": "not_implemented",
+      "real_emergency_stop_transport": "blocked_in_v1",
+      "start_print": "blocked_in_v1",
+      "upload_gcode": "blocked_in_v1"
+    },
+    "state": {
+      "blocked_by": [],
+      "camera_age_sec": 0.0,
+      "camera_fresh": true,
+      "camera_id": "proof-camera",
+      "plate_age_sec": 0.0,
+      "plate_classification": "clear",
+      "plate_confidence": 0.99,
+      "printer_id": "flsun_t1_1",
+      "safe_to_start": true,
+      "status": "passed",
+      "thresholds": {
+        "camera_freshness_sec": 5.0,
+        "plate_freshness_sec": 30.0,
+        "plate_min_confidence": 0.85
+      },
+      "v1_enforcement": {
+        "allowed_probe_methods": [
+          "GET",
+          "proof-only local events"
+        ],
+        "heater_or_motion_commands": "not_implemented",
+        "mode": "default_deny_proof_only",
+        "raw_gcode": "not_implemented",
+        "real_emergency_stop_transport": "blocked_in_v1",
+        "start_print": "blocked_in_v1",
+        "upload_gcode": "blocked_in_v1"
+      }
+    },
+    "status": "blocked",
+    "target_id": "flsun_t1_1"
+  },
+  "obstruction_event": {
+    "camera_id": "proof-camera",
+    "classification": "obstructed",
+    "confidence": 0.99,
+    "event": "plate_classification",
+    "safety": {
+      "allowed_probe_methods": [
+        "GET",
+        "proof-only local events"
+      ],
+      "heater_or_motion_commands": "not_implemented",
+      "mode": "default_deny_proof_only",
+      "raw_gcode": "not_implemented",
+      "real_emergency_stop_transport": "blocked_in_v1",
+      "start_print": "blocked_in_v1",
+      "upload_gcode": "blocked_in_v1"
+    },
+    "state": {
+      "blocked_by": [
+        "plate not clear: classifier says 'obstructed' (confidence 0.99)"
+      ],
+      "camera_age_sec": 0.0,
+      "camera_fresh": true,
+      "camera_id": "proof-camera",
+      "plate_age_sec": 0.0,
+      "plate_classification": "obstructed",
+      "plate_confidence": 0.99,
+      "printer_id": "flsun_t1_1",
+      "safe_to_start": false,
+      "status": "blocked",
+      "thresholds": {
+        "camera_freshness_sec": 5.0,
+        "plate_freshness_sec": 30.0,
+        "plate_min_confidence": 0.85
+      },
+      "v1_enforcement": {
+        "allowed_probe_methods": [
+          "GET",
+          "proof-only local events"
+        ],
+        "heater_or_motion_commands": "not_implemented",
+        "mode": "default_deny_proof_only",
+        "raw_gcode": "not_implemented",
+        "real_emergency_stop_transport": "blocked_in_v1",
+        "start_print": "blocked_in_v1",
+        "upload_gcode": "blocked_in_v1"
+      }
+    },
+    "status": "blocked",
+    "target_id": "flsun_t1_1"
+  },
+  "source_pattern": "G:/Github/Hermes3D/03_implementation/src/hermes3d/services/printer_safety_gate.py",
+  "status": "passed",
+  "target_id": "flsun_t1_1",
+  "v1_boundary": {
+    "allowed_probe_methods": [
+      "GET",
+      "proof-only local events"
+    ],
+    "heater_or_motion_commands": "not_implemented",
+    "mode": "default_deny_proof_only",
+    "raw_gcode": "not_implemented",
+    "real_emergency_stop_transport": "blocked_in_v1",
+    "start_print": "blocked_in_v1",
+    "upload_gcode": "blocked_in_v1"
+  }
+}

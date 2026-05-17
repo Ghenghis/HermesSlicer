@@ -49,6 +49,9 @@ if ($LASTEXITCODE -ne 0) { throw "write_flsun_profile_proof.py failed with exit 
 python scripts\write_printer_observation_proof.py
 if ($LASTEXITCODE -ne 0) { throw "write_printer_observation_proof.py failed with exit code $LASTEXITCODE" }
 
+python scripts\write_printer_safety_proof.py
+if ($LASTEXITCODE -ne 0) { throw "write_printer_safety_proof.py failed with exit code $LASTEXITCODE" }
+
 python scripts\validate_submodules.py
 if ($LASTEXITCODE -ne 0) { throw "validate_submodules.py failed with exit code $LASTEXITCODE" }
 
@@ -63,6 +66,9 @@ if ($LASTEXITCODE -ne 0) { throw "hermes_agent_tool.py export_preflight failed w
 
 python integrations\hermes_agent_tool.py tool_request
 if ($LASTEXITCODE -ne 0) { throw "hermes_agent_tool.py tool_request failed with exit code $LASTEXITCODE" }
+
+python scripts\write_hermes_tool_tts_speak_proof.py
+if ($LASTEXITCODE -ne 0) { throw "write_hermes_tool_tts_speak_proof.py failed with exit code $LASTEXITCODE" }
 
 python scripts\smoke_hermes_plugin.py
 if ($LASTEXITCODE -ne 0) { throw "smoke_hermes_plugin.py failed with exit code $LASTEXITCODE" }
