@@ -5,6 +5,9 @@ import os
 import shutil
 from pathlib import Path
 from typing import Any
+from urllib.error import URLError
+from urllib.parse import urlparse
+from urllib.request import Request, urlopen
 
 from . import __version__
 
@@ -31,6 +34,8 @@ DEFAULT_AGENTS = [
 
 HERMES_AGENT_PROVIDER_ENV_NAMES = ("DEEPSEEK_API_KEY", "MINIMAX_API_KEY", "SILICONFLOW_API_KEY")
 HERMES_AGENT_LOCAL_BACKEND_ENV_NAMES = ("HERMES_AGENT_BASE_URL", "LM_STUDIO_BASE_URL", "OPENAI_BASE_URL")
+HERMES_AGENT_LIVE_PROOF_ENV_NAMES = ("HERMES_AGENT_HEALTHCHECK_OK", "HERMES_AGENT_LIVE_PROOF")
+HERMES_AGENT_HEALTH_URL_ENV = "HERMES_AGENT_HEALTH_URL"
 
 ALLOWED_ACTIONS = [
     {
@@ -216,31 +221,91 @@ def save_agents(agents: list[dict[str, Any]]) -> None:
     (LOCAL_DIR / "agents.json").write_text(json.dumps({"agents": agents}, indent=2) + "\n", encoding="utf-8")
 
 
+def _truthy_env(name: str) -> bool:
+    return os.environ.get(name, "").strip().lower() in {"1", "true", "yes", "passed", "ok"}
+
+
+def _probe_hermes_agent_health() -> dict[str, Any]:
+    url = os.environ.get(HERMES_AGENT_HEALTH_URL_ENV, "").strip()
+    if not url:
+        return {"configured": False, "passed": False, "reason": f"{HERMES_AGENT_HEALTH_URL_ENV} is not set."}
+    parsed = urlparse(url)
+    if parsed.scheme not in {"http", "https"}:
+        return {"configured": True, "passed": False, "reason": f"{HERMES_AGENT_HEALTH_URL_ENV} must be an http(s) URL."}
+    bridge_health_url = os.environ.get("HERMES_SLICER_BRIDGE_URL", f"http://127.0.0.1:{DEFAULT_PORT}").rstrip("/") + "/health"
+    if url.rstrip("/") == bridge_health_url:
+        return {
+            "configured": True,
+            "passed": False,
+            "reason": f"{HERMES_AGENT_HEALTH_URL_ENV} must point at Hermes Agent, not the HermesSlicer bridge.",
+        }
+    request = Request(url, method="GET", headers={"Accept": "application/json"})
+    try:
+        with urlopen(request, timeout=2) as response:
+            body = response.read(8192).decode("utf-8", errors="replace")
+    except (OSError, TimeoutError, URLError) as exc:
+        return {
+            "configured": True,
+            "passed": False,
+            "reason": f"Hermes Agent health probe failed: {type(exc).__name__}.",
+        }
+    ok_http = 200 <= int(getattr(response, "status", 0)) < 300
+    status = ""
+    valid_json = False
+    try:
+        parsed_body = json.loads(body) if body.strip() else {}
+        if isinstance(parsed_body, dict):
+            valid_json = True
+            status = str(parsed_body.get("status", ""))
+    except json.JSONDecodeError:
+        status = ""
+    passed = ok_http and valid_json and status in {"ok", "passed"}
+    return {
+        "configured": True,
+        "passed": passed,
+        "http_status": int(getattr(response, "status", 0)),
+        "response_status": status or "not_reported",
+        "valid_json": valid_json,
+        "reason": "Hermes Agent health probe returned ok/passed." if passed else "Hermes Agent health probe did not return ok/passed.",
+    }
+
+
 def hermes_agent_bridge_gate() -> dict[str, Any]:
     providers = {name: bool(os.environ.get(name)) for name in HERMES_AGENT_PROVIDER_ENV_NAMES}
     local_backends = {name: bool(os.environ.get(name)) for name in HERMES_AGENT_LOCAL_BACKEND_ENV_NAMES}
     enabled = os.environ.get("HERMES_AGENT_ENABLED") == "1"
     backend_present = any(providers.values()) or any(local_backends.values())
-    available = enabled and backend_present
+    operator_attestations = {name: _truthy_env(name) for name in HERMES_AGENT_LIVE_PROOF_ENV_NAMES}
+    health_probe = _probe_hermes_agent_health()
+    live_proof_present = bool(health_probe["passed"])
+    configured = enabled and backend_present
+    available = configured and live_proof_present
     if available:
-        reason = "HERMES_AGENT_ENABLED=1 and at least one provider or local backend is present."
+        reason = "HERMES_AGENT_ENABLED=1, a provider/backend is present, and live Hermes Agent health proof passed."
     elif not enabled:
         reason = "HERMES_AGENT_ENABLED=1 is required before claiming live Hermes Agent connectivity."
-    else:
+    elif not backend_present:
         reason = "A provider key or local backend endpoint is required before claiming live Hermes Agent connectivity."
+    else:
+        reason = "Live Hermes Agent health proof is required before claiming live Hermes Agent connectivity."
     return {
         "status": "passed" if available else "blocked",
         "available": available,
         "live_connectivity_claimed": available,
+        "configured": configured,
         "enabled": enabled,
         "providers_present": providers,
         "local_backends_present": local_backends,
         "backend_present": backend_present,
+        "live_proof_present": live_proof_present,
+        "operator_attestation_env_present": operator_attestations,
+        "health_probe": health_probe,
         "reason": reason,
         "required": [
             "HERMES_AGENT_ENABLED=1",
             "one provider key: DEEPSEEK_API_KEY, MINIMAX_API_KEY, or SILICONFLOW_API_KEY",
             "or one local backend endpoint: HERMES_AGENT_BASE_URL, LM_STUDIO_BASE_URL, or OPENAI_BASE_URL",
+            "and live proof: HERMES_AGENT_HEALTH_URL pointing at Hermes Agent and returning ok/passed",
         ],
     }
 

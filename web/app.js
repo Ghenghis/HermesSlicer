@@ -116,7 +116,13 @@ function resetPanelPosition() {
 }
 
 function restorePanel() {
-  const saved = JSON.parse(localStorage.getItem("hermesPanel") || "null");
+  let saved = null;
+  try {
+    saved = JSON.parse(localStorage.getItem("hermesPanel") || "null");
+  } catch (error) {
+    localStorage.removeItem("hermesPanel");
+    return;
+  }
   if (!saved) return;
   panel.style.left = `${saved.left}px`;
   panel.style.top = `${saved.top}px`;
@@ -221,6 +227,9 @@ async function runQuickAction(action) {
     "orca.version": () => api("/api/orca/version", {method: "POST", body: "{}"}),
     "slice.dry_run": () => api("/api/slice/dry-run", {method: "POST", body: "{}"}),
   };
+  if (!Object.prototype.hasOwnProperty.call(map, action)) {
+    throw new Error(`Unknown tool action: ${action || "missing"}`);
+  }
   const payload = await map[action]();
   showProof(payload);
   addMessage(`Tool ${action} -> ${payload.status || "ok"}`);
@@ -266,15 +275,23 @@ dockButton.addEventListener("click", () => {
 });
 
 document.getElementById("micButton").addEventListener("click", (event) => {
-  state.micOn = !state.micOn;
-  event.currentTarget.textContent = state.micOn ? "live" : "mic";
-  event.currentTarget.setAttribute("aria-pressed", String(state.micOn));
-  event.currentTarget.setAttribute("aria-label", state.micOn ? "Microphone live" : "Push to talk");
-  event.currentTarget.title = state.micOn ? "Microphone live" : "Push to talk";
+  state.micOn = false;
+  event.currentTarget.textContent = "mic";
+  event.currentTarget.setAttribute("aria-pressed", "false");
+  event.currentTarget.setAttribute("aria-label", "Voice input blocked");
+  event.currentTarget.title = "Voice input blocked until Hermes Agent live proof is present";
+  const payload = {
+    status: "blocked",
+    gate: "hermes_agent_voice_and_computer_use",
+    reason: "V1 has not proved live Hermes Agent voice, vision, or computer-use control yet.",
+    required: ["active Hermes Agent v0.14 plugin", "bounded AS_USER grant", "visual/computer-use proof run"],
+  };
+  showProof(payload);
+  addMessage(payload.reason);
 });
 
 document.getElementById("stopButton").addEventListener("click", () => {
-  addMessage("Speech stopped.");
+  addMessage("No live speech or computer-use session is active.");
 });
 
 document.getElementById("saveAgent").addEventListener("click", saveActiveAgent);
@@ -326,6 +343,27 @@ document.getElementById("dragHandle").addEventListener("keydown", (event) => {
   clampPanel();
   rememberPanel();
 });
-Promise.all([loadVoices(), loadAgents(), checkHealth()]).then(() => {
-  addMessage("Hermes Agent tool bridge is ready. Run a tool ID like bridge.actions, hermes.proof_mcp, or slice.export_preflight.");
-});
+async function bootstrapPanel() {
+  const health = await checkHealth();
+  try {
+    await loadVoices();
+  } catch (error) {
+    voiceSelect.innerHTML = "";
+    showProof({status: "blocked", surface: "voice_catalog", reason: error.message});
+  }
+  try {
+    await loadAgents();
+  } catch (error) {
+    agentSelect.innerHTML = "";
+    showProof({status: "blocked", surface: "agent_catalog", reason: error.message});
+  }
+  if (health) {
+    const bridge = health.hermes_agent_bridge || {};
+    const liveText = bridge.live_connectivity_claimed ? "Live Hermes Agent proof is present." : "Live Hermes Agent proof is blocked; local safe tools are available.";
+    addMessage(`Hermes Agent local tool bridge is responding. ${liveText} Run a tool ID like bridge.actions, hermes.proof_mcp, or slice.export_preflight.`);
+  } else {
+    addMessage("HermesSlicer bridge is offline. Start scripts/start_bridge.ps1, then refresh this page.");
+  }
+}
+
+bootstrapPanel();

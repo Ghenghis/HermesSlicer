@@ -30,16 +30,21 @@ The committed project-local plugin wrapper is:
 .hermes/plugins/hermes-slicer/
 ```
 
-Run Hermes with project plugins enabled and the repo root explicit:
+`integrations/hermes_plugin.yaml` is a legacy manifest record only; it is not a complete installable Hermes Agent plugin folder. Use one of the two plugin folders above for active Hermes loading.
+
+Run Hermes with the pinned V1 upstream agent (`v2026.5.16`, package `0.14.0`), project plugins enabled, and the repo root explicit:
 
 ```powershell
 $env:HERMES_ENABLE_PROJECT_PLUGINS = "1"
 $env:HERMES_SLICER_ROOT = "G:\Github\HermesSlicer"
+hermes version
 hermes plugins enable hermes-slicer
+hermes plugins list
 hermes -z "Check HermesSlicer bridge health" -t hermes_agent
 ```
 
 Hermes does not start the bridge; start `scripts\start_bridge.ps1` first.
+The current V1 proof must stay blocked unless `hermes version` reports `v2026.5.16` / package `0.14.0` and `hermes plugins list` shows `hermes-slicer` as enabled in the active Hermes install.
 
 The repeatable local proof command is:
 

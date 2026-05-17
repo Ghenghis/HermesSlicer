@@ -73,6 +73,19 @@ def bridge_request(path: str, method: str = "GET", payload: dict | None = None) 
         }
 
 
+def proof_status_from_result(result: dict) -> str:
+    raw_status = str(result.get("status", "")).lower()
+    if raw_status in {"ok", "passed"}:
+        return "passed"
+    if raw_status in {"failed", "blocked", "warning"}:
+        return raw_status
+    if "error" in result or int(result.get("http_status", 0) or 0) >= 400:
+        return "failed"
+    if raw_status:
+        return "failed"
+    return "passed"
+
+
 def hermes_agent_tools(action: str = "health", payload: dict | None = None) -> dict:
     if action not in ACTIONS:
         result = {"status": "failed", "error": "Unsupported action", "allowed": sorted(ACTIONS)}
@@ -81,9 +94,7 @@ def hermes_agent_tools(action: str = "health", payload: dict | None = None) -> d
     method, path = ACTIONS[action]
     request_payload = None if method == "GET" else payload or {}
     result = bridge_request(path, method, request_payload)
-    proof_status = "passed" if result.get("status") in {"ok", "passed"} or "error" not in result else "failed"
-    if result.get("status") in {"blocked", "warning"}:
-        proof_status = str(result["status"])
+    proof_status = proof_status_from_result(result)
     log_event("hermes_tool", f"hermes_agent_tools.{action}", proof_status, inputs={"action": action}, outputs=result)
     return result
 

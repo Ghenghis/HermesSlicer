@@ -1,6 +1,27 @@
 {
+  "artifact_report": {
+    "artifacts": {
+      "bridge-health.json": "ok",
+      "clean-clone-rehearsal.json": "passed",
+      "hermes-plugin-smoke.json": "blocked",
+      "hermes-proof-mcp.json": "blocked",
+      "login-geometry.json": "passed",
+      "screenshot-format.json": "passed",
+      "v1-release-checklist.json": "blocked"
+    },
+    "errors": [],
+    "hash_chain": {
+      "reason": "Local proof/ledger.jsonl events are append-only JSONL without prev_hash fields; Hermes locks MCP hash-chain must be verified separately and workspace-scoped.",
+      "status": "not_applicable"
+    },
+    "status": "passed"
+  },
   "errors": [],
-  "events": 52,
-  "path": "G:\\Github\\HermesSlicer\\proof\\ledger.jsonl",
+  "ledger": {
+    "errors": [],
+    "events": 50,
+    "path": "G:\\Github\\HermesSlicer\\proof\\ledger.jsonl",
+    "status": "passed"
+  },
   "status": "passed"
 }

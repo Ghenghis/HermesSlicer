@@ -59,7 +59,7 @@
     },
     "status": "passed"
   },
-  "generated_at": "2026-05-17T09:39:30.911915+00:00",
+  "generated_at": "2026-05-17T13:18:03.096220+00:00",
   "integration_plugin": {
     "checks": {
       "handler_callable": true,

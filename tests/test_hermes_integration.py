@@ -61,6 +61,15 @@ class HermesIntegrationTests(unittest.TestCase):
         self.assertEqual(result["status"], "blocked")
         self.assertIn("unavailable", result["reason"])
 
+    def test_failed_bridge_status_logs_failed_not_passed(self) -> None:
+        with (
+            patch.object(hermes_agent_tool, "bridge_request", return_value={"status": "failed", "reason": "bad"}),
+            patch.object(hermes_agent_tool, "log_event") as log_event,
+        ):
+            result = hermes_agent_tool.hermes_agent_tools("health")
+        self.assertEqual(result["status"], "failed")
+        self.assertEqual(log_event.call_args.args[2], "failed")
+
     def test_plugin_wrappers_register_tool(self) -> None:
         plugin_paths = [
             ROOT / "integrations" / "hermes-slicer" / "__init__.py",

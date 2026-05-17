@@ -1,6 +1,6 @@
 # HermesSlicer V1 Status
 
-Date: 2026-05-16
+Date: 2026-05-17
 
 ## What Is Complete
 
@@ -21,13 +21,14 @@ Date: 2026-05-16
 
 1. Hermes Proof MCP transport is not currently connected.
    - Current proof: `proof/runtime/hermes-proof-mcp.json` reports `blocked`.
-   - Current tool call result in this Codex session: transport closed.
-   - Required external environment: working Hermes Proof MCP transport.
+   - Current tool call result in this Codex lead session: transport closed.
+   - Agent audit also reported a live locks MCP scoped to `G:\Github\Hermes3D`; HermesSlicer must reject that until `workspace_root` equals `G:\Github\HermesSlicer`.
+   - Required external environment: working Hermes Proof MCP transport with successful evidence verification for this workspace.
 
 2. Live Hermes Agent provider bridge is not enabled.
-   - Current proof: `hermes_agent_health` reports `bridge disabled`.
-   - Required external environment: `HERMES_AGENT_ENABLED=1`.
-   - Required provider backend: at least one of `DEEPSEEK_API_KEY`, `MINIMAX_API_KEY`, `SILICONFLOW_API_KEY`, or a local LM Studio-compatible endpoint.
+   - Current proof: `/health` reports `live_connectivity_claimed=false`.
+   - Required external environment: `HERMES_AGENT_ENABLED=1`, one provider/backend, and live proof via `HERMES_AGENT_HEALTH_URL` pointing at Hermes Agent and returning `ok`/`passed`.
+   - Required provider backend: at least one of `DEEPSEEK_API_KEY`, `MINIMAX_API_KEY`, `SILICONFLOW_API_KEY`, or a local LM Studio/OpenAI-compatible endpoint.
 
 3. Bounded AS_USER grants are not enabled.
    - Current proof: no active AS_USER session.
@@ -85,6 +86,7 @@ Hermes Agent upstream includes computer-use tooling under:
 - `upstream/hermes-agent/tools/computer_use/`
 
 HermesSlicer V1 does not expose computer-use through the slicer bridge. It is powerful, platform-specific, and not required for the V1 proofable local sidecar. Future exposure must start read-only, require AS_USER scope, and preserve a proof trail.
+The visible V1 mic/computer-use control now reports `blocked` instead of pretending to go live.
 
 ## Final Gate Command Set
 

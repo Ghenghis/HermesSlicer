@@ -1,6 +1,6 @@
 # HermesSlicer V1 Roadmap
 
-Date: 2026-05-16
+Date: 2026-05-17
 
 ## Mission
 
@@ -34,7 +34,7 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 | Login visual/geometry gate | Complete | `scripts/verify_login_geometry.py`, `proof/runtime/login-geometry.json` |
 | Hermes Agent local plugin wrapper | Complete for V1; active install blocked by external version/config | `integrations/hermes-slicer/`, `.hermes/plugins/hermes-slicer/`, `proof/runtime/hermes-plugin-smoke.json` |
 | API contract drift guard | Complete | `api_contract.openapi.yaml`, `tests/test_api_contract.py` |
-| Hermes Proof MCP evidence channel | Blocked in current session | `proof/runtime/hermes-proof-mcp.json`; current MCP transport is closed |
+| Hermes Proof MCP evidence channel | Blocked until workspace-scoped | `proof/runtime/hermes-proof-mcp.json`; current lead-session transport is closed, and agent-audited locks MCP was scoped to `G:\Github\Hermes3D` |
 | Root project license | Complete | `LICENSE`, `NOTICE` |
 | V1 release checklist | Blocked on external gates | `V1_RELEASE_CHECKLIST.md`, `proof/runtime/v1-release-checklist.json` |
 | Clean-clone release rehearsal | Complete | `proof/runtime/clean-clone-rehearsal.json` |
@@ -53,8 +53,8 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 
    Current observed state:
 
-   - Hermes Proof MCP evidence ledger: local artifact retains the last known verification, but the current MCP transport is closed.
-   - Hermes Agent provider bridge: blocked because the bridge reports `bridge disabled`; external environment must enable `HERMES_AGENT_ENABLED=1` and provide a healthy provider backend.
+   - Hermes Proof MCP evidence ledger: local artifact retains the last known verification, but the current lead-session transport is closed. A locks MCP scoped to another workspace must not count.
+   - Hermes Agent provider bridge: blocked because `/health` reports `live_connectivity_claimed=false`; external environment must enable `HERMES_AGENT_ENABLED=1`, provide a backend, and provide live health proof.
    - Human AS_USER grant: blocked until external `HERMES_HUMAN_GRANT_SECRET` exists.
 
    V1 may ship with the local Hermes plugin wrapper, but it must not claim live Hermes Agent provider failover until this gate passes.
@@ -127,7 +127,7 @@ python scripts\redaction_scan.py .
 - Add optional G-code export proof with an explicit local operator gate.
 - Add Moonraker/OctoPrint/Klipper upload-only research gates.
 - Add printer start only after a separate human-confirmed safety design.
-- Consider Hermes Agent computer-use only after V1, starting read-only and gated by explicit AS_USER scope.
+- Promote Hermes Agent computer-use only after V1, starting read-only and gated by explicit AS_USER scope plus a visual proof run against the HermesSlicer UI.
 
 ## Release Rule
 

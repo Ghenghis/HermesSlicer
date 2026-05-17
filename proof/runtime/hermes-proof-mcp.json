@@ -1,10 +1,13 @@
 {
   "status": "blocked",
-  "date": "2026-05-16",
+  "date": "2026-05-17",
   "proof_mcp": {
     "available": false,
     "evidence_ledger_ok": false,
-    "reason": "Hermes Proof MCP transport is closed in the current Codex session; local proof ledger remains available.",
+    "reason": "Hermes Proof MCP transport is closed in the current Codex lead session; local proof ledger remains available. Agent audit reported a live locks MCP scoped to G:\\Github\\Hermes3D, so HermesSlicer must not accept it until workspace_root matches this repo.",
+    "workspace_root": null,
+    "expected_workspace_root": "G:\\Github\\HermesSlicer",
+    "workspace_scope_ok": false,
     "last_known": {
       "available": true,
       "evidence_ledger_ok": true,

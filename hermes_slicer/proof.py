@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -18,6 +19,10 @@ REQUIRED_EVENT_KEYS = {"ts", "event_id", "actor", "action", "status", "redacted"
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def proof_writes_enabled() -> bool:
+    return os.environ.get("HERMES_PROOF_READONLY", "").strip().lower() not in {"1", "true", "yes"}
 
 
 def log_event(
@@ -46,12 +51,17 @@ def log_event(
         event["proof_files"] = [sanitize_text(p, None) for p in proof_files]
     if notes:
         event["notes"] = sanitize_text(notes)
+    if not proof_writes_enabled():
+        event["not_written"] = True
+        return event
     with LEDGER_PATH.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(event, ensure_ascii=True, sort_keys=True) + "\n")
     return event
 
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
+    if not proof_writes_enabled():
+        return
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(sanitize_obj(payload), indent=2, sort_keys=True) + "\n", encoding="utf-8")
 

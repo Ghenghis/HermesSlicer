@@ -56,6 +56,17 @@ def load_json(path: str) -> dict[str, Any]:
         return {}
 
 
+def proof_mcp_workspace_ok(proof_mcp: dict[str, Any]) -> bool:
+    payload = proof_mcp.get("proof_mcp", {})
+    if not isinstance(payload, dict) or not payload.get("available"):
+        return False
+    workspace_root = str(payload.get("workspace_root") or proof_mcp.get("workspace_root") or "")
+    try:
+        return Path(workspace_root).resolve() == ROOT.resolve() and payload.get("workspace_scope_ok") is True
+    except (OSError, RuntimeError):
+        return False
+
+
 def build_report() -> dict[str, Any]:
     proof_files = [file_status(path) for path in LOCAL_PROOF_FILES]
     missing = [item["file"] for item in proof_files if not item["exists"]]
@@ -87,12 +98,15 @@ def build_report() -> dict[str, Any]:
                 "required": as_user["required"],
             }
         )
-    if not proof_mcp.get("proof_mcp", {}).get("available"):
+    if not proof_mcp_workspace_ok(proof_mcp):
         blocked_external.append(
             {
                 "gate": "hermes_proof_mcp_transport",
-                "reason": proof_mcp.get("proof_mcp", {}).get("reason", "Hermes Proof MCP is not available in the current session."),
-                "required": ["working Hermes Proof MCP transport", "successful evidence verification"],
+                "reason": proof_mcp.get("proof_mcp", {}).get(
+                    "reason",
+                    "Hermes Proof MCP is not available for the HermesSlicer workspace in the current session.",
+                ),
+                "required": ["working Hermes Proof MCP transport", "successful evidence verification", f"workspace_root={ROOT}"],
             }
         )
     if not plugin_smoke["exists"]:

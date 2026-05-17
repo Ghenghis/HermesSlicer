@@ -19,6 +19,41 @@
     "orca": true,
     "prusa": true
   },
+  "hermes_agent_bridge": {
+    "available": false,
+    "backend_present": true,
+    "configured": false,
+    "enabled": false,
+    "health_probe": {
+      "configured": false,
+      "passed": false,
+      "reason": "HERMES_AGENT_HEALTH_URL is not set."
+    },
+    "live_connectivity_claimed": false,
+    "live_proof_present": false,
+    "local_backends_present": {
+      "HERMES_AGENT_BASE_URL": false,
+      "LM_STUDIO_BASE_URL": false,
+      "OPENAI_BASE_URL": true
+    },
+    "operator_attestation_env_present": {
+      "HERMES_AGENT_HEALTHCHECK_OK": false,
+      "HERMES_AGENT_LIVE_PROOF": false
+    },
+    "providers_present": {
+      "DEEPSEEK_API_KEY": false,
+      "MINIMAX_API_KEY": false,
+      "SILICONFLOW_API_KEY": false
+    },
+    "reason": "HERMES_AGENT_ENABLED=1 is required before claiming live Hermes Agent connectivity.",
+    "required": [
+      "HERMES_AGENT_ENABLED=1",
+      "one provider key: DEEPSEEK_API_KEY, MINIMAX_API_KEY, or SILICONFLOW_API_KEY",
+      "or one local backend endpoint: HERMES_AGENT_BASE_URL, LM_STUDIO_BASE_URL, or OPENAI_BASE_URL",
+      "and live proof: HERMES_AGENT_HEALTH_URL pointing at Hermes Agent and returning ok/passed"
+    ],
+    "status": "blocked"
+  },
   "name": "HermesSlicer Local Bridge",
   "port": 8765,
   "proof_ledger": "proof/ledger.jsonl",
@@ -27,9 +62,14 @@
       "AZURE_SPEECH_KEY": false,
       "AZURE_SPEECH_REGION": false,
       "DEEPSEEK_API_KEY": false,
+      "HERMES_AGENT_BASE_URL": false,
+      "HERMES_AGENT_ENABLED": false,
+      "HERMES_HUMAN_GRANT_SECRET": false,
       "HERMES_MCP_ENDPOINT": false,
       "HERMES_MCP_TOKEN": false,
+      "LM_STUDIO_BASE_URL": false,
       "MINIMAX_API_KEY": false,
+      "OPENAI_BASE_URL": true,
       "SILICONFLOW_API_KEY": false
     },
     "private_root_present": true,
