@@ -58,6 +58,8 @@ See `BASES.md` and `BRANCHES.md`.
 
 Use `ROADMAP.md`, `ACTION_PLAN.md`, and `V1_STATUS.md` as the source of truth for finishing V1. The current stack is proofable locally, but V1 should not be tagged until the P0 gates in `ROADMAP.md` pass or are explicitly accepted as release blockers.
 
+For Claude-led audit passes, use `CLAUDE_AUDIT_CONTRACT.md`. Claude and its agents are restricted to Markdown-only audit outputs under `proof/claude_audits/`; Codex remains the implementation owner.
+
 ## License
 
 HermesSlicer-authored sidecar code outside `upstream/` is licensed under AGPL-3.0-only. See `LICENSE` and `NOTICE`.

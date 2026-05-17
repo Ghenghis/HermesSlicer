@@ -34,6 +34,7 @@ For every remaining V1 task:
 - Codex lead owns implementation and final integration.
 - At least one read-only explorer audits concrete repo gaps.
 - At least one proof/safety pass checks scope, safety, and evidence.
+- Claude-led audit passes must follow `CLAUDE_AUDIT_CONTRACT.md` and create Markdown only under `proof/claude_audits/`.
 - Hermes Proof MCP evidence is appended whenever the MCP is available.
 - If Hermes Agent health reports disabled, do not claim live Hermes Agent bridge connectivity.
 - Do not expose Hermes Agent computer-use through the V1 slicer bridge; keep `proof/runtime/hermes-computer-use.json` blocked unless a supported host, AS_USER grant, and visual proof run exist.
