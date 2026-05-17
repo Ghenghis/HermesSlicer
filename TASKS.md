@@ -28,6 +28,7 @@
 - [ ] Enable/prove bounded AS_USER session grant for agent-driven V1 actions with external `HERMES_HUMAN_GRANT_SECRET`.
 - [x] Pick a root project license before tagging a final release.
 - [x] Run clean-clone V1 rehearsal with submodules.
-- [ ] Refresh final browser/panel screenshots.
-- [ ] Smoke installable Hermes plugin against active Hermes install.
+- [x] Refresh final browser/panel screenshots.
+- [x] Add repeatable Hermes plugin smoke proof artifact and committed project plugin wrapper.
+- [ ] Pass active Hermes plugin smoke with Hermes Agent `v2026.5.16` / package `0.14.0` installed and `hermes-slicer` enabled.
 - [ ] Tag V1 release after P0 gates pass.

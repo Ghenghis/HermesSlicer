@@ -20,6 +20,7 @@ LOCAL_PROOF_FILES = (
     "proof/runtime/screenshot-format.json",
     "proof/runtime/login-geometry.json",
     "proof/runtime/hermes-proof-mcp.json",
+    "proof/runtime/hermes-plugin-smoke.json",
     "proof/runtime/submodule-stack.json",
     "proof/runtime/flsun-export-preflight.json",
     "proof/runtime/hermes-tool-health.json",
@@ -67,6 +68,7 @@ def build_report() -> dict[str, Any]:
     as_user = as_user_session_gate()
     clean_clone = file_status("proof/runtime/clean-clone-rehearsal.json")
     plugin_smoke = file_status("proof/runtime/hermes-plugin-smoke.json")
+    plugin_smoke_payload = load_json("proof/runtime/hermes-plugin-smoke.json")
     proof_mcp = load_json("proof/runtime/hermes-proof-mcp.json")
     blocked_external = []
     if hermes_agent["status"] != "passed":
@@ -101,6 +103,20 @@ def build_report() -> dict[str, Any]:
                 "required": ["HERMES_ENABLE_PROJECT_PLUGINS=1", "active hermes CLI/install"],
             }
         )
+    elif plugin_smoke_payload.get("status") != "passed":
+        blocked_external.append(
+            {
+                "gate": "active_hermes_plugin_smoke",
+                "reason": plugin_smoke_payload.get(
+                    "reason",
+                    "Active Hermes plugin smoke did not pass.",
+                ),
+                "required": plugin_smoke_payload.get(
+                    "required",
+                    ["HERMES_ENABLE_PROJECT_PLUGINS=1", "active hermes CLI/install"],
+                ),
+            }
+        )
 
     local_ready = not missing and not failed
     clean_clone_passed = clean_clone["exists"] and load_status(clean_clone["file"]) == "passed"
@@ -124,6 +140,7 @@ def build_report() -> dict[str, Any]:
             "proof_mcp": proof_mcp.get("proof_mcp", {}),
             "hermes_agent_bridge": hermes_agent,
             "as_user_session": as_user,
+            "plugin_smoke": plugin_smoke_payload,
             "blocked": blocked_external,
         },
         "tag_readiness": {

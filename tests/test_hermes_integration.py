@@ -61,17 +61,22 @@ class HermesIntegrationTests(unittest.TestCase):
         self.assertEqual(result["status"], "blocked")
         self.assertIn("unavailable", result["reason"])
 
-    def test_installable_plugin_wrapper_registers_tool(self) -> None:
-        plugin_path = ROOT / "integrations" / "hermes-slicer" / "__init__.py"
-        spec = importlib.util.spec_from_file_location("hermes_slicer_plugin_test", plugin_path)
-        self.assertIsNotNone(spec)
-        self.assertIsNotNone(spec.loader)
-        module = importlib.util.module_from_spec(spec)
-        with patch.dict(os.environ, {"HERMES_SLICER_ROOT": str(ROOT)}, clear=False):
-            spec.loader.exec_module(module)
-            ctx = FakeHermesContext()
-            module.register(ctx)
-        self.assertEqual(ctx.registrations[0]["name"], "hermes_agent_tools")
+    def test_plugin_wrappers_register_tool(self) -> None:
+        plugin_paths = [
+            ROOT / "integrations" / "hermes-slicer" / "__init__.py",
+            ROOT / ".hermes" / "plugins" / "hermes-slicer" / "__init__.py",
+        ]
+        for plugin_path in plugin_paths:
+            with self.subTest(plugin_path=str(plugin_path.relative_to(ROOT))):
+                spec = importlib.util.spec_from_file_location("hermes_slicer_plugin_test", plugin_path)
+                self.assertIsNotNone(spec)
+                self.assertIsNotNone(spec.loader)
+                module = importlib.util.module_from_spec(spec)
+                with patch.dict(os.environ, {"HERMES_SLICER_ROOT": str(ROOT)}, clear=False):
+                    spec.loader.exec_module(module)
+                    ctx = FakeHermesContext()
+                    module.register(ctx)
+                self.assertEqual(ctx.registrations[0]["name"], "hermes_agent_tools")
 
 
 if __name__ == "__main__":

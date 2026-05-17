@@ -35,7 +35,10 @@ Date: 2026-05-16
    - Grants must use explicit scopes and short TTLs. Do not grant all actions by default.
 
 4. Active Hermes plugin smoke still needs final pass against the user's Hermes install.
-   - Plugin path: `integrations/hermes-slicer`.
+   - Integration plugin path: `integrations/hermes-slicer`.
+   - Project plugin path: `.hermes/plugins/hermes-slicer`.
+   - Current proof artifact: `proof/runtime/hermes-plugin-smoke.json`.
+   - Required active install: Hermes Agent `v2026.5.16` / package `0.14.0`.
 
 ## Environment Gates
 

@@ -45,6 +45,9 @@ if ($LASTEXITCODE -ne 0) { throw "hermes_agent_tool.py export_preflight failed w
 python integrations\hermes_agent_tool.py tool_request
 if ($LASTEXITCODE -ne 0) { throw "hermes_agent_tool.py tool_request failed with exit code $LASTEXITCODE" }
 
+python scripts\smoke_hermes_plugin.py
+if ($LASTEXITCODE -ne 0) { throw "smoke_hermes_plugin.py failed with exit code $LASTEXITCODE" }
+
 python scripts\verify_screenshots.py
 if ($LASTEXITCODE -ne 0) { throw "verify_screenshots.py failed with exit code $LASTEXITCODE" }
 

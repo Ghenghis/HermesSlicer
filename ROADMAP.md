@@ -32,7 +32,7 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 | G-code export safety | Complete for V1 | Blocked by default unless `HERMES_ENABLE_EXPORT_GCODE=1`; printer start is not implemented |
 | Floating panel | Complete for V1 | `proof/screenshots/*.png`, `proof/runtime/screenshot-format.json` |
 | Login visual/geometry gate | Complete | `scripts/verify_login_geometry.py`, `proof/runtime/login-geometry.json` |
-| Hermes Agent local plugin wrapper | Complete for V1 | `integrations/hermes-slicer/`, `tests/test_hermes_integration.py` |
+| Hermes Agent local plugin wrapper | Complete for V1; active install blocked by external version/config | `integrations/hermes-slicer/`, `.hermes/plugins/hermes-slicer/`, `proof/runtime/hermes-plugin-smoke.json` |
 | API contract drift guard | Complete | `api_contract.openapi.yaml`, `tests/test_api_contract.py` |
 | Hermes Proof MCP evidence channel | Blocked in current session | `proof/runtime/hermes-proof-mcp.json`; current MCP transport is closed |
 | Root project license | Complete | `LICENSE`, `NOTICE` |
@@ -87,6 +87,14 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 
 5. **Hermes plugin install smoke**
 
+   Current committed proof:
+
+   ```powershell
+   python scripts\smoke_hermes_plugin.py
+   ```
+
+   This proves both committed wrappers register `hermes_agent_tools`, and it runs an isolated active-Hermes project-plugin harness without mutating the user's global Hermes config.
+
    With an active Hermes install:
 
    ```powershell
@@ -96,7 +104,7 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
    hermes -z "Check HermesSlicer bridge health" -t hermes_agent
    ```
 
-   If the active Hermes install path differs, document the actual path and evidence.
+   Current observed active CLI is blocked because it is not Hermes Agent `v2026.5.16` / package `0.14.0`, and it does not list `hermes-slicer` in `hermes plugins list`. If the active Hermes install path differs, document the actual path and evidence.
 
 6. **Final release proof**
 

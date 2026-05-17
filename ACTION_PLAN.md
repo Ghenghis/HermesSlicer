@@ -19,8 +19,9 @@ Finish V1 end to end without scope drift. The target is a proofable local sideca
 - [ ] Enable/prove bounded AS_USER session grants, or document missing external `HERMES_HUMAN_GRANT_SECRET` as a release blocker.
 - [x] Pick and add root `LICENSE` plus any needed `NOTICE`.
 - [x] Run clean-clone rehearsal with submodules.
-- [ ] Refresh browser/panel screenshots from the final branch state.
-- [ ] Smoke the installable Hermes plugin against the active Hermes install.
+- [x] Refresh browser/panel screenshots from the final branch state.
+- [x] Add repeatable Hermes plugin smoke proof artifact and committed project plugin wrapper.
+- [ ] Pass the active Hermes plugin smoke with Hermes Agent `v2026.5.16` / package `0.14.0` installed and `hermes-slicer` enabled.
 - [x] Add final V1 release checklist output with proof summary, blocked external credentials, and tag-readiness notes.
 - [x] Run final local proof command set.
 - [ ] Append Hermes Proof MCP evidence after the MCP transport is restored.

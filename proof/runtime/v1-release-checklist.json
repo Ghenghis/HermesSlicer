@@ -40,10 +40,11 @@
       },
       {
         "gate": "active_hermes_plugin_smoke",
-        "reason": "No proof artifact exists for an active Hermes install loading integrations/hermes-slicer.",
+        "reason": "Active Hermes CLI is v0.12.0 (2026.4.30); expected v2026.5.16 / package 0.14.0. Active Hermes plugins list does not include hermes-slicer.",
         "required": [
-          "HERMES_ENABLE_PROJECT_PLUGINS=1",
-          "active hermes CLI/install"
+          "v2026.5.16",
+          "HERMES_ENABLE_PROJECT_PLUGINS=1 for project plugin loading",
+          "hermes plugins enable hermes-slicer in the active Hermes install"
         ]
       }
     ],
@@ -70,6 +71,118 @@
       ],
       "status": "blocked"
     },
+    "plugin_smoke": {
+      "active_hermes_cli": {
+        "available": true,
+        "path": "C:\\Python314\\Scripts\\hermes.EXE",
+        "plugin": {
+          "enabled": false,
+          "line": "",
+          "listed": false
+        },
+        "plugins_list_command": {
+          "args": [
+            "C:\\Python314\\Scripts\\hermes.EXE",
+            "plugins",
+            "list"
+          ],
+          "returncode": 0,
+          "status": "passed",
+          "stderr": "",
+          "stdout": "Plugins                                    \n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502 Name         \u2502 Status      \u2502 Version \u2502 Description                \u2502 Source  \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 disk-cleanup \u2502 not enabled \u2502 2.0.0   \u2502 Auto-track and clean up    \u2502 bundled \u2502\n\u2502              \u2502             \u2502         \u2502 ephemeral files (test      \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 scripts, temp outputs,     \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 cron logs) created during  \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 Hermes sessions. Runs via  \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 plugin hooks \u00e2\u20ac\u201d no agent  \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 action required.           \u2502         \u2502\n\u2502 google_meet  \u2502 not enabled \u2502 0.2.0   \u2502 Join a Google Meet call,   \u2502 bundled \u2502\n\u2502              \u2502             \u2502         \u2502 transcribe live captions,  \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 speak in realtime, and     \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 follow up afterwards. v1   \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 transcribe-only is the     \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 default; v2 realtime       \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 duplex audio via OpenAI    \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 Realtime +                 \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 BlackHole/PulseAudio ships \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 with mode='realtime'; v3   \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 remote node host lets the  \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 bot run on a different     \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 machine than the gateway   \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 (gateway on Linux,         \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 Chrome+signed-in profile   \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 on the user's Mac).        \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 Explicit-by-design: only   \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 joins meet.google.com URLs \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 passed in \u2014 no calendar    \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 scanning, no auto-dial.    \u2502         \u2502\n\u2502 spotify      \u2502 not enabled \u2502 1.0.0   \u2502 Native Spotify integration \u2502 bundled \u2502\n\u2502              \u2502             \u2502         \u2502 \u00e2\u20ac\u201d 7 tools (playback,     \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 devices, queue, search,    \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 playlists, albums,         \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 library) using Spotify Web \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 API + PKCE OAuth. Auth via \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 `hermes auth spotify`.     \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 Tools gate on              \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 `providers.spotify` in     \u2502         \u2502\n\u2502              \u2502             \u2502         \u2502 ~/.hermes/auth.json.       \u2502         \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n\nInteractive toggle: hermes plugins\nEnable/disable: hermes plugins enable/disable <name>\nPlugins are opt-in by default \u2014 only 'enabled' plugins load."
+        },
+        "reason": "Active Hermes CLI is v0.12.0 (2026.4.30); expected v2026.5.16 / package 0.14.0. Active Hermes plugins list does not include hermes-slicer.",
+        "required": [
+          "v2026.5.16",
+          "active hermes CLI sees hermes-slicer",
+          "hermes plugins enable hermes-slicer"
+        ],
+        "status": "blocked",
+        "version": {
+          "expected_package_version": "0.14.0",
+          "expected_release_tag": "v2026.5.16",
+          "matches_expected": false,
+          "release_date": "2026.4.30",
+          "version": "0.12.0"
+        },
+        "version_command": {
+          "args": [
+            "C:\\Python314\\Scripts\\hermes.EXE",
+            "version"
+          ],
+          "returncode": 0,
+          "status": "passed",
+          "stderr": "",
+          "stdout": "Hermes Agent v0.12.0 (2026.4.30)\nProject: G:\\Github\\hermes-agent-fresh\nPython: 3.14.3\nOpenAI SDK: 2.28.0\nUp to date"
+        }
+      },
+      "committed_project_plugin": {
+        "checks": {
+          "handler_callable": true,
+          "has_export_preflight": true,
+          "has_hermes_proof_mcp": true,
+          "toolset": true
+        },
+        "plugin_dir": ".hermes\\plugins\\hermes-slicer",
+        "registered_tool": {
+          "action_count": 13,
+          "description": "Route Hermes Agent tool requests to safe local HermesSlicer bridge, Orca/FLSUN, proof, and blocked export actions.",
+          "name": "hermes_agent_tools",
+          "toolset": "hermes_agent"
+        },
+        "status": "passed"
+      },
+      "generated_at": "2026-05-17T09:39:30.911915+00:00",
+      "integration_plugin": {
+        "checks": {
+          "handler_callable": true,
+          "has_export_preflight": true,
+          "has_hermes_proof_mcp": true,
+          "toolset": true
+        },
+        "plugin_dir": "integrations\\hermes-slicer",
+        "registered_tool": {
+          "action_count": 13,
+          "description": "Route Hermes Agent tool requests to safe local HermesSlicer bridge, Orca/FLSUN, proof, and blocked export actions.",
+          "name": "hermes_agent_tools",
+          "toolset": "hermes_agent"
+        },
+        "status": "passed"
+      },
+      "isolated_active_project_plugin_harness": {
+        "parsed": {
+          "plugins_seen": 10,
+          "selected": [
+            {
+              "commands": 0,
+              "description": "Local Hermes Agent tool router for HermesSlicer, Orca/FLSUN checks, and proof.",
+              "enabled": true,
+              "error": null,
+              "hooks": 0,
+              "key": "hermes-slicer",
+              "kind": "standalone",
+              "name": "hermes-slicer",
+              "source": "project",
+              "tools": 1,
+              "version": "0.1.0"
+            }
+          ],
+          "status": "passed"
+        },
+        "returncode": 0,
+        "status": "passed",
+        "stderr": "",
+        "stdout": "{\"plugins_seen\": 10, \"selected\": [{\"commands\": 0, \"description\": \"Local Hermes Agent tool router for HermesSlicer, Orca/FLSUN checks, and proof.\", \"enabled\": true, \"error\": null, \"hooks\": 0, \"key\": \"hermes-slicer\", \"kind\": \"standalone\", \"name\": \"hermes-slicer\", \"source\": \"project\", \"tools\": 1, \"version\": \"0.1.0\"}], \"status\": \"passed\"}"
+      },
+      "plugin": "hermes-slicer",
+      "reason": "Active Hermes CLI is v0.12.0 (2026.4.30); expected v2026.5.16 / package 0.14.0. Active Hermes plugins list does not include hermes-slicer.",
+      "required": [
+        "v2026.5.16",
+        "HERMES_ENABLE_PROJECT_PLUGINS=1 for project plugin loading",
+        "hermes plugins enable hermes-slicer in the active Hermes install"
+      ],
+      "status": "blocked"
+    },
     "proof_mcp": {
       "available": false,
       "evidence_ledger_ok": false,
@@ -84,7 +197,7 @@
       "reason": "Hermes Proof MCP transport is closed in the current Codex session; local proof ledger remains available."
     }
   },
-  "generated_at": "2026-05-17T05:34:42.075015+00:00",
+  "generated_at": "2026-05-17T09:42:10.446883+00:00",
   "proof_summary": {
     "clean_clone_rehearsal": {
       "bytes": 868,
@@ -94,7 +207,7 @@
     "failed": [],
     "local_proof_files": [
       {
-        "bytes": 1975,
+        "bytes": 974,
         "exists": true,
         "file": "proof/runtime/bridge-health.json"
       },
@@ -124,6 +237,11 @@
         "file": "proof/runtime/hermes-proof-mcp.json"
       },
       {
+        "bytes": 9770,
+        "exists": true,
+        "file": "proof/runtime/hermes-plugin-smoke.json"
+      },
+      {
         "bytes": 4174,
         "exists": true,
         "file": "proof/runtime/submodule-stack.json"
@@ -134,7 +252,7 @@
         "file": "proof/runtime/flsun-export-preflight.json"
       },
       {
-        "bytes": 1975,
+        "bytes": 974,
         "exists": true,
         "file": "proof/runtime/hermes-tool-health.json"
       },
@@ -156,8 +274,8 @@
     ],
     "missing": [],
     "plugin_smoke": {
-      "bytes": 0,
-      "exists": false,
+      "bytes": 9770,
+      "exists": true,
       "file": "proof/runtime/hermes-plugin-smoke.json"
     }
   },

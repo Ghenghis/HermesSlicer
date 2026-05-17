@@ -18,19 +18,19 @@ Upstream `hermes-agent` directory plugins require:
 - `__init__.py`
 - a `register(ctx)` function
 
-The installable plugin folder is:
+The integration plugin folder is:
 
 ```text
 integrations/hermes-slicer/
 ```
 
-For a project-local plugin, copy or link that folder to:
+The committed project-local plugin wrapper is:
 
 ```text
 .hermes/plugins/hermes-slicer/
 ```
 
-Then run Hermes with project plugins enabled and the repo root explicit:
+Run Hermes with project plugins enabled and the repo root explicit:
 
 ```powershell
 $env:HERMES_ENABLE_PROJECT_PLUGINS = "1"
@@ -40,3 +40,9 @@ hermes -z "Check HermesSlicer bridge health" -t hermes_agent
 ```
 
 Hermes does not start the bridge; start `scripts\start_bridge.ps1` first.
+
+The repeatable local proof command is:
+
+```powershell
+python scripts\smoke_hermes_plugin.py
+```
