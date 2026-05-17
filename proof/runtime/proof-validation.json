@@ -27,7 +27,7 @@
   "errors": [],
   "ledger": {
     "errors": [],
-    "events": 56,
+    "events": 57,
     "path": "G:\\Github\\HermesSlicer\\proof\\ledger.jsonl",
     "status": "passed"
   },

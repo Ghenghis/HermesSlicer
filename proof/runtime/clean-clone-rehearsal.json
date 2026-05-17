@@ -1,14 +1,18 @@
 {
     "status":  "passed",
-    "started_at":  "2026-05-17T07:28:16.8109889-07:00",
+    "started_at":  "2026-05-17T09:24:13.1921881-07:00",
     "remote_url":  "https://github.com/Ghenghis/HermesSlicer.git",
-    "branch":  "main",
-    "clone_path":  "C:\\Users\\Admin\\AppData\\Local\\Temp\\HermesSlicer-rehearsals\\HermesSlicer-v1-20260517-072816",
+    "branch":  "codex/v1-acceptance-consolidation",
+    "clone_path":  "C:\\Users\\Admin\\AppData\\Local\\Temp\\HermesSlicer-rehearsals\\HermesSlicer-v1-20260517-092413",
     "proof_skipped":  false,
     "bridge_url":  "http://127.0.0.1:8766",
     "steps":  [
                   {
                       "name":  "git clone --recurse-submodules",
+                      "status":  "passed"
+                  },
+                  {
+                      "name":  "Hermes Agent v0.14 assertion",
                       "status":  "passed"
                   },
                   {
@@ -32,5 +36,5 @@
                       "status":  "passed"
                   }
               ],
-    "finished_at":  "2026-05-17T07:38:02.0786992-07:00"
+    "finished_at":  "2026-05-17T09:35:10.4180781-07:00"
 }

@@ -323,10 +323,10 @@
       "workspace_scope_ok": false
     }
   },
-  "generated_at": "2026-05-17T16:08:43.936759+00:00",
+  "generated_at": "2026-05-17T16:35:41.358271+00:00",
   "proof_summary": {
     "clean_clone_rehearsal": {
-      "bytes": 1301,
+      "bytes": 1480,
       "exists": true,
       "file": "proof/runtime/clean-clone-rehearsal.json"
     },
