@@ -16,13 +16,41 @@ const agentName = document.getElementById("agentName");
 const voiceSelect = document.getElementById("voiceSelect");
 const providerBadge = document.getElementById("providerBadge");
 const authGate = document.getElementById("authGate");
+const authForm = document.getElementById("authForm");
 const authContinue = document.getElementById("authContinue");
+const authEmail = document.getElementById("authEmail");
+const authPassword = document.getElementById("authPassword");
+const authPasswordToggle = document.getElementById("authPasswordToggle");
+const authForgot = document.getElementById("authForgot");
+const authCreate = document.getElementById("authCreate");
+const authError = document.getElementById("authError");
 
 function unlockSession() {
   sessionStorage.setItem("hermesLocalSession", "connected");
   document.body.classList.remove("session-locked");
   authGate.hidden = true;
+  authContinue.disabled = false;
+  authContinue.innerHTML = 'Sign In <span aria-hidden="true">-&gt;</span>';
   document.getElementById("toolInput").focus();
+}
+
+function showAuthError(message) {
+  authError.textContent = message;
+}
+
+function submitAuth(event) {
+  event.preventDefault();
+  showAuthError("");
+  const username = authEmail.value.trim();
+  const password = authPassword.value.trim();
+  if (!username || !password) {
+    showAuthError("Email or username and password are required for the local session.");
+    (!username ? authEmail : authPassword).focus();
+    return;
+  }
+  authContinue.disabled = true;
+  authContinue.textContent = "Signing In";
+  window.setTimeout(unlockSession, 120);
 }
 
 function setupAuthGate() {
@@ -35,7 +63,14 @@ function setupAuthGate() {
     return;
   }
   authGate.hidden = false;
-  authContinue.addEventListener("click", unlockSession);
+  authForm.addEventListener("submit", submitAuth);
+  authPasswordToggle.addEventListener("click", () => {
+    const showing = authPassword.type === "text";
+    authPassword.type = showing ? "password" : "text";
+    authPasswordToggle.setAttribute("aria-label", showing ? "Show password" : "Hide password");
+  });
+  authForgot.addEventListener("click", () => showAuthError("Password recovery is not connected in this local V1 build."));
+  authCreate.addEventListener("click", () => showAuthError("Account creation is not connected in this local V1 build."));
 }
 
 function rememberPanel() {

@@ -19,8 +19,23 @@ class UiStaticTests(unittest.TestCase):
         self.assertIn("/assets/hermes-orca-minimal.svg", html)
         self.assertIn("/assets/hermes-slicer-icon-32.png", html)
         self.assertIn("/assets/hermes-slicer-icon-256.png", html)
-        self.assertIn("Continue to Hermes Tools", html)
+        self.assertIn('id="authForm"', html)
+        self.assertIn("Email or Username", html)
+        self.assertIn("Password", html)
+        self.assertIn("Sign In", html)
+        self.assertIn("Sign Up / Create Account", html)
+        self.assertNotIn("Continue to Hermes Tools", html)
         self.assertIn("Tool ID or request", html)
+
+    def test_login_form_is_real_local_session_ui(self) -> None:
+        html = (WEB / "index.html").read_text(encoding="utf-8")
+        script = (WEB / "app.js").read_text(encoding="utf-8")
+        self.assertIn('autocomplete="username"', html)
+        self.assertIn('autocomplete="current-password"', html)
+        self.assertIn('aria-label="Show password"', html)
+        self.assertIn("submitAuth", script)
+        self.assertIn("Email or username and password are required", script)
+        self.assertIn("sessionStorage.setItem(\"hermesLocalSession\", \"connected\")", script)
 
     def test_brand_assets_are_present(self) -> None:
         for asset in (

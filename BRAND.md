@@ -2,7 +2,7 @@
 
 HermesSlicer V1 uses the Hermes + Orca unified brand system for visible project surfaces. Only the assets needed by the current proofable stack are imported:
 
-- `web/assets/hermes-slicer-login.png` for the local-session login gate.
+- `web/assets/hermes-slicer-login.png` for the clean login hero mark. The login card is rebuilt as HTML/CSS, not shipped as a flat screenshot.
 - `web/assets/readme-hero.png` for the GitHub README hero.
 - `web/assets/hermes-orca-minimal.svg` for favicon and compact panel branding.
 - `web/assets/hermes-orca-primary.svg` as the full vector mark for future app packaging surfaces.
