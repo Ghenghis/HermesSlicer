@@ -45,8 +45,12 @@ $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $cloneDir = Join-Path $ParentDir "HermesSlicer-v1-$stamp"
 $bridgeProcess = $null
 $script:report.clone_path = $cloneDir
+$resolvedReportPath = ""
 
 New-Item -ItemType Directory -Force -Path $ParentDir | Out-Null
+if (-not [string]::IsNullOrWhiteSpace($ReportPath)) {
+    $resolvedReportPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($ReportPath)
+}
 
 Invoke-Step "git clone --recurse-submodules" {
     git clone --branch $Branch --recurse-submodules $RemoteUrl $cloneDir
@@ -106,12 +110,11 @@ finally {
         Stop-Process -Id $bridgeProcess.Id -Force
     }
     $script:report.finished_at = (Get-Date).ToString("o")
-    if (-not [string]::IsNullOrWhiteSpace($ReportPath)) {
-        $resolvedReport = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($ReportPath)
-        $reportDir = Split-Path -Parent $resolvedReport
+    if (-not [string]::IsNullOrWhiteSpace($resolvedReportPath)) {
+        $reportDir = Split-Path -Parent $resolvedReportPath
         New-Item -ItemType Directory -Force -Path $reportDir | Out-Null
         $json = ($script:report | ConvertTo-Json -Depth 8) + [Environment]::NewLine
-        [System.IO.File]::WriteAllText($resolvedReport, $json, [System.Text.UTF8Encoding]::new($false))
+        [System.IO.File]::WriteAllText($resolvedReportPath, $json, [System.Text.UTF8Encoding]::new($false))
     }
     Pop-Location
 }
