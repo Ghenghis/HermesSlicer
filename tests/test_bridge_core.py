@@ -61,6 +61,16 @@ class BridgeCoreTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(payload["bind"], "127.0.0.1")
 
+    def test_dispatch_health_reports_runtime_port(self) -> None:
+        payload, status = dispatch_action({"action": "bridge.health"}, bind="127.0.0.1", port=8766)
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["port"], 8766)
+
+    def test_tool_request_health_reports_runtime_port(self) -> None:
+        payload, status = dispatch_action({"action": "hermes_agent.tool_request", "payload": {"message": "health"}}, port=8766)
+        self.assertEqual(status, 200)
+        self.assertEqual(payload["result"]["port"], 8766)
+
     def test_flsun_inventory_shape(self) -> None:
         payload = flsun_profile_inventory()
         self.assertIn(payload["status"], {"passed", "blocked"})

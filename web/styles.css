@@ -1,14 +1,14 @@
 :root {
   color-scheme: dark;
-  --bg: #101419;
-  --panel: #171d24;
-  --panel-soft: #202833;
-  --line: #33404e;
+  --bg: #08101c;
+  --panel: #101923;
+  --panel-soft: #172534;
+  --line: #2b4052;
   --text: #edf3fa;
   --muted: #95a7b9;
-  --accent: #4fb6ff;
+  --accent: #00d8ff;
   --accent-strong: #8ac26d;
-  --warning: #f2b84b;
+  --warning: #f7b93e;
   --danger: #ff6b73;
 }
 
@@ -25,8 +25,10 @@ body {
   margin: 0;
   overflow: hidden;
   background:
-    radial-gradient(circle at 10% 10%, rgba(79, 182, 255, 0.12), transparent 28rem),
-    linear-gradient(135deg, #0d1116 0%, #151b22 55%, #101419 100%);
+    linear-gradient(90deg, rgba(0, 216, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(247, 185, 62, 0.025) 1px, transparent 1px),
+    linear-gradient(135deg, #050910 0%, var(--bg) 48%, #101923 100%);
+  background-size: 80px 80px, 80px 80px, auto;
   color: var(--text);
   font-family: "Segoe UI", Arial, sans-serif;
 }
@@ -61,8 +63,10 @@ button:hover {
   place-items: center;
   padding: 20px;
   background:
-    radial-gradient(circle at 50% 52%, rgba(4, 221, 217, 0.2), transparent 34rem),
-    linear-gradient(135deg, #050a0d 0%, #101820 48%, #070a0f 100%);
+    linear-gradient(90deg, rgba(0, 216, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(247, 185, 62, 0.04) 1px, transparent 1px),
+    linear-gradient(135deg, #03070d 0%, var(--bg) 52%, #0d1520 100%);
+  background-size: 100px 100px, 100px 100px, auto;
   color: var(--text);
 }
 
@@ -76,8 +80,8 @@ button:hover {
 
 .auth-logo {
   display: block;
-  width: min(880px, 94vw);
-  max-height: min(68vh, 720px);
+  width: min(980px, 94vw);
+  max-height: min(72vh, 760px);
   object-fit: contain;
   filter: drop-shadow(0 24px 70px rgba(0, 0, 0, 0.58));
 }
@@ -93,15 +97,15 @@ button:hover {
 .auth-shell button {
   width: min(340px, 100%);
   height: 48px;
-  border-color: rgba(242, 184, 75, 0.9);
-  background: linear-gradient(135deg, #09777c 0%, #153c46 50%, #8a6820 100%);
+  border-color: rgba(247, 185, 62, 0.9);
+  background: linear-gradient(135deg, #066778 0%, #123644 50%, #8a6820 100%);
   color: #ffffff;
   font-weight: 650;
   box-shadow: 0 12px 34px rgba(0, 0, 0, 0.34);
 }
 
 .auth-shell button:hover {
-  border-color: #f2b84b;
+  border-color: var(--warning);
   background: linear-gradient(135deg, #0b8b90 0%, #174a55 50%, #9a7525 100%);
 }
 
@@ -154,6 +158,12 @@ pre:focus-visible {
   align-items: center;
   min-width: 0;
   gap: 10px;
+}
+
+.brand-mark {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
 }
 
 .brand h1 {

@@ -45,7 +45,8 @@ class BridgeHandler(BaseHTTPRequestHandler):
         )
 
     def end_headers(self) -> None:
-        self.send_header("Access-Control-Allow-Origin", "http://127.0.0.1:8765")
+        bind, port = _server_bind_port(self.server)
+        self.send_header("Access-Control-Allow-Origin", f"http://{bind}:{port}")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.send_header("X-Content-Type-Options", "nosniff")
@@ -58,7 +59,8 @@ class BridgeHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         route = urlparse(self.path).path
         if route == "/health":
-            payload = health_payload()
+            bind, port = _server_bind_port(self.server)
+            payload = health_payload(bind=bind, port=port)
             payload["secrets"] = secret_presence_summary()
             write_json(ROOT / "proof" / "runtime" / "bridge-health.json", payload)
             log_event("bridge", "bridge.health", "passed", outputs=payload, proof_files=["proof/runtime/bridge-health.json"])
@@ -101,7 +103,8 @@ class BridgeHandler(BaseHTTPRequestHandler):
         try:
             body = self.read_json_body()
             if route == "/api/action":
-                payload, status = dispatch_action(body)
+                bind, port = _server_bind_port(self.server)
+                payload, status = dispatch_action(body, bind=bind, port=port)
                 proof_status = "passed" if 200 <= status < 300 else "failed"
                 if payload.get("status") in {"blocked", "warning"}:
                     proof_status = str(payload["status"])
@@ -130,7 +133,8 @@ class BridgeHandler(BaseHTTPRequestHandler):
                 self.respond_json(payload, status=code)
                 return
             if route in {"/api/hermes-agent/tool-request", "/api/chat/message"}:
-                payload = hermes_agent_tool_request(body)
+                bind, port = _server_bind_port(self.server)
+                payload = hermes_agent_tool_request(body, bind=bind, port=port)
                 action_name = "hermes_agent.tool_request" if route != "/api/chat/message" else "hermes_agent.tool_request.compat"
                 log_event("panel", action_name, payload["status"], inputs=body, outputs=payload)
                 self.respond_json(payload)
@@ -201,7 +205,7 @@ def secret_presence_summary() -> dict[str, object]:
     }
 
 
-def dispatch_action(body: dict[str, object]) -> tuple[dict[str, object], int]:
+def dispatch_action(body: dict[str, object], bind: str = DEFAULT_BIND, port: int = DEFAULT_PORT) -> tuple[dict[str, object], int]:
     action = str(body.get("action", "")).strip()
     payload = body.get("payload", {})
     if not action:
@@ -209,7 +213,7 @@ def dispatch_action(body: dict[str, object]) -> tuple[dict[str, object], int]:
     if action not in ACTION_ROUTES:
         return {"status": "failed", "error": f"invalid action: {action}", "allowed": sorted(ACTION_ROUTES)}, 400
     if action == "bridge.health":
-        return health_payload(), 200
+        return health_payload(bind=bind, port=port), 200
     if action == "bridge.actions":
         return {"actions": ALLOWED_ACTIONS}, 200
     if action == "orca.version":
@@ -237,7 +241,7 @@ def dispatch_action(body: dict[str, object]) -> tuple[dict[str, object], int]:
         return result, 200 if result["status"] in {"passed", "blocked"} else 500
     if action == "hermes_agent.tool_request":
         request_payload = payload if isinstance(payload, dict) else {}
-        return hermes_agent_tool_request(request_payload), 200
+        return hermes_agent_tool_request(request_payload, bind=bind, port=port), 200
     if action == "tts.speak":
         request_payload = payload if isinstance(payload, dict) else {}
         result = tts_speak(request_payload)
@@ -245,14 +249,14 @@ def dispatch_action(body: dict[str, object]) -> tuple[dict[str, object], int]:
     return {"status": "failed", "error": "unhandled action"}, 500
 
 
-def hermes_agent_tool_request(body: dict[str, object]) -> dict[str, object]:
+def hermes_agent_tool_request(body: dict[str, object], bind: str = DEFAULT_BIND, port: int = DEFAULT_PORT) -> dict[str, object]:
     message = str(body.get("message", "")).strip()
     agent = str(body.get("agent", "")).strip() or "orchestrator"
     requested_action = str(body.get("action", "")).strip()
     lower = message.lower()
     explicit_action = requested_action or _extract_explicit_action(message)
     if explicit_action:
-        result, status = dispatch_action({"action": explicit_action, "payload": body.get("payload", {})})
+        result, status = dispatch_action({"action": explicit_action, "payload": body.get("payload", {})}, bind=bind, port=port)
         return {
             "status": _normalized_tool_status(result, status),
             "reply": f"Hermes Agent routed tool `{explicit_action}`.",
@@ -304,7 +308,7 @@ def hermes_agent_tool_request(body: dict[str, object]) -> dict[str, object]:
             "result": {"agents": load_agents()},
         }
     if "health" in lower:
-        return _tool_request_result(agent, requested_action or message, "bridge.health", "I ran the HermesSlicer bridge health tool.", health_payload())
+        return _tool_request_result(agent, requested_action or message, "bridge.health", "I ran the HermesSlicer bridge health tool.", health_payload(bind=bind, port=port))
     if "version" in lower or "orca" in lower:
         return _tool_request_result(agent, requested_action or message, "orca.version", "I ran the safe Orca executable probe tool.", orca_version_check())
     if "preflight" in lower:
@@ -384,6 +388,11 @@ def _extract_explicit_action(message: str) -> str | None:
         if part in allowed:
             return part
     return None
+
+
+def _server_bind_port(server: object) -> tuple[str, int]:
+    address = getattr(server, "server_address", (DEFAULT_BIND, DEFAULT_PORT))
+    return str(address[0]), int(address[1])
 
 
 def hermes_proof_mcp_status() -> dict[str, object]:

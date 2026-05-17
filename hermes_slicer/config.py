@@ -213,14 +213,14 @@ def save_agents(agents: list[dict[str, Any]]) -> None:
     (LOCAL_DIR / "agents.json").write_text(json.dumps({"agents": agents}, indent=2) + "\n", encoding="utf-8")
 
 
-def health_payload() -> dict[str, Any]:
+def health_payload(bind: str = DEFAULT_BIND, port: int = DEFAULT_PORT) -> dict[str, Any]:
     executables = discover_executables()
     return {
         "status": "ok",
         "name": "HermesSlicer Local Bridge",
         "version": __version__,
-        "bind": DEFAULT_BIND,
-        "port": DEFAULT_PORT,
+        "bind": bind,
+        "port": port,
         "executables": {name: bool(path) for name, path in executables.items()},
         "actions": [action["id"] for action in ALLOWED_ACTIONS],
         "proof_ledger": "proof/ledger.jsonl",

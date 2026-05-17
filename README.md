@@ -1,5 +1,7 @@
 # HermesSlicer
 
+![HermesSlicer brand hero](web/assets/readme-hero.png)
+
 HermesSlicer V1 is a local sidecar for OrcaSlicer: a dark floating web panel, a localhost-only bridge, safe Orca/Prusa executable checks, FLSUN profile preflight, Hermes Agent tooling, Azure English voice assignment, and sanitized proof logs.
 
 ## Run
@@ -31,6 +33,10 @@ Redaction scan:
 ```powershell
 python scripts\redaction_scan.py .
 ```
+
+## Brand
+
+HermesSlicer V1 uses the curated Hermes + Orca brand pack for the login gate, README hero, favicon/app icon, and compact panel mark. See `BRAND.md`.
 
 ## Upstream Bases
 

@@ -20,7 +20,7 @@
     "prusa": true
   },
   "name": "HermesSlicer Local Bridge",
-  "port": 8765,
+  "port": 8766,
   "proof_ledger": "proof/ledger.jsonl",
   "secrets": {
     "env_present": {
