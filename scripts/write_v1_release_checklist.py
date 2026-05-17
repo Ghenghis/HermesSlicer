@@ -39,7 +39,7 @@ def load_status(path: str) -> str:
     if not full_path.exists() or full_path.suffix.lower() != ".json":
         return "missing" if not full_path.exists() else "present"
     try:
-        payload = json.loads(full_path.read_text(encoding="utf-8"))
+        payload = json.loads(full_path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError:
         return "invalid_json"
     return str(payload.get("status", "present"))
@@ -50,7 +50,7 @@ def load_json(path: str) -> dict[str, Any]:
     if not full_path.exists() or full_path.suffix.lower() != ".json":
         return {}
     try:
-        return json.loads(full_path.read_text(encoding="utf-8"))
+        return json.loads(full_path.read_text(encoding="utf-8-sig"))
     except json.JSONDecodeError:
         return {}
 
@@ -103,7 +103,13 @@ def build_report() -> dict[str, Any]:
         )
 
     local_ready = not missing and not failed
-    tag_ready = local_ready and clean_clone["exists"] and not blocked_external
+    clean_clone_passed = clean_clone["exists"] and load_status(clean_clone["file"]) == "passed"
+    tag_ready = local_ready and clean_clone_passed and not blocked_external
+    readiness_note = (
+        "Do not tag V1 until external live-agent, MCP, and plugin gates are proved or explicitly accepted as release-blocking owner decisions."
+        if clean_clone_passed
+        else "Do not tag V1 until clean-clone rehearsal passes and external live-agent/plugin gates are proved or explicitly accepted as release-blocking owner decisions."
+    )
     return {
         "status": "passed" if tag_ready else "blocked",
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -123,8 +129,8 @@ def build_report() -> dict[str, Any]:
         "tag_readiness": {
             "ready": tag_ready,
             "local_gates_ready": local_ready,
-            "clean_clone_rehearsal_passed": clean_clone["exists"] and load_status(clean_clone["file"]) == "passed",
-            "notes": "Do not tag V1 until clean-clone rehearsal passes and external live-agent/plugin gates are proved or explicitly accepted as release-blocking owner decisions.",
+            "clean_clone_rehearsal_passed": clean_clone_passed,
+            "notes": readiness_note,
         },
     }
 

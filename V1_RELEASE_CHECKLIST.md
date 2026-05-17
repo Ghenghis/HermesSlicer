@@ -1,13 +1,13 @@
 # HermesSlicer V1 Release Checklist
 
-Generated: 2026-05-17T05:18:37.193892+00:00
+Generated: 2026-05-17T05:34:42.075015+00:00
 
 ## Proof Summary
 
 - Local proof files present: 12/12
 - Missing proof files: none
 - Failed/invalid proof files: none
-- Clean-clone rehearsal: missing
+- Clean-clone rehearsal: passed
 - Active Hermes plugin smoke: missing
 
 ## Blocked External Gates
@@ -21,5 +21,5 @@ Generated: 2026-05-17T05:18:37.193892+00:00
 
 - Ready to tag V1: no
 - Local gates ready: yes
-- Clean-clone rehearsal passed: no
-- Notes: Do not tag V1 until clean-clone rehearsal passes and external live-agent/plugin gates are proved or explicitly accepted as release-blocking owner decisions.
+- Clean-clone rehearsal passed: yes
+- Notes: Do not tag V1 until external live-agent, MCP, and plugin gates are proved or explicitly accepted as release-blocking owner decisions.

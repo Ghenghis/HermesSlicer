@@ -14,6 +14,7 @@ Date: 2026-05-16
 - G-code export blocked by default unless `HERMES_ENABLE_EXPORT_GCODE=1`.
 - Proof ledger, proof validation, redaction scan, screenshots, and API drift tests.
 - V1 release checklist output with proof summary, blocked external credentials, and tag-readiness notes.
+- Clean-clone rehearsal against GitHub `main` with submodules.
 - Root `LICENSE` and `NOTICE`.
 
 ## Remaining V1 Blockers
@@ -33,10 +34,7 @@ Date: 2026-05-16
    - Required external secret: `HERMES_HUMAN_GRANT_SECRET`.
    - Grants must use explicit scopes and short TTLs. Do not grant all actions by default.
 
-4. Clean-clone rehearsal still needs final pass.
-   - Script: `scripts/clean_clone_rehearsal.ps1`.
-
-5. Active Hermes plugin smoke still needs final pass against the user's Hermes install.
+4. Active Hermes plugin smoke still needs final pass against the user's Hermes install.
    - Plugin path: `integrations/hermes-slicer`.
 
 ## Environment Gates

@@ -37,7 +37,7 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 | Hermes Proof MCP evidence channel | Blocked in current session | `proof/runtime/hermes-proof-mcp.json`; current MCP transport is closed |
 | Root project license | Complete | `LICENSE`, `NOTICE` |
 | V1 release checklist | Blocked on external gates | `V1_RELEASE_CHECKLIST.md`, `proof/runtime/v1-release-checklist.json` |
-| Clean-clone release rehearsal | Scripted, not yet run in final pass | `scripts/clean_clone_rehearsal.ps1` |
+| Clean-clone release rehearsal | Complete | `proof/runtime/clean-clone-rehearsal.json` |
 
 ## P0 Gates For V1 Complete
 

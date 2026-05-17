@@ -84,11 +84,11 @@
       "reason": "Hermes Proof MCP transport is closed in the current Codex session; local proof ledger remains available."
     }
   },
-  "generated_at": "2026-05-17T05:18:37.193892+00:00",
+  "generated_at": "2026-05-17T05:34:42.075015+00:00",
   "proof_summary": {
     "clean_clone_rehearsal": {
-      "bytes": 0,
-      "exists": false,
+      "bytes": 868,
+      "exists": true,
       "file": "proof/runtime/clean-clone-rehearsal.json"
     },
     "failed": [],
@@ -163,9 +163,9 @@
   },
   "status": "blocked",
   "tag_readiness": {
-    "clean_clone_rehearsal_passed": false,
+    "clean_clone_rehearsal_passed": true,
     "local_gates_ready": true,
-    "notes": "Do not tag V1 until clean-clone rehearsal passes and external live-agent/plugin gates are proved or explicitly accepted as release-blocking owner decisions.",
+    "notes": "Do not tag V1 until external live-agent, MCP, and plugin gates are proved or explicitly accepted as release-blocking owner decisions.",
     "ready": false
   }
 }

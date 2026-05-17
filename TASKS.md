@@ -27,7 +27,7 @@
 - [ ] Enable/prove live Hermes Agent provider bridge connectivity with external `HERMES_AGENT_ENABLED=1` and a provider backend.
 - [ ] Enable/prove bounded AS_USER session grant for agent-driven V1 actions with external `HERMES_HUMAN_GRANT_SECRET`.
 - [x] Pick a root project license before tagging a final release.
-- [ ] Run clean-clone V1 rehearsal with submodules.
+- [x] Run clean-clone V1 rehearsal with submodules.
 - [ ] Refresh final browser/panel screenshots.
 - [ ] Smoke installable Hermes plugin against active Hermes install.
 - [ ] Tag V1 release after P0 gates pass.

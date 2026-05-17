@@ -103,7 +103,8 @@ finally {
         $resolvedReport = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($ReportPath)
         $reportDir = Split-Path -Parent $resolvedReport
         New-Item -ItemType Directory -Force -Path $reportDir | Out-Null
-        $script:report | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $resolvedReport -Encoding UTF8
+        $json = ($script:report | ConvertTo-Json -Depth 8) + [Environment]::NewLine
+        [System.IO.File]::WriteAllText($resolvedReport, $json, [System.Text.UTF8Encoding]::new($false))
     }
     Pop-Location
 }

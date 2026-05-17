@@ -18,11 +18,12 @@ Finish V1 end to end without scope drift. The target is a proofable local sideca
 - [ ] Enable/prove live Hermes Agent provider bridge connectivity, requiring external `HERMES_AGENT_ENABLED=1` plus a healthy provider backend.
 - [ ] Enable/prove bounded AS_USER session grants, or document missing external `HERMES_HUMAN_GRANT_SECRET` as a release blocker.
 - [x] Pick and add root `LICENSE` plus any needed `NOTICE`.
-- [ ] Run clean-clone rehearsal with submodules.
+- [x] Run clean-clone rehearsal with submodules.
 - [ ] Refresh browser/panel screenshots from the final branch state.
 - [ ] Smoke the installable Hermes plugin against the active Hermes install.
 - [x] Add final V1 release checklist output with proof summary, blocked external credentials, and tag-readiness notes.
-- [ ] Run final proof command set and append Hermes Proof MCP evidence.
+- [x] Run final local proof command set.
+- [ ] Append Hermes Proof MCP evidence after the MCP transport is restored.
 - [ ] Tag the V1 release only after the above gates pass.
 
 ## Agent Operating Rule
