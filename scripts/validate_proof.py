@@ -83,6 +83,14 @@ def validate_artifacts() -> dict[str, Any]:
             bridge_gate = bridge["hermes_agent_bridge"]
             if bridge_gate.get("live_connectivity_claimed") and not bridge_gate.get("live_proof_present"):
                 errors.append("bridge health claims live Hermes Agent connectivity without live_proof_present")
+            health_probe = bridge_gate.get("health_probe", {})
+            if bridge_gate.get("live_connectivity_claimed"):
+                if not isinstance(health_probe, dict):
+                    errors.append("bridge health claims live Hermes Agent connectivity without a health_probe object")
+                else:
+                    for key in ("identity_ok", "version_ok", "release_ok"):
+                        if health_probe.get(key) is not True:
+                            errors.append(f"bridge health claims live Hermes Agent connectivity without {key}=true")
 
     proof_mcp, proof_mcp_errors = load_json("proof/runtime/hermes-proof-mcp.json")
     errors.extend(proof_mcp_errors)
@@ -99,6 +107,33 @@ def validate_artifacts() -> dict[str, Any]:
             section_payload = plugin.get(section, {})
             if not isinstance(section_payload, dict) or section_payload.get("status") != "passed":
                 errors.append(f"proof/runtime/hermes-plugin-smoke.json {section} must be passed")
+        cwd_fallback = plugin.get("committed_project_plugin_cwd_fallback", {})
+        if not isinstance(cwd_fallback, dict) or cwd_fallback.get("status") != "passed":
+            errors.append("proof/runtime/hermes-plugin-smoke.json committed_project_plugin_cwd_fallback must be passed")
+
+    computer_use, computer_use_errors = load_json("proof/runtime/hermes-computer-use.json")
+    errors.extend(computer_use_errors)
+    if computer_use:
+        artifacts["hermes-computer-use.json"] = status_of(computer_use)
+        errors.extend(status_errors("proof/runtime/hermes-computer-use.json", computer_use, {"passed", "blocked"}))
+        computer_payload = computer_use.get("computer_use", {})
+        if not isinstance(computer_payload, dict):
+            errors.append("proof/runtime/hermes-computer-use.json computer_use must be an object")
+        elif status_of(computer_use) == "passed":
+            if computer_payload.get("available") is not True:
+                errors.append("Hermes computer-use artifact is passed but computer_use.available is not true")
+            if computer_payload.get("supported_platform") is not True:
+                errors.append("Hermes computer-use artifact is passed without supported_platform=true")
+            if computer_payload.get("cua_driver_installed") is not True:
+                errors.append("Hermes computer-use artifact is passed without cua_driver_installed=true")
+            as_user = computer_payload.get("as_user_session", {})
+            if not isinstance(as_user, dict) or as_user.get("granted") is not True:
+                errors.append("Hermes computer-use artifact is passed without bounded AS_USER grant")
+            visual_proof = computer_payload.get("visual_proof", {})
+            if not isinstance(visual_proof, dict) or visual_proof.get("passed") is not True:
+                errors.append("Hermes computer-use artifact is passed without visual proof")
+        elif computer_payload.get("available") is True:
+            errors.append("Hermes computer-use artifact is blocked but computer_use.available is true")
 
     clean_clone, clean_errors = load_json("proof/runtime/clean-clone-rehearsal.json")
     errors.extend(clean_errors)

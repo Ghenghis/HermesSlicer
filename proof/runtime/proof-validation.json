@@ -3,7 +3,8 @@
     "artifacts": {
       "bridge-health.json": "ok",
       "clean-clone-rehearsal.json": "passed",
-      "hermes-plugin-smoke.json": "blocked",
+      "hermes-computer-use.json": "blocked",
+      "hermes-plugin-smoke.json": "passed",
       "hermes-proof-mcp.json": "blocked",
       "login-geometry.json": "passed",
       "screenshot-format.json": "passed",
@@ -19,7 +20,7 @@
   "errors": [],
   "ledger": {
     "errors": [],
-    "events": 50,
+    "events": 52,
     "path": "G:\\Github\\HermesSlicer\\proof\\ledger.jsonl",
     "status": "passed"
   },

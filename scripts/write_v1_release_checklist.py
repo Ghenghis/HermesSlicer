@@ -21,6 +21,7 @@ LOCAL_PROOF_FILES = (
     "proof/runtime/login-geometry.json",
     "proof/runtime/hermes-proof-mcp.json",
     "proof/runtime/hermes-plugin-smoke.json",
+    "proof/runtime/hermes-computer-use.json",
     "proof/runtime/submodule-stack.json",
     "proof/runtime/flsun-export-preflight.json",
     "proof/runtime/hermes-tool-health.json",
@@ -81,6 +82,7 @@ def build_report() -> dict[str, Any]:
     plugin_smoke = file_status("proof/runtime/hermes-plugin-smoke.json")
     plugin_smoke_payload = load_json("proof/runtime/hermes-plugin-smoke.json")
     proof_mcp = load_json("proof/runtime/hermes-proof-mcp.json")
+    computer_use = load_json("proof/runtime/hermes-computer-use.json")
     blocked_external = []
     if hermes_agent["status"] != "passed":
         blocked_external.append(
@@ -107,6 +109,21 @@ def build_report() -> dict[str, Any]:
                     "Hermes Proof MCP is not available for the HermesSlicer workspace in the current session.",
                 ),
                 "required": ["working Hermes Proof MCP transport", "successful evidence verification", f"workspace_root={ROOT}"],
+            }
+        )
+    if computer_use.get("status") != "passed":
+        computer_payload = computer_use.get("computer_use", {}) if isinstance(computer_use.get("computer_use", {}), dict) else {}
+        blocked_external.append(
+            {
+                "gate": "hermes_agent_computer_use_visual_control",
+                "reason": computer_payload.get(
+                    "reason",
+                    "Hermes Agent computer-use proof is not available.",
+                ),
+                "required": computer_payload.get(
+                    "required",
+                    ["macOS host", "cua-driver installed", "bounded AS_USER grant", "visual proof run"],
+                ),
             }
         )
     if not plugin_smoke["exists"]:
@@ -136,9 +153,9 @@ def build_report() -> dict[str, Any]:
     clean_clone_passed = clean_clone["exists"] and load_status(clean_clone["file"]) == "passed"
     tag_ready = local_ready and clean_clone_passed and not blocked_external
     readiness_note = (
-        "Do not tag V1 until external live-agent, MCP, and plugin gates are proved or explicitly accepted as release-blocking owner decisions."
+        "Do not tag V1 until external live-agent, AS_USER, MCP, and computer-use gates are proved or explicitly accepted as release-blocking owner decisions."
         if clean_clone_passed
-        else "Do not tag V1 until clean-clone rehearsal passes and external live-agent/plugin gates are proved or explicitly accepted as release-blocking owner decisions."
+        else "Do not tag V1 until clean-clone rehearsal passes and external live-agent, AS_USER, MCP, and computer-use gates are proved or explicitly accepted as release-blocking owner decisions."
     )
     return {
         "status": "passed" if tag_ready else "blocked",
@@ -155,6 +172,7 @@ def build_report() -> dict[str, Any]:
             "hermes_agent_bridge": hermes_agent,
             "as_user_session": as_user,
             "plugin_smoke": plugin_smoke_payload,
+            "computer_use": computer_use.get("computer_use", {}),
             "blocked": blocked_external,
         },
         "tag_readiness": {

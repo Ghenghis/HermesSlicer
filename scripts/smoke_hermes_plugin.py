@@ -80,7 +80,7 @@ def load_plugin_module(plugin_dir: Path, module_name: str) -> Any:
     return module
 
 
-def local_registration_smoke(plugin_dir: Path) -> dict[str, Any]:
+def local_registration_smoke(plugin_dir: Path, *, root_env: bool = True) -> dict[str, Any]:
     required_files = [plugin_dir / "plugin.yaml", plugin_dir / "__init__.py"]
     missing = [str(path.relative_to(ROOT)) for path in required_files if not path.exists()]
     if missing:
@@ -92,7 +92,12 @@ def local_registration_smoke(plugin_dir: Path) -> dict[str, Any]:
         }
 
     previous_root = os.environ.get("HERMES_SLICER_ROOT")
-    os.environ["HERMES_SLICER_ROOT"] = str(ROOT)
+    previous_cwd = Path.cwd()
+    if root_env:
+        os.environ["HERMES_SLICER_ROOT"] = str(ROOT)
+    else:
+        os.environ.pop("HERMES_SLICER_ROOT", None)
+        os.chdir(ROOT)
     try:
         module = load_plugin_module(plugin_dir, f"hermes_slicer_smoke_{plugin_dir.parent.name}_{plugin_dir.name}")
         ctx = FakeHermesContext()
@@ -104,6 +109,8 @@ def local_registration_smoke(plugin_dir: Path) -> dict[str, Any]:
             "reason": f"Plugin register(ctx) failed: {type(exc).__name__}: {exc}",
         }
     finally:
+        if not root_env:
+            os.chdir(previous_cwd)
         if previous_root is None:
             os.environ.pop("HERMES_SLICER_ROOT", None)
         else:
@@ -131,6 +138,7 @@ def local_registration_smoke(plugin_dir: Path) -> dict[str, Any]:
     return {
         "status": status,
         "plugin_dir": str(plugin_dir.relative_to(ROOT)),
+        "root_resolution": "HERMES_SLICER_ROOT" if root_env else "cwd_fallback",
         "registered_tool": {
             "name": tool.get("name"),
             "toolset": tool.get("toolset"),
@@ -284,12 +292,13 @@ raise SystemExit(0 if status == "passed" else 2)
 def build_report() -> dict[str, Any]:
     project_registration = local_registration_smoke(PROJECT_PLUGIN_DIR)
     integration_registration = local_registration_smoke(INTEGRATION_PLUGIN_DIR)
+    project_cwd_registration = local_registration_smoke(PROJECT_PLUGIN_DIR, root_env=False)
     active_cli = active_cli_probe()
     harness = active_project_plugin_harness() if PROJECT_PLUGIN_DIR.exists() else {"status": "failed", "reason": "Project plugin wrapper is missing."}
 
     local_failed = [
         result
-        for result in (project_registration, integration_registration)
+        for result in (project_registration, integration_registration, project_cwd_registration)
         if result.get("status") != "passed"
     ]
     if local_failed:
@@ -311,8 +320,10 @@ def build_report() -> dict[str, Any]:
             EXPECTED_HERMES_RELEASE_TAG,
             "HERMES_ENABLE_PROJECT_PLUGINS=1 for project plugin loading",
             "hermes plugins enable hermes-slicer in the active Hermes install",
+            "run hermes from the HermesSlicer repo or set HERMES_SLICER_ROOT",
         ],
         "committed_project_plugin": project_registration,
+        "committed_project_plugin_cwd_fallback": project_cwd_registration,
         "integration_plugin": integration_registration,
         "active_hermes_cli": active_cli,
         "isolated_active_project_plugin_harness": harness,

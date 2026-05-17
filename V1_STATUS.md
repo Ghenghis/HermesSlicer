@@ -16,6 +16,8 @@ Date: 2026-05-17
 - V1 release checklist output with proof summary, blocked external credentials, and tag-readiness notes.
 - Clean-clone rehearsal against GitHub `main` with submodules.
 - Root `LICENSE` and `NOTICE`.
+- Active Hermes Agent CLI is pinned to `v0.14.0 (2026.5.16)` from `upstream/hermes-agent`.
+- Active `hermes-slicer` plugin smoke passes with the plugin enabled in the user Hermes install.
 
 ## Remaining V1 Blockers
 
@@ -27,19 +29,17 @@ Date: 2026-05-17
 
 2. Live Hermes Agent provider bridge is not enabled.
    - Current proof: `/health` reports `live_connectivity_claimed=false`.
-   - Required external environment: `HERMES_AGENT_ENABLED=1`, one provider/backend, and live proof via `HERMES_AGENT_HEALTH_URL` pointing at Hermes Agent and returning `ok`/`passed`.
-   - Required provider backend: at least one of `DEEPSEEK_API_KEY`, `MINIMAX_API_KEY`, `SILICONFLOW_API_KEY`, or a local LM Studio/OpenAI-compatible endpoint.
+   - Required external environment: `HERMES_AGENT_ENABLED=1`, one provider/backend, and live proof via `HERMES_AGENT_HEALTH_URL` pointing at Hermes Agent `v0.14.0` / `v2026.5.16` and returning `ok`/`passed`.
+   - Current provider/backend booleans show OpenAI, Anthropic, Gemini, and `OPENAI_BASE_URL` present, but no live Hermes Agent health URL is configured.
 
 3. Bounded AS_USER grants are not enabled.
    - Current proof: no active AS_USER session.
-   - Required external secret: `HERMES_HUMAN_GRANT_SECRET`.
-   - Grants must use explicit scopes and short TTLs. Do not grant all actions by default.
+   - Required external env: `HERMES_HUMAN_GRANT_SECRET`, `HERMES_AS_USER_GRANT_ID`, `HERMES_AS_USER_SCOPES`, and short `HERMES_AS_USER_EXPIRES_AT`.
+   - Grants must use explicit scopes and max 15-minute TTLs. Do not grant all actions by default.
 
-4. Active Hermes plugin smoke still needs final pass against the user's Hermes install.
-   - Integration plugin path: `integrations/hermes-slicer`.
-   - Project plugin path: `.hermes/plugins/hermes-slicer`.
-   - Current proof artifact: `proof/runtime/hermes-plugin-smoke.json`.
-   - Required active install: Hermes Agent `v2026.5.16` / package `0.14.0`.
+4. Hermes Agent computer-use visual control is not available on this Windows host.
+   - Current proof: `proof/runtime/hermes-computer-use.json` reports `blocked`.
+   - Required host/tooling: macOS with `cua-driver`, bounded AS_USER scope, and a visual proof run.
 
 ## Environment Gates
 
@@ -66,14 +66,16 @@ External Hermes Agent provider bridge:
 
 ```powershell
 $env:HERMES_AGENT_ENABLED = "1"
-$env:DEEPSEEK_API_KEY = "<external secret>"
-# or MINIMAX_API_KEY / SILICONFLOW_API_KEY / local LM Studio backend
+$env:HERMES_AGENT_HEALTH_URL = "http://127.0.0.1:<hermes-agent-health-port>/health"
 ```
 
 External AS_USER grants:
 
 ```powershell
 $env:HERMES_HUMAN_GRANT_SECRET = "<external secret>"
+$env:HERMES_AS_USER_GRANT_ID = "<grant id>"
+$env:HERMES_AS_USER_SCOPES = "visual.inspect,slice.preflight"
+$env:HERMES_AS_USER_EXPIRES_AT = "<UTC timestamp within 15 minutes>"
 ```
 
 Do not commit any provider or AS_USER secrets.

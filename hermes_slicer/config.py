@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import shutil
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.error import URLError
@@ -32,10 +33,24 @@ DEFAULT_AGENTS = [
     {"id": "security", "display_name": "Security Agent", "provider": "deepseek", "voice": "en-US-JennyNeural"},
 ]
 
-HERMES_AGENT_PROVIDER_ENV_NAMES = ("DEEPSEEK_API_KEY", "MINIMAX_API_KEY", "SILICONFLOW_API_KEY")
+HERMES_AGENT_PROVIDER_ENV_NAMES = (
+    "OPENAI_API_KEY",
+    "ANTHROPIC_API_KEY",
+    "GEMINI_API_KEY",
+    "GOOGLE_API_KEY",
+    "DEEPSEEK_API_KEY",
+    "MINIMAX_API_KEY",
+    "SILICONFLOW_API_KEY",
+)
 HERMES_AGENT_LOCAL_BACKEND_ENV_NAMES = ("HERMES_AGENT_BASE_URL", "LM_STUDIO_BASE_URL", "OPENAI_BASE_URL")
 HERMES_AGENT_LIVE_PROOF_ENV_NAMES = ("HERMES_AGENT_HEALTHCHECK_OK", "HERMES_AGENT_LIVE_PROOF")
 HERMES_AGENT_HEALTH_URL_ENV = "HERMES_AGENT_HEALTH_URL"
+EXPECTED_HERMES_AGENT_VERSION = "0.14.0"
+EXPECTED_HERMES_AGENT_RELEASE = "v2026.5.16"
+AS_USER_SCOPES_ENV = "HERMES_AS_USER_SCOPES"
+AS_USER_EXPIRES_AT_ENV = "HERMES_AS_USER_EXPIRES_AT"
+AS_USER_GRANT_ID_ENV = "HERMES_AS_USER_GRANT_ID"
+AS_USER_MAX_TTL_SECONDS = 15 * 60
 
 ALLOWED_ACTIONS = [
     {
@@ -225,6 +240,50 @@ def _truthy_env(name: str) -> bool:
     return os.environ.get(name, "").strip().lower() in {"1", "true", "yes", "passed", "ok"}
 
 
+def _flatten_json_text(value: Any) -> str:
+    if isinstance(value, dict):
+        return " ".join(_flatten_json_text(item) for item in value.values())
+    if isinstance(value, list):
+        return " ".join(_flatten_json_text(item) for item in value)
+    if value is None:
+        return ""
+    return str(value)
+
+
+def _hermes_agent_identity_from_health(payload: dict[str, Any]) -> dict[str, Any]:
+    identity_text = _flatten_json_text(
+        {
+            "name": payload.get("name"),
+            "service": payload.get("service"),
+            "product": payload.get("product"),
+            "app": payload.get("app"),
+            "agent": payload.get("agent"),
+            "kind": payload.get("kind"),
+        }
+    ).lower()
+    identity_ok = "hermes agent" in identity_text or "hermes-agent" in identity_text
+    version_text = _flatten_json_text(
+        {
+            "version": payload.get("version"),
+            "hermes_version": payload.get("hermes_version"),
+            "hermes_agent_version": payload.get("hermes_agent_version"),
+            "agent_version": payload.get("agent_version"),
+            "build": payload.get("build"),
+            "release": payload.get("release"),
+            "tag": payload.get("tag"),
+        }
+    )
+    version_ok = EXPECTED_HERMES_AGENT_VERSION in version_text
+    release_ok = EXPECTED_HERMES_AGENT_RELEASE in version_text or EXPECTED_HERMES_AGENT_RELEASE.lstrip("v") in version_text
+    return {
+        "identity_ok": identity_ok,
+        "version_ok": version_ok,
+        "release_ok": release_ok,
+        "expected_version": EXPECTED_HERMES_AGENT_VERSION,
+        "expected_release": EXPECTED_HERMES_AGENT_RELEASE,
+    }
+
+
 def _probe_hermes_agent_health() -> dict[str, Any]:
     url = os.environ.get(HERMES_AGENT_HEALTH_URL_ENV, "").strip()
     if not url:
@@ -252,21 +311,44 @@ def _probe_hermes_agent_health() -> dict[str, Any]:
     ok_http = 200 <= int(getattr(response, "status", 0)) < 300
     status = ""
     valid_json = False
+    parsed_body: dict[str, Any] = {}
     try:
-        parsed_body = json.loads(body) if body.strip() else {}
+        raw_body = json.loads(body) if body.strip() else {}
+        parsed_body = raw_body if isinstance(raw_body, dict) else {}
         if isinstance(parsed_body, dict):
             valid_json = True
             status = str(parsed_body.get("status", ""))
     except json.JSONDecodeError:
         status = ""
-    passed = ok_http and valid_json and status in {"ok", "passed"}
+    identity = _hermes_agent_identity_from_health(parsed_body) if valid_json else {
+        "identity_ok": False,
+        "version_ok": False,
+        "release_ok": False,
+        "expected_version": EXPECTED_HERMES_AGENT_VERSION,
+        "expected_release": EXPECTED_HERMES_AGENT_RELEASE,
+    }
+    passed = (
+        ok_http
+        and valid_json
+        and status in {"ok", "passed"}
+        and identity["identity_ok"]
+        and identity["version_ok"]
+        and identity["release_ok"]
+    )
+    if passed:
+        reason = "Hermes Agent health probe returned ok/passed with required v0.14 identity."
+    elif ok_http and valid_json and status in {"ok", "passed"}:
+        reason = "Hermes Agent health probe did not prove Hermes Agent v0.14.0 / v2026.5.16 identity."
+    else:
+        reason = "Hermes Agent health probe did not return ok/passed."
     return {
         "configured": True,
         "passed": passed,
         "http_status": int(getattr(response, "status", 0)),
         "response_status": status or "not_reported",
         "valid_json": valid_json,
-        "reason": "Hermes Agent health probe returned ok/passed." if passed else "Hermes Agent health probe did not return ok/passed.",
+        **identity,
+        "reason": reason,
     }
 
 
@@ -303,22 +385,63 @@ def hermes_agent_bridge_gate() -> dict[str, Any]:
         "reason": reason,
         "required": [
             "HERMES_AGENT_ENABLED=1",
-            "one provider key: DEEPSEEK_API_KEY, MINIMAX_API_KEY, or SILICONFLOW_API_KEY",
+            "one provider key: OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY, GOOGLE_API_KEY, DEEPSEEK_API_KEY, MINIMAX_API_KEY, or SILICONFLOW_API_KEY",
             "or one local backend endpoint: HERMES_AGENT_BASE_URL, LM_STUDIO_BASE_URL, or OPENAI_BASE_URL",
-            "and live proof: HERMES_AGENT_HEALTH_URL pointing at Hermes Agent and returning ok/passed",
+            "and live proof: HERMES_AGENT_HEALTH_URL pointing at Hermes Agent v0.14.0 / v2026.5.16 and returning ok/passed",
         ],
     }
 
 
 def as_user_session_gate() -> dict[str, Any]:
     secret_present = bool(os.environ.get("HERMES_HUMAN_GRANT_SECRET"))
+    raw_scopes = os.environ.get(AS_USER_SCOPES_ENV, "")
+    scopes = [scope.strip() for scope in raw_scopes.replace(";", ",").split(",") if scope.strip()]
+    grant_id = os.environ.get(AS_USER_GRANT_ID_ENV, "").strip()
+    expires_at = os.environ.get(AS_USER_EXPIRES_AT_ENV, "").strip()
+    expiry = _parse_utc_datetime(expires_at)
+    now = datetime.now(timezone.utc)
+    ttl_seconds = int((expiry - now).total_seconds()) if expiry else None
+    errors: list[str] = []
+    if not secret_present:
+        errors.append("HERMES_HUMAN_GRANT_SECRET is not present.")
+    if not scopes:
+        errors.append(f"{AS_USER_SCOPES_ENV} must include at least one explicit scope.")
+    if not grant_id:
+        errors.append(f"{AS_USER_GRANT_ID_ENV} is required.")
+    if expiry is None:
+        errors.append(f"{AS_USER_EXPIRES_AT_ENV} must be an ISO-8601 UTC timestamp.")
+    elif ttl_seconds is None or ttl_seconds <= 0:
+        errors.append("AS_USER grant is expired.")
+    elif ttl_seconds > AS_USER_MAX_TTL_SECONDS:
+        errors.append(f"AS_USER grant TTL must be {AS_USER_MAX_TTL_SECONDS} seconds or less.")
+    granted = not errors
     return {
-        "status": "blocked",
-        "granted": False,
+        "status": "passed" if granted else "blocked",
+        "granted": granted,
         "secret_present": secret_present,
-        "reason": "No active AS_USER session is granted in V1 proof. HERMES_HUMAN_GRANT_SECRET is required before a bounded human grant can be requested.",
-        "required": ["HERMES_HUMAN_GRANT_SECRET", "explicit scopes", "short TTL"],
+        "grant_id_present": bool(grant_id),
+        "scopes": scopes,
+        "expires_at": expires_at,
+        "ttl_seconds": ttl_seconds,
+        "max_ttl_seconds": AS_USER_MAX_TTL_SECONDS,
+        "reason": "Bounded AS_USER grant is active." if granted else " ".join(errors),
+        "required": ["HERMES_HUMAN_GRANT_SECRET", AS_USER_GRANT_ID_ENV, AS_USER_SCOPES_ENV, AS_USER_EXPIRES_AT_ENV, "short TTL"],
     }
+
+
+def _parse_utc_datetime(value: str) -> datetime | None:
+    if not value:
+        return None
+    text = value.strip()
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    try:
+        parsed = datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
 
 
 def health_payload(bind: str = DEFAULT_BIND, port: int = DEFAULT_PORT) -> dict[str, Any]:

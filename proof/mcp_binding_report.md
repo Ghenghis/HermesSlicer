@@ -32,16 +32,17 @@ This repo includes `integrations/hermes_agent_tool.py` and `integrations/hermes_
 - `hermes_proof_mcp`
 - `agents`
 
-## Current Codex MCP Check
+## Current Runtime MCP Check
 
-Observed on 2026-05-16 through the Hermes Proof MCP tools available in this session:
+Observed on 2026-05-17 for the active HermesSlicer workspace:
 
-- `hermes_verify_evidence`: passed with no hash-chain break.
-- `hermes_agent_health`: blocked because the external Hermes Agent provider bridge reports `bridge disabled`.
-- `hermes_user_grant_session`: blocked because external `HERMES_HUMAN_GRANT_SECRET` is not present.
-- Evidence entry: `ev_cc7203be094d96f4`.
+- Active `hermes version`: `Hermes Agent v0.14.0 (2026.5.16)` from `G:\Github\HermesSlicer\upstream\hermes-agent`.
+- Active plugin state: `hermes-slicer` is enabled in the user Hermes plugin directory.
+- `hermes mcp list`: no MCP servers configured.
+- Codex Hermes locks MCP transport: closed in this lead session.
+- Runtime artifact: `proof/runtime/hermes-proof-mcp.json` is `blocked` because no workspace-scoped Hermes Proof MCP evidence is currently available.
 
-To make this gate live, the environment hosting the Hermes Proof/Agent MCP tools must set `HERMES_AGENT_ENABLED=1` and provide at least one healthy provider backend such as `DEEPSEEK_API_KEY`, `MINIMAX_API_KEY`, `SILICONFLOW_API_KEY`, or a local LM Studio-compatible endpoint. This is separate from the local HermesSlicer bridge at `http://127.0.0.1:8765`.
+To make this gate live, the environment hosting the Hermes Proof/Agent MCP tools must expose a working Hermes Proof MCP transport, verify evidence for `G:\Github\HermesSlicer`, set `HERMES_AGENT_ENABLED=1`, and provide a live Hermes Agent v0.14.0 / `v2026.5.16` health endpoint. This is separate from the local HermesSlicer bridge at `http://127.0.0.1:8765`.
 
 ## Hermes Release Pin Note
 
@@ -53,6 +54,5 @@ Use the plugin-style Hermes Agent tool router first because it is small, auditab
 
 ## Risks
 
-- The exact installed Hermes variant on this machine has not been mutated.
 - Plugin install location may differ between Hermes Agent builds; keep the shim import-light and directly executable for smoke testing.
-- Hermes Agent upstream includes computer-use tooling, but HermesSlicer V1 intentionally does not expose computer-use through the slicer bridge. Future use must be read-only first and gated by scoped AS_USER grants.
+- Hermes Agent upstream includes computer-use tooling, but HermesSlicer V1 does not expose it through the slicer bridge unless macOS `cua-driver`, bounded AS_USER, and visual proof are all present.

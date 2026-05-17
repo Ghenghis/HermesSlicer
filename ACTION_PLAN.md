@@ -21,7 +21,7 @@ Finish V1 end to end without scope drift. The target is a proofable local sideca
 - [x] Run clean-clone rehearsal with submodules.
 - [x] Refresh browser/panel screenshots from the final branch state.
 - [x] Add repeatable Hermes plugin smoke proof artifact and committed project plugin wrapper.
-- [ ] Pass the active Hermes plugin smoke with Hermes Agent `v2026.5.16` / package `0.14.0` installed and `hermes-slicer` enabled.
+- [x] Pass the active Hermes plugin smoke with Hermes Agent `v2026.5.16` / package `0.14.0` installed and `hermes-slicer` enabled.
 - [x] Add final V1 release checklist output with proof summary, blocked external credentials, and tag-readiness notes.
 - [x] Run final local proof command set.
 - [ ] Append Hermes Proof MCP evidence after the MCP transport is restored.
@@ -36,7 +36,7 @@ For every remaining V1 task:
 - At least one proof/safety pass checks scope, safety, and evidence.
 - Hermes Proof MCP evidence is appended whenever the MCP is available.
 - If Hermes Agent health reports disabled, do not claim live Hermes Agent bridge connectivity.
-- Do not expose Hermes Agent computer-use through the V1 slicer bridge.
+- Do not expose Hermes Agent computer-use through the V1 slicer bridge; keep `proof/runtime/hermes-computer-use.json` blocked unless a supported host, AS_USER grant, and visual proof run exist.
 
 ## Stop Conditions
 

@@ -32,7 +32,8 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 | G-code export safety | Complete for V1 | Blocked by default unless `HERMES_ENABLE_EXPORT_GCODE=1`; printer start is not implemented |
 | Floating panel | Complete for V1 | `proof/screenshots/*.png`, `proof/runtime/screenshot-format.json` |
 | Login visual/geometry gate | Complete | `scripts/verify_login_geometry.py`, `proof/runtime/login-geometry.json` |
-| Hermes Agent local plugin wrapper | Complete for V1; active install blocked by external version/config | `integrations/hermes-slicer/`, `.hermes/plugins/hermes-slicer/`, `proof/runtime/hermes-plugin-smoke.json` |
+| Hermes Agent local plugin wrapper | Complete for V1; active install proved on Hermes Agent `v0.14.0` | `integrations/hermes-slicer/`, `.hermes/plugins/hermes-slicer/`, `proof/runtime/hermes-plugin-smoke.json` |
+| Hermes Agent computer-use gate | Blocked for V1 on this host | `proof/runtime/hermes-computer-use.json`; upstream v0.14 computer-use requires macOS `cua-driver` plus bounded AS_USER and visual proof |
 | API contract drift guard | Complete | `api_contract.openapi.yaml`, `tests/test_api_contract.py` |
 | Hermes Proof MCP evidence channel | Blocked until workspace-scoped | `proof/runtime/hermes-proof-mcp.json`; current lead-session transport is closed, and agent-audited locks MCP was scoped to `G:\Github\Hermes3D` |
 | Root project license | Complete | `LICENSE`, `NOTICE` |
@@ -54,8 +55,8 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
    Current observed state:
 
    - Hermes Proof MCP evidence ledger: local artifact retains the last known verification, but the current lead-session transport is closed. A locks MCP scoped to another workspace must not count.
-   - Hermes Agent provider bridge: blocked because `/health` reports `live_connectivity_claimed=false`; external environment must enable `HERMES_AGENT_ENABLED=1`, provide a backend, and provide live health proof.
-   - Human AS_USER grant: blocked until external `HERMES_HUMAN_GRANT_SECRET` exists.
+   - Hermes Agent provider bridge: blocked because `/health` reports `live_connectivity_claimed=false`; active provider envs are present, but the external environment must still set `HERMES_AGENT_ENABLED=1` and provide `HERMES_AGENT_HEALTH_URL` live health proof from Hermes Agent `v0.14.0` / `v2026.5.16`.
+   - Human AS_USER grant: blocked until external `HERMES_HUMAN_GRANT_SECRET`, `HERMES_AS_USER_GRANT_ID`, `HERMES_AS_USER_SCOPES`, and short `HERMES_AS_USER_EXPIRES_AT` exist.
 
    V1 may ship with the local Hermes plugin wrapper, but it must not claim live Hermes Agent provider failover until this gate passes.
 
@@ -104,7 +105,7 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
    hermes -z "Check HermesSlicer bridge health" -t hermes_agent
    ```
 
-   Current observed active CLI is blocked because it is not Hermes Agent `v2026.5.16` / package `0.14.0`, and it does not list `hermes-slicer` in `hermes plugins list`. If the active Hermes install path differs, document the actual path and evidence.
+   Current observed active CLI passes: `hermes version` reports Hermes Agent `v0.14.0 (2026.5.16)` from `upstream/hermes-agent`, and `hermes plugins list` shows `hermes-slicer` enabled from the user plugin directory.
 
 6. **Final release proof**
 

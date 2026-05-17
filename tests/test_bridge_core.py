@@ -4,11 +4,12 @@ import json
 import os
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
 
 from hermes_slicer.bridge import ACTION_ROUTES, dispatch_action, run, tts_speak
-from hermes_slicer.config import ALLOWED_ACTIONS, default_slice_request, hermes_agent_bridge_gate
+from hermes_slicer.config import ALLOWED_ACTIONS, default_slice_request, hermes_agent_bridge_gate, as_user_session_gate
 from hermes_slicer.proof import validate_event
 from hermes_slicer.security import sanitize_text
 from hermes_slicer.slicer import ValidationError, dry_run_slice, export_gcode, flsun_export_preflight, flsun_profile_inventory, validate_slice_request
@@ -67,6 +68,10 @@ class BridgeCoreTests(unittest.TestCase):
             "HERMES_AGENT_HEALTHCHECK_OK": "",
             "HERMES_AGENT_LIVE_PROOF": "",
             "HERMES_AGENT_HEALTH_URL": "",
+            "OPENAI_API_KEY": "",
+            "ANTHROPIC_API_KEY": "",
+            "GEMINI_API_KEY": "",
+            "GOOGLE_API_KEY": "",
             "DEEPSEEK_API_KEY": "",
             "MINIMAX_API_KEY": "",
             "SILICONFLOW_API_KEY": "",
@@ -87,6 +92,10 @@ class BridgeCoreTests(unittest.TestCase):
             "HERMES_AGENT_HEALTHCHECK_OK": "",
             "HERMES_AGENT_LIVE_PROOF": "",
             "HERMES_AGENT_HEALTH_URL": "",
+            "OPENAI_API_KEY": "",
+            "ANTHROPIC_API_KEY": "",
+            "GEMINI_API_KEY": "",
+            "GOOGLE_API_KEY": "",
             "DEEPSEEK_API_KEY": "",
             "MINIMAX_API_KEY": "",
             "SILICONFLOW_API_KEY": "",
@@ -114,15 +123,64 @@ class BridgeCoreTests(unittest.TestCase):
         self.assertTrue(payload["operator_attestation_env_present"]["HERMES_AGENT_HEALTHCHECK_OK"])
 
         proved_gate_env = {**live_gate_env, "HERMES_AGENT_HEALTH_URL": "http://127.0.0.1:9876/hermes-agent/health"}
+        with patch.dict(os.environ, proved_gate_env, clear=False), patch("hermes_slicer.config.urlopen", return_value=FakeHealthResponse(body=b'{"status":"passed"}')):
+            payload = hermes_agent_bridge_gate()
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["live_connectivity_claimed"])
+        self.assertFalse(payload["health_probe"]["version_ok"])
+
         with patch.dict(os.environ, proved_gate_env, clear=False), patch("hermes_slicer.config.urlopen", return_value=FakeHealthResponse()):
             payload = hermes_agent_bridge_gate()
         self.assertEqual(payload["status"], "passed")
         self.assertTrue(payload["live_connectivity_claimed"])
+        self.assertTrue(payload["health_probe"]["version_ok"])
+        self.assertTrue(payload["health_probe"]["release_ok"])
 
         with patch.dict(os.environ, proved_gate_env, clear=False), patch("hermes_slicer.config.urlopen", return_value=FakeHealthResponse(body=b"<html>ok</html>")):
             payload = hermes_agent_bridge_gate()
         self.assertEqual(payload["status"], "blocked")
         self.assertFalse(payload["live_connectivity_claimed"])
+
+    def test_as_user_gate_requires_bounded_grant(self) -> None:
+        empty_env = {
+            "HERMES_HUMAN_GRANT_SECRET": "",
+            "HERMES_AS_USER_GRANT_ID": "",
+            "HERMES_AS_USER_SCOPES": "",
+            "HERMES_AS_USER_EXPIRES_AT": "",
+        }
+        with patch.dict(os.environ, empty_env, clear=False):
+            payload = as_user_session_gate()
+        self.assertEqual(payload["status"], "blocked")
+        self.assertFalse(payload["granted"])
+
+        with patch.dict(
+            os.environ,
+            {
+                "HERMES_HUMAN_GRANT_SECRET": "present",
+                "HERMES_AS_USER_GRANT_ID": "grant-test",
+                "HERMES_AS_USER_SCOPES": "visual.inspect,slice.preflight",
+                "HERMES_AS_USER_EXPIRES_AT": "2099-01-01T00:00:00Z",
+            },
+            clear=False,
+        ):
+            payload = as_user_session_gate()
+        self.assertEqual(payload["status"], "blocked")
+        self.assertIn("TTL", payload["reason"])
+
+        expires_at = (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat()
+        with patch.dict(
+            os.environ,
+            {
+                "HERMES_HUMAN_GRANT_SECRET": "present",
+                "HERMES_AS_USER_GRANT_ID": "grant-test",
+                "HERMES_AS_USER_SCOPES": "visual.inspect,slice.preflight",
+                "HERMES_AS_USER_EXPIRES_AT": expires_at,
+            },
+            clear=False,
+        ):
+            payload = as_user_session_gate()
+        self.assertEqual(payload["status"], "passed")
+        self.assertTrue(payload["granted"])
 
     def test_tool_request_health_reports_runtime_port(self) -> None:
         payload, status = dispatch_action({"action": "hermes_agent.tool_request", "payload": {"message": "health"}}, port=8766)
@@ -235,7 +293,11 @@ def jsonish(value: object) -> str:
 
 
 class FakeHealthResponse:
-    def __init__(self, body: bytes = b'{"status":"passed"}', status: int = 200) -> None:
+    def __init__(
+        self,
+        body: bytes = b'{"status":"passed","name":"Hermes Agent","version":"0.14.0","release":"v2026.5.16"}',
+        status: int = 200,
+    ) -> None:
         self.body = body
         self.status = status
 

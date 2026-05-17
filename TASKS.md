@@ -30,5 +30,5 @@
 - [x] Run clean-clone V1 rehearsal with submodules.
 - [x] Refresh final browser/panel screenshots.
 - [x] Add repeatable Hermes plugin smoke proof artifact and committed project plugin wrapper.
-- [ ] Pass active Hermes plugin smoke with Hermes Agent `v2026.5.16` / package `0.14.0` installed and `hermes-slicer` enabled.
+- [x] Pass active Hermes plugin smoke with Hermes Agent `v2026.5.16` / package `0.14.0` installed and `hermes-slicer` enabled.
 - [ ] Tag V1 release after P0 gates pass.

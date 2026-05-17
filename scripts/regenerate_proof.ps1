@@ -24,6 +24,9 @@ if (Test-Path -LiteralPath "proof\ledger.jsonl") {
 powershell -ExecutionPolicy Bypass -File scripts\check_bridge_health.ps1 -BridgeUrl $BridgeUrl
 if ($LASTEXITCODE -ne 0) { throw "check_bridge_health.ps1 failed with exit code $LASTEXITCODE" }
 
+python scripts\write_hermes_proof_mcp_status.py
+if ($LASTEXITCODE -ne 0) { throw "write_hermes_proof_mcp_status.py failed with exit code $LASTEXITCODE" }
+
 python scripts\smoke_bridge.py
 if ($LASTEXITCODE -ne 0) { throw "smoke_bridge.py failed with exit code $LASTEXITCODE" }
 
@@ -47,6 +50,9 @@ if ($LASTEXITCODE -ne 0) { throw "hermes_agent_tool.py tool_request failed with 
 
 python scripts\smoke_hermes_plugin.py
 if ($LASTEXITCODE -ne 0) { throw "smoke_hermes_plugin.py failed with exit code $LASTEXITCODE" }
+
+python scripts\write_hermes_computer_use_proof.py
+if ($LASTEXITCODE -ne 0) { throw "write_hermes_computer_use_proof.py failed with exit code $LASTEXITCODE" }
 
 python scripts\verify_screenshots.py
 if ($LASTEXITCODE -ne 0) { throw "verify_screenshots.py failed with exit code $LASTEXITCODE" }
