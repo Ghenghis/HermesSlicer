@@ -2,6 +2,8 @@
 
 Claude and Claude-spawned agents may write Markdown audit outputs here only.
 
+Codex review note: these files are preserved audit evidence, not release policy. Where a Claude audit file conflicts with `CODEX_REVIEW_NOTES.md`, `V1_RELEASE_CHECKLIST.md`, or `proof/runtime/v1-release-checklist.json`, the Codex-reviewed generated checklist is authoritative.
+
 Required final packet:
 
 - `00_EXECUTIVE_SUMMARY.md`

@@ -40,7 +40,7 @@
       "returncode": 0,
       "status": "passed",
       "stderr": "",
-      "stdout": "Hermes Agent v0.14.0 (2026.5.16)\nProject: G:\\Github\\HermesSlicer\\upstream\\hermes-agent\nPython: 3.14.3\nOpenAI SDK: 2.24.0\nUp to date"
+      "stdout": "Hermes Agent v0.14.0 (2026.5.16)\nProject: G:\\Github\\HermesSlicer\\upstream\\hermes-agent\nPython: 3.14.3\nOpenAI SDK: 2.24.0\nUpdate available: 8495 commits behind \u2014 run 'uv pip install --upgrade hermes-agent'"
     }
   },
   "committed_project_plugin": {
@@ -77,7 +77,7 @@
     "root_resolution": "cwd_fallback",
     "status": "passed"
   },
-  "generated_at": "2026-05-17T14:21:48.181990+00:00",
+  "generated_at": "2026-05-17T16:02:08.098086+00:00",
   "integration_plugin": {
     "checks": {
       "handler_callable": true,

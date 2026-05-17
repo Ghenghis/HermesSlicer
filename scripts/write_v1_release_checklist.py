@@ -22,6 +22,7 @@ LOCAL_PROOF_FILES = (
     "proof/runtime/hermes-proof-mcp.json",
     "proof/runtime/hermes-plugin-smoke.json",
     "proof/runtime/hermes-computer-use.json",
+    "proof/runtime/as_user_session.json",
     "proof/runtime/submodule-stack.json",
     "proof/runtime/flsun-export-preflight.json",
     "proof/runtime/hermes-tool-health.json",
@@ -83,6 +84,8 @@ def build_report() -> dict[str, Any]:
     plugin_smoke_payload = load_json("proof/runtime/hermes-plugin-smoke.json")
     proof_mcp = load_json("proof/runtime/hermes-proof-mcp.json")
     computer_use = load_json("proof/runtime/hermes-computer-use.json")
+    as_user_artifact = load_json("proof/runtime/as_user_session.json")
+    as_user_artifact_gate = as_user_artifact.get("as_user_session", {}) if isinstance(as_user_artifact.get("as_user_session", {}), dict) else {}
     blocked_external = []
     if hermes_agent["status"] != "passed":
         blocked_external.append(
@@ -92,11 +95,21 @@ def build_report() -> dict[str, Any]:
                 "required": hermes_agent["required"],
             }
         )
+    as_user_block_reasons: list[str] = []
     if as_user["status"] != "passed":
+        as_user_block_reasons.append(as_user["reason"])
+    if as_user_artifact.get("status") != "passed" or as_user_artifact_gate.get("granted") is not True:
+        as_user_block_reasons.append(
+            as_user_artifact_gate.get(
+                "reason",
+                "proof/runtime/as_user_session.json is missing or does not prove a bounded AS_USER grant.",
+            )
+        )
+    if as_user_block_reasons:
         blocked_external.append(
             {
                 "gate": "bounded_as_user_grants",
-                "reason": as_user["reason"],
+                "reason": " ".join(dict.fromkeys(reason for reason in as_user_block_reasons if reason)),
                 "required": as_user["required"],
             }
         )
@@ -153,9 +166,10 @@ def build_report() -> dict[str, Any]:
     clean_clone_passed = clean_clone["exists"] and load_status(clean_clone["file"]) == "passed"
     tag_ready = local_ready and clean_clone_passed and not blocked_external
     readiness_note = (
-        "Do not tag V1 until external live-agent, AS_USER, MCP, and computer-use gates are proved or explicitly accepted as release-blocking owner decisions."
+        "Do not tag full V1 until external live-agent, AS_USER, MCP, and computer-use gates are proved. "
+        "A separate scoped local-sidecar tag would need explicit owner approval documenting excluded/deferred live gates."
         if clean_clone_passed
-        else "Do not tag V1 until clean-clone rehearsal passes and external live-agent, AS_USER, MCP, and computer-use gates are proved or explicitly accepted as release-blocking owner decisions."
+        else "Do not tag V1 until clean-clone rehearsal passes and external live-agent, AS_USER, MCP, and computer-use gates are proved."
     )
     return {
         "status": "passed" if tag_ready else "blocked",
@@ -171,6 +185,7 @@ def build_report() -> dict[str, Any]:
             "proof_mcp": proof_mcp.get("proof_mcp", {}),
             "hermes_agent_bridge": hermes_agent,
             "as_user_session": as_user,
+            "as_user_artifact": as_user_artifact.get("as_user_session", {}),
             "plugin_smoke": plugin_smoke_payload,
             "computer_use": computer_use.get("computer_use", {}),
             "blocked": blocked_external,

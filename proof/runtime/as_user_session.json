@@ -1,0 +1,22 @@
+{
+  "as_user_session": {
+    "expires_at": "",
+    "grant_id_present": false,
+    "granted": false,
+    "max_ttl_seconds": 900,
+    "reason": "HERMES_HUMAN_GRANT_SECRET is not present. HERMES_AS_USER_SCOPES must include at least one explicit scope. HERMES_AS_USER_GRANT_ID is required. HERMES_AS_USER_EXPIRES_AT must be an ISO-8601 UTC timestamp.",
+    "required": [
+      "HERMES_HUMAN_GRANT_SECRET",
+      "HERMES_AS_USER_GRANT_ID",
+      "HERMES_AS_USER_SCOPES",
+      "HERMES_AS_USER_EXPIRES_AT",
+      "short TTL"
+    ],
+    "scopes": [],
+    "secret_present": false,
+    "status": "blocked",
+    "ttl_seconds": null
+  },
+  "generated_at": "2026-05-17T16:08:43.927288+00:00",
+  "status": "blocked"
+}

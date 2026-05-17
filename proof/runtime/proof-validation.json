@@ -1,11 +1,18 @@
 {
   "artifact_report": {
     "artifacts": {
+      "as_user_session.json": "blocked",
       "bridge-health.json": "ok",
       "clean-clone-rehearsal.json": "passed",
+      "flsun-export-preflight.json": "passed",
+      "flsun-profile-inventory.json": "passed",
+      "flsun-profile-matrix.json": "passed",
       "hermes-computer-use.json": "blocked",
       "hermes-plugin-smoke.json": "passed",
       "hermes-proof-mcp.json": "blocked",
+      "hermes-tool-export_preflight.json": "passed",
+      "hermes-tool-health.json": "ok",
+      "hermes-tool-tool_request.json": "passed",
       "login-geometry.json": "passed",
       "screenshot-format.json": "passed",
       "v1-release-checklist.json": "blocked"
@@ -20,7 +27,7 @@
   "errors": [],
   "ledger": {
     "errors": [],
-    "events": 52,
+    "events": 56,
     "path": "G:\\Github\\HermesSlicer\\proof\\ledger.jsonl",
     "status": "passed"
   },

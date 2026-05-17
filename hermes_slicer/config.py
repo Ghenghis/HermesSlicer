@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 import shutil
 from datetime import datetime, timezone
@@ -400,7 +401,8 @@ def as_user_session_gate() -> dict[str, Any]:
     expires_at = os.environ.get(AS_USER_EXPIRES_AT_ENV, "").strip()
     expiry = _parse_utc_datetime(expires_at)
     now = datetime.now(timezone.utc)
-    ttl_seconds = int((expiry - now).total_seconds()) if expiry else None
+    ttl_total_seconds = (expiry - now).total_seconds() if expiry else None
+    ttl_seconds = math.ceil(ttl_total_seconds) if ttl_total_seconds is not None else None
     errors: list[str] = []
     if not secret_present:
         errors.append("HERMES_HUMAN_GRANT_SECRET is not present.")
@@ -410,9 +412,9 @@ def as_user_session_gate() -> dict[str, Any]:
         errors.append(f"{AS_USER_GRANT_ID_ENV} is required.")
     if expiry is None:
         errors.append(f"{AS_USER_EXPIRES_AT_ENV} must be an ISO-8601 UTC timestamp.")
-    elif ttl_seconds is None or ttl_seconds <= 0:
+    elif ttl_total_seconds is None or ttl_total_seconds <= 0:
         errors.append("AS_USER grant is expired.")
-    elif ttl_seconds > AS_USER_MAX_TTL_SECONDS:
+    elif ttl_total_seconds > AS_USER_MAX_TTL_SECONDS:
         errors.append(f"AS_USER grant TTL must be {AS_USER_MAX_TTL_SECONDS} seconds or less.")
     granted = not errors
     return {

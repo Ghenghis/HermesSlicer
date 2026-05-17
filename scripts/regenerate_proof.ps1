@@ -5,6 +5,11 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
+$hermesVersion = (& hermes version 2>&1 | Out-String).Trim()
+if ($LASTEXITCODE -ne 0 -or $hermesVersion -notmatch "Hermes Agent v0\.14\.0 \(2026\.5\.16\)") {
+    throw "Hermes CLI version mismatch. Expected Hermes Agent v0.14.0 (2026.5.16), got: $hermesVersion"
+}
+
 if ([string]::IsNullOrWhiteSpace($BridgeUrl)) {
     if ($env:HERMES_SLICER_BRIDGE_URL) {
         $BridgeUrl = $env:HERMES_SLICER_BRIDGE_URL
@@ -23,6 +28,9 @@ if (Test-Path -LiteralPath "proof\ledger.jsonl") {
 
 powershell -ExecutionPolicy Bypass -File scripts\check_bridge_health.ps1 -BridgeUrl $BridgeUrl
 if ($LASTEXITCODE -ne 0) { throw "check_bridge_health.ps1 failed with exit code $LASTEXITCODE" }
+
+python scripts\write_as_user_session_proof.py
+if ($LASTEXITCODE -ne 0) { throw "write_as_user_session_proof.py failed with exit code $LASTEXITCODE" }
 
 python scripts\write_hermes_proof_mcp_status.py
 if ($LASTEXITCODE -ne 0) { throw "write_hermes_proof_mcp_status.py failed with exit code $LASTEXITCODE" }

@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from hermes_slicer.bridge import ACTION_ROUTES, dispatch_action, run, tts_speak
-from hermes_slicer.config import ALLOWED_ACTIONS, default_slice_request, hermes_agent_bridge_gate, as_user_session_gate
+from hermes_slicer.config import ALLOWED_ACTIONS, AS_USER_MAX_TTL_SECONDS, default_slice_request, hermes_agent_bridge_gate, as_user_session_gate
 from hermes_slicer.proof import validate_event
 from hermes_slicer.security import sanitize_text
 from hermes_slicer.slicer import ValidationError, dry_run_slice, export_gcode, flsun_export_preflight, flsun_profile_inventory, validate_slice_request
@@ -182,6 +182,85 @@ class BridgeCoreTests(unittest.TestCase):
         self.assertEqual(payload["status"], "passed")
         self.assertTrue(payload["granted"])
 
+    def test_as_user_gate_blocks_expired_or_unscoped_grants(self) -> None:
+        expired_at = (datetime.now(timezone.utc) - timedelta(minutes=1)).isoformat()
+        with patch.dict(
+            os.environ,
+            {
+                "HERMES_HUMAN_GRANT_SECRET": "present",
+                "HERMES_AS_USER_GRANT_ID": "grant-test",
+                "HERMES_AS_USER_SCOPES": "visual.inspect",
+                "HERMES_AS_USER_EXPIRES_AT": expired_at,
+            },
+            clear=False,
+        ):
+            payload = as_user_session_gate()
+        self.assertEqual(payload["status"], "blocked")
+        self.assertIn("expired", payload["reason"])
+
+        expires_at = (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat()
+        with patch.dict(
+            os.environ,
+            {
+                "HERMES_HUMAN_GRANT_SECRET": "present",
+                "HERMES_AS_USER_GRANT_ID": "grant-test",
+                "HERMES_AS_USER_SCOPES": "",
+                "HERMES_AS_USER_EXPIRES_AT": expires_at,
+            },
+            clear=False,
+        ):
+            payload = as_user_session_gate()
+        self.assertEqual(payload["status"], "blocked")
+        self.assertIn("explicit scope", payload["reason"])
+
+    def test_as_user_gate_blocks_overlong_or_malformed_ttl(self) -> None:
+        overlong_at = (datetime.now(timezone.utc) + timedelta(seconds=AS_USER_MAX_TTL_SECONDS + 1)).isoformat()
+        with patch.dict(
+            os.environ,
+            {
+                "HERMES_HUMAN_GRANT_SECRET": "present",
+                "HERMES_AS_USER_GRANT_ID": "grant-test",
+                "HERMES_AS_USER_SCOPES": "visual.inspect",
+                "HERMES_AS_USER_EXPIRES_AT": overlong_at,
+            },
+            clear=False,
+        ):
+            payload = as_user_session_gate()
+        self.assertEqual(payload["status"], "blocked")
+        self.assertIn("TTL", payload["reason"])
+
+        with patch.dict(
+            os.environ,
+            {
+                "HERMES_HUMAN_GRANT_SECRET": "present",
+                "HERMES_AS_USER_GRANT_ID": "grant-test",
+                "HERMES_AS_USER_SCOPES": "visual.inspect",
+                "HERMES_AS_USER_EXPIRES_AT": "not-a-date",
+            },
+            clear=False,
+        ):
+            payload = as_user_session_gate()
+        self.assertEqual(payload["status"], "blocked")
+        self.assertIn("ISO-8601", payload["reason"])
+
+    def test_as_user_gate_accepts_max_ttl_boundary(self) -> None:
+        expires_at = (datetime.now(timezone.utc) + timedelta(seconds=AS_USER_MAX_TTL_SECONDS)).isoformat()
+        with patch.dict(
+            os.environ,
+            {
+                "HERMES_HUMAN_GRANT_SECRET": "present",
+                "HERMES_AS_USER_GRANT_ID": "grant-test",
+                "HERMES_AS_USER_SCOPES": "visual.inspect;slice.preflight",
+                "HERMES_AS_USER_EXPIRES_AT": expires_at,
+            },
+            clear=False,
+        ):
+            payload = as_user_session_gate()
+        self.assertEqual(payload["status"], "passed")
+        self.assertTrue(payload["granted"])
+        self.assertLessEqual(payload["ttl_seconds"], AS_USER_MAX_TTL_SECONDS)
+        self.assertEqual(payload["scopes"], ["visual.inspect", "slice.preflight"])
+
     def test_tool_request_health_reports_runtime_port(self) -> None:
         payload, status = dispatch_action({"action": "hermes_agent.tool_request", "payload": {"message": "health"}}, port=8766)
         self.assertEqual(status, 200)
@@ -279,9 +358,10 @@ class BridgeCoreTests(unittest.TestCase):
         self.assertIn(payload["status"], {"blocked", "passed"})
         self.assertNotIn("key", jsonish(payload).lower())
 
-    def test_bridge_rejects_non_localhost_bind(self) -> None:
-        with self.assertRaises(SystemExit):
-            run("0.0.0.0", 8765)
+    def test_bridge_rejects_non_loopback_bind_forms(self) -> None:
+        for host in ("0.0.0.0", "::", "192.168.1.10", "localhost"):
+            with self.subTest(host=host), self.assertRaises(SystemExit):
+                run(host, 8765)
 
     def test_validate_event_catches_missing_keys(self) -> None:
         errors = validate_event({"status": "passed"})

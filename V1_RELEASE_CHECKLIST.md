@@ -1,10 +1,10 @@
 # HermesSlicer V1 Release Checklist
 
-Generated: 2026-05-17T14:21:49.869993+00:00
+Generated: 2026-05-17T16:08:43.936759+00:00
 
 ## Proof Summary
 
-- Local proof files present: 14/14
+- Local proof files present: 15/15
 - Missing proof files: none
 - Failed/invalid proof files: none
 - Clean-clone rehearsal: passed
@@ -22,4 +22,4 @@ Generated: 2026-05-17T14:21:49.869993+00:00
 - Ready to tag V1: no
 - Local gates ready: yes
 - Clean-clone rehearsal passed: yes
-- Notes: Do not tag V1 until external live-agent, AS_USER, MCP, and computer-use gates are proved or explicitly accepted as release-blocking owner decisions.
+- Notes: Do not tag full V1 until external live-agent, AS_USER, MCP, and computer-use gates are proved. A separate scoped local-sidecar tag would need explicit owner approval documenting excluded/deferred live gates.

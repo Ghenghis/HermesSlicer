@@ -18,8 +18,8 @@
     "ttl_seconds": null
   },
   "date": "2026-05-17",
-  "evidence_id": "ev_144f14123fa23fc0",
-  "generated_at": "2026-05-17T14:21:40.245113+00:00",
+  "evidence_id": "ev_08ec9a5ac6214a1b",
+  "generated_at": "2026-05-17T16:01:58.841775+00:00",
   "hermes_agent_bridge": {
     "available": false,
     "backend_present": true,
@@ -73,7 +73,7 @@
       "stdout": "No MCP servers configured.\n\n  Add one with:\n    hermes mcp add <name> --url <endpoint>\n    hermes mcp add <name> --command <cmd> --args <args...>"
     },
     "available": false,
-    "codex_mcp_transport_status": "transport_closed",
+    "codex_mcp_transport_status": "not_available",
     "evidence_ledger_ok": false,
     "expected_workspace_root": "G:\\Github\\HermesSlicer",
     "reason": "No workspace-scoped Hermes Proof MCP evidence is available. Active Hermes v0.14 CLI also reports no configured MCP servers.",

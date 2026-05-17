@@ -68,6 +68,36 @@ def validate_proof_mcp_artifact(proof_mcp: dict[str, Any]) -> list[str]:
     return errors
 
 
+def validate_required_artifact(
+    path: str,
+    payload: dict[str, Any],
+    required_keys: tuple[str, ...] = (),
+    allowed_statuses: set[str] | None = None,
+) -> list[str]:
+    errors = status_errors(path, payload, allowed_statuses or {"passed"})
+    for key in required_keys:
+        if key not in payload:
+            errors.append(f"{path} is missing required key {key!r}")
+    return errors
+
+
+def validate_as_user_artifact(as_user: dict[str, Any]) -> list[str]:
+    errors = status_errors("proof/runtime/as_user_session.json", as_user, {"passed", "blocked"})
+    payload = as_user.get("as_user_session", {})
+    if not isinstance(payload, dict):
+        return [*errors, "proof/runtime/as_user_session.json as_user_session must be an object"]
+    if status_of(as_user) == "passed":
+        if payload.get("granted") is not True:
+            errors.append("AS_USER artifact is passed but as_user_session.granted is not true")
+        if not payload.get("scopes"):
+            errors.append("AS_USER artifact is passed without explicit scopes")
+        if not payload.get("grant_id_present"):
+            errors.append("AS_USER artifact is passed without grant_id_present=true")
+    elif payload.get("granted") is True:
+        errors.append("AS_USER artifact is blocked but as_user_session.granted is true")
+    return errors
+
+
 def validate_artifacts() -> dict[str, Any]:
     errors: list[str] = []
     artifacts: dict[str, Any] = {}
@@ -134,6 +164,58 @@ def validate_artifacts() -> dict[str, Any]:
                 errors.append("Hermes computer-use artifact is passed without visual proof")
         elif computer_payload.get("available") is True:
             errors.append("Hermes computer-use artifact is blocked but computer_use.available is true")
+
+    as_user, as_user_errors = load_json("proof/runtime/as_user_session.json")
+    errors.extend(as_user_errors)
+    if as_user:
+        artifacts["as_user_session.json"] = status_of(as_user)
+        errors.extend(validate_as_user_artifact(as_user))
+
+    tool_health, tool_health_errors = load_json("proof/runtime/hermes-tool-health.json")
+    errors.extend(tool_health_errors)
+    if tool_health:
+        artifacts["hermes-tool-health.json"] = status_of(tool_health)
+        errors.extend(
+            validate_required_artifact(
+                "proof/runtime/hermes-tool-health.json",
+                tool_health,
+                ("actions", "hermes_agent_bridge"),
+                {"ok"},
+            )
+        )
+
+    tool_export, tool_export_errors = load_json("proof/runtime/hermes-tool-export_preflight.json")
+    errors.extend(tool_export_errors)
+    if tool_export:
+        artifacts["hermes-tool-export_preflight.json"] = status_of(tool_export)
+        errors.extend(validate_required_artifact("proof/runtime/hermes-tool-export_preflight.json", tool_export, ("resolved", "compatibility")))
+
+    tool_request, tool_request_errors = load_json("proof/runtime/hermes-tool-tool_request.json")
+    errors.extend(tool_request_errors)
+    if tool_request:
+        artifacts["hermes-tool-tool_request.json"] = status_of(tool_request)
+        errors.extend(validate_required_artifact("proof/runtime/hermes-tool-tool_request.json", tool_request, ("resolved_action", "result")))
+
+    flsun_inventory, flsun_inventory_errors = load_json("proof/runtime/flsun-profile-inventory.json")
+    errors.extend(flsun_inventory_errors)
+    if flsun_inventory:
+        artifacts["flsun-profile-inventory.json"] = status_of(flsun_inventory)
+        errors.extend(validate_required_artifact("proof/runtime/flsun-profile-inventory.json", flsun_inventory, ("targets",)))
+        targets = flsun_inventory.get("targets", [])
+        if not isinstance(targets, list) or len(targets) < 3:
+            errors.append("proof/runtime/flsun-profile-inventory.json must include FLSUN target profiles")
+
+    flsun_preflight, flsun_preflight_errors = load_json("proof/runtime/flsun-export-preflight.json")
+    errors.extend(flsun_preflight_errors)
+    if flsun_preflight:
+        artifacts["flsun-export-preflight.json"] = status_of(flsun_preflight)
+        errors.extend(validate_required_artifact("proof/runtime/flsun-export-preflight.json", flsun_preflight, ("resolved", "compatibility")))
+
+    flsun_matrix, flsun_matrix_errors = load_json("proof/runtime/flsun-profile-matrix.json")
+    errors.extend(flsun_matrix_errors)
+    if flsun_matrix:
+        artifacts["flsun-profile-matrix.json"] = status_of(flsun_matrix)
+        errors.extend(validate_required_artifact("proof/runtime/flsun-profile-matrix.json", flsun_matrix, ("matrix",)))
 
     clean_clone, clean_errors = load_json("proof/runtime/clean-clone-rehearsal.json")
     errors.extend(clean_errors)

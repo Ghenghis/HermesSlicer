@@ -54,6 +54,13 @@ Invoke-Step "git clone --recurse-submodules" {
 
 Push-Location $cloneDir
 try {
+    Invoke-Step "Hermes Agent v0.14 assertion" {
+        $hermesVersion = (& hermes version 2>&1 | Out-String).Trim()
+        if ($LASTEXITCODE -ne 0 -or $hermesVersion -notmatch "Hermes Agent v0\.14\.0 \(2026\.5\.16\)") {
+            throw "Hermes CLI version mismatch in rehearsal environment. Expected Hermes Agent v0.14.0 (2026.5.16), got: $hermesVersion"
+        }
+    }
+
     Invoke-Step "unit tests" {
         python -m unittest discover -s tests
     }
