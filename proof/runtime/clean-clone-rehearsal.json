@@ -1,36 +1,36 @@
 {
-  "status": "passed",
-  "started_at": "2026-05-16T22:21:55.2567105-07:00",
-  "remote_url": "https://github.com/Ghenghis/HermesSlicer.git",
-  "branch": "main",
-  "clone_path": "G:\\Github\\HermesSlicer-clean-rehearsals\\HermesSlicer-v1-20260516-222155",
-  "proof_skipped": false,
-  "bridge_url": "http://127.0.0.1:8766",
-  "steps": [
-    {
-      "name": "git clone --recurse-submodules",
-      "status": "passed"
-    },
-    {
-      "name": "unit tests",
-      "status": "passed"
-    },
-    {
-      "name": "compileall",
-      "status": "passed"
-    },
-    {
-      "name": "submodule validation",
-      "status": "passed"
-    },
-    {
-      "name": "proof regeneration",
-      "status": "passed"
-    },
-    {
-      "name": "redaction scan",
-      "status": "passed"
-    }
-  ],
-  "finished_at": "2026-05-16T22:32:09.5829947-07:00"
+    "status":  "passed",
+    "started_at":  "2026-05-17T02:58:34.1521764-07:00",
+    "remote_url":  "https://github.com/Ghenghis/HermesSlicer.git",
+    "branch":  "main",
+    "clone_path":  "G:\\Github\\HermesSlicer-clean-rehearsals\\HermesSlicer-v1-20260517-025834",
+    "proof_skipped":  false,
+    "bridge_url":  "http://127.0.0.1:8767",
+    "steps":  [
+                  {
+                      "name":  "git clone --recurse-submodules",
+                      "status":  "passed"
+                  },
+                  {
+                      "name":  "unit tests",
+                      "status":  "passed"
+                  },
+                  {
+                      "name":  "compileall",
+                      "status":  "passed"
+                  },
+                  {
+                      "name":  "submodule validation",
+                      "status":  "passed"
+                  },
+                  {
+                      "name":  "proof regeneration",
+                      "status":  "passed"
+                  },
+                  {
+                      "name":  "redaction scan",
+                      "status":  "passed"
+                  }
+              ],
+    "finished_at":  "2026-05-17T03:06:50.0229389-07:00"
 }
