@@ -22,9 +22,9 @@
 - [x] Add `/api/slice/export-preflight` and block export unless profile compatibility is proven.
 - [x] Merge research, Hermes tooling, and FLSUN resolver slices into `codex/v1-acceptance-consolidation`.
 - [x] Decide GitHub default branch should be `main`, mirrored from the V1 acceptance branch.
-- [ ] Enable/prove live Hermes Agent provider bridge connectivity.
-- [ ] Enable/prove bounded AS_USER session grant for agent-driven V1 actions.
-- [ ] Pick a root project license before tagging a final release.
+- [ ] Enable/prove live Hermes Agent provider bridge connectivity with external `HERMES_AGENT_ENABLED=1` and a provider backend.
+- [ ] Enable/prove bounded AS_USER session grant for agent-driven V1 actions with external `HERMES_HUMAN_GRANT_SECRET`.
+- [x] Pick a root project license before tagging a final release.
 - [ ] Run clean-clone V1 rehearsal with submodules.
 - [ ] Refresh final browser/panel screenshots.
 - [ ] Smoke installable Hermes plugin against active Hermes install.

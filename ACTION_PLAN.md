@@ -14,9 +14,9 @@ Finish V1 end to end without scope drift. The target is a proofable local sideca
 - [x] Add `ROADMAP.md` as the source of truth for V1 completion.
 - [x] Reframe the panel as a Hermes Agent tool console instead of a JusPrin-style slicer settings chatbot.
 - [x] Replace reference-login branding with a Hermes Slicer local-session gate.
-- [ ] Enable/prove live Hermes Agent provider bridge connectivity.
-- [ ] Enable/prove bounded AS_USER session grants, or document the missing `HERMES_HUMAN_GRANT_SECRET` as a local environment blocker.
-- [ ] Pick and add root `LICENSE` plus any needed `NOTICE`.
+- [ ] Enable/prove live Hermes Agent provider bridge connectivity, requiring external `HERMES_AGENT_ENABLED=1` plus a healthy provider backend.
+- [ ] Enable/prove bounded AS_USER session grants, or document missing external `HERMES_HUMAN_GRANT_SECRET` as a release blocker.
+- [x] Pick and add root `LICENSE` plus any needed `NOTICE`.
 - [ ] Run clean-clone rehearsal with submodules.
 - [ ] Refresh browser/panel screenshots from the final branch state.
 - [ ] Smoke the installable Hermes plugin against the active Hermes install.
@@ -32,6 +32,7 @@ For every remaining V1 task:
 - At least one proof/safety pass checks scope, safety, and evidence.
 - Hermes Proof MCP evidence is appended whenever the MCP is available.
 - If Hermes Agent health reports disabled, do not claim live Hermes Agent bridge connectivity.
+- Do not expose Hermes Agent computer-use through the V1 slicer bridge.
 
 ## Stop Conditions
 

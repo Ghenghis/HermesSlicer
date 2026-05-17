@@ -85,3 +85,5 @@ Ship the local bridge plus an upstream-compatible Hermes Agent directory plugin 
 ## Risks
 
 - Multiple Hermes variants may exist locally; installation instructions need to be adjusted to the actual active install.
+- Live Hermes Agent provider failover is still gated outside this repo by `HERMES_AGENT_ENABLED=1` and a healthy provider backend.
+- Upstream computer-use tooling exists, but HermesSlicer V1 does not expose it through the bridge. Keep computer-use post-V1, read-only first, and AS_USER-scoped.

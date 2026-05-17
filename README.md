@@ -50,7 +50,13 @@ See `BASES.md` and `BRANCHES.md`.
 
 ## V1 Completion Track
 
-Use `ROADMAP.md` and `ACTION_PLAN.md` as the source of truth for finishing V1. The current stack is proofable locally, but V1 should not be tagged until the P0 gates in `ROADMAP.md` pass or are explicitly accepted as release blockers.
+Use `ROADMAP.md`, `ACTION_PLAN.md`, and `V1_STATUS.md` as the source of truth for finishing V1. The current stack is proofable locally, but V1 should not be tagged until the P0 gates in `ROADMAP.md` pass or are explicitly accepted as release blockers.
+
+## License
+
+HermesSlicer-authored sidecar code outside `upstream/` is licensed under AGPL-3.0-only. See `LICENSE` and `NOTICE`.
+
+The repositories under `upstream/` are pinned third-party Git submodules. They keep their original licenses and notices, and are not relicensed by HermesSlicer.
 
 ## V1 Safety Defaults
 
@@ -96,4 +102,4 @@ See `integrations/README.md` for project-local plugin setup. Hermes does not sta
 - `proof/runtime/proof-validation.json`
 - `proof/runtime/submodule-stack.json`
 
-Root license is still a project-owner decision. Until that is chosen, JusPrin stays as a pinned AGPL upstream reference and HermesSlicer does not copy JusPrin C++ code.
+JusPrin stays as a pinned AGPL upstream reference and HermesSlicer does not copy JusPrin C++ code into the V1 sidecar.

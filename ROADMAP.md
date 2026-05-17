@@ -34,8 +34,8 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 | Hermes Agent local plugin wrapper | Complete for V1 | `integrations/hermes-slicer/`, `tests/test_hermes_integration.py` |
 | API contract drift guard | Complete | `api_contract.openapi.yaml`, `tests/test_api_contract.py` |
 | Hermes Proof MCP evidence channel | Partially connected | Evidence MCP verifies; Hermes Agent provider bridge is disabled |
-| Root project license | Blocked | Owner decision required before V1 release tag |
-| Clean-clone release rehearsal | Not done | Required before V1 tag |
+| Root project license | Complete | `LICENSE`, `NOTICE` |
+| Clean-clone release rehearsal | Scripted, not yet run in final pass | `scripts/clean_clone_rehearsal.ps1` |
 
 ## P0 Gates For V1 Complete
 
@@ -52,14 +52,14 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
    Current observed state:
 
    - Hermes Proof MCP evidence ledger: connected and hash chain verifies.
-   - Hermes Agent provider bridge: blocked because the bridge reports `bridge disabled`.
-   - Human AS_USER grant: blocked until `HERMES_HUMAN_GRANT_SECRET` exists.
+   - Hermes Agent provider bridge: blocked because the bridge reports `bridge disabled`; external environment must enable `HERMES_AGENT_ENABLED=1` and provide a healthy provider backend.
+   - Human AS_USER grant: blocked until external `HERMES_HUMAN_GRANT_SECRET` exists.
 
    V1 may ship with the local Hermes plugin wrapper, but it must not claim live Hermes Agent provider failover until this gate passes.
 
 2. **Root license and notices**
 
-   Add a root `LICENSE` and any needed `NOTICE`/license notes. This is a project-owner decision because the stack includes AGPL/GPL references as submodules and local code must not blur into copied upstream implementation.
+   Root `LICENSE` and `NOTICE` are present. The V1 posture is AGPL-3.0-only for HermesSlicer-authored sidecar code outside `upstream/`; submodules retain their own licenses and notices.
 
 3. **Clean checkout rehearsal**
 
@@ -71,6 +71,12 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
    python -m unittest discover -s tests
    python scripts\validate_submodules.py
    powershell -ExecutionPolicy Bypass -File scripts\regenerate_proof.ps1
+   ```
+
+   Or run the scripted rehearsal from this repo:
+
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File scripts\clean_clone_rehearsal.ps1
    ```
 
 4. **UI proof refresh**
@@ -109,6 +115,7 @@ V1 is complete only when the repo can prove the stack end to end from a clean ch
 - Add optional G-code export proof with an explicit local operator gate.
 - Add Moonraker/OctoPrint/Klipper upload-only research gates.
 - Add printer start only after a separate human-confirmed safety design.
+- Consider Hermes Agent computer-use only after V1, starting read-only and gated by explicit AS_USER scope.
 
 ## Release Rule
 
